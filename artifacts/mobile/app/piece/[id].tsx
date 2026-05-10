@@ -279,9 +279,17 @@ export default function PieceDetailScreen() {
           headerTintColor: colors.foreground,
           headerTitleStyle: { fontFamily: "Inter_600SemiBold" },
           headerRight: () => (
-            <Pressable onPress={handleDelete} hitSlop={8}>
-              <Feather name="trash-2" size={20} color={colors.destructive} />
-            </Pressable>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 18 }}>
+              <Pressable
+                onPress={() => router.push(`/piece/share?pieceId=${piece!.id}`)}
+                hitSlop={8}
+              >
+                <Feather name="share-2" size={20} color={colors.primary} />
+              </Pressable>
+              <Pressable onPress={handleDelete} hitSlop={8}>
+                <Feather name="trash-2" size={20} color={colors.destructive} />
+              </Pressable>
+            </View>
           ),
         }}
       />

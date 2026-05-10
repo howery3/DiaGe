@@ -37,6 +37,10 @@ function RootLayoutNav() {
         options={{ presentation: "modal", headerShown: true }}
       />
       <Stack.Screen
+        name="piece/share"
+        options={{ presentation: "modal", headerShown: true }}
+      />
+      <Stack.Screen
         name="wishlist-item/add"
         options={{ presentation: "modal", headerShown: true }}
       />
