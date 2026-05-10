@@ -71,10 +71,24 @@ export default function RetailersScreen() {
       ) : null}
 
       <View style={[styles.header, { paddingTop: topPad + 16 }]}>
-        <Text style={[styles.logo, { color: colors.primary }]}>DiGe</Text>
-        <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-          {retailers.length} {retailers.length === 1 ? "retailer" : "retailers"}
-        </Text>
+        <View style={styles.headerRow}>
+          <View>
+            <Text style={[styles.logo, { color: colors.primary }]}>DiGe</Text>
+            <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
+              {retailers.length} {retailers.length === 1 ? "retailer" : "retailers"}
+            </Text>
+          </View>
+          {pieces.length > 0 ? (
+            <Pressable
+              onPress={() => router.push("/insurance-report")}
+              style={[styles.insuranceBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]}
+              hitSlop={8}
+            >
+              <Feather name="file-text" size={14} color={colors.primary} />
+              <Text style={[styles.insuranceBtnText, { color: colors.primary }]}>Insurance</Text>
+            </Pressable>
+          ) : null}
+        </View>
       </View>
 
       <View
@@ -267,6 +281,17 @@ function RetailerCard({
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { paddingHorizontal: 20, paddingBottom: 12 },
+  headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  insuranceBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  insuranceBtnText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
   logo: {
     fontSize: 28,
     fontFamily: "Inter_700Bold",

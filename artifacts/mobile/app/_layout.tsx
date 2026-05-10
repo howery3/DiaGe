@@ -57,6 +57,10 @@ function RootLayoutNav() {
         name="retailer/[name]"
         options={{ headerShown: true }}
       />
+      <Stack.Screen
+        name="insurance-report"
+        options={{ headerShown: true }}
+      />
     </Stack>
   );
 }
