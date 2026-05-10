@@ -16,6 +16,8 @@ export type JewelryType =
   | "brooch"
   | "other";
 
+export type GoldWarrantyType = "lifetime" | "dated" | "none";
+
 export interface JewelryPiece {
   id: string;
   name: string;
@@ -26,8 +28,11 @@ export interface JewelryPiece {
   purchasePrice: string;
   retailer: string;
   serialNumber: string;
-  warrantyExpiry: string;
-  warrantyDetails: string;
+  goldWarrantyType: GoldWarrantyType;
+  goldWarrantyExpiry: string;
+  goldWarrantyDetails: string;
+  diamondBondExpiry: string;
+  diamondBondDetails: string;
   description: string;
   lastInspection: string;
   imageUri?: string;

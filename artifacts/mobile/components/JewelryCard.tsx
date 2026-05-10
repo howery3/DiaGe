@@ -14,13 +14,38 @@ const TYPE_ICONS: Record<JewelryType, keyof typeof Feather.glyphMap> = {
   other: "package",
 };
 
-function warrantyStatus(expiry: string): { label: string; color: string } | null {
+function dateBadge(expiry: string): { label: string; color: string } | null {
   if (!expiry) return null;
   const diff = new Date(expiry).getTime() - Date.now();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   if (days < 0) return { label: "Expired", color: "#DC2626" };
   if (days <= 90) return { label: `${days}d left`, color: "#B45309" };
   return { label: "Active", color: "#15803D" };
+}
+
+function warrantyBadges(piece: JewelryPiece): { label: string; color: string; key: string }[] {
+  const badges: { label: string; color: string; key: string }[] = [];
+
+  if (piece.goldWarrantyType === "lifetime") {
+    badges.push({ label: "Lifetime", color: "#15803D", key: "gold" });
+  } else if (piece.goldWarrantyType === "dated") {
+    const b = dateBadge(piece.goldWarrantyExpiry);
+    if (b) badges.push({ ...b, key: "gold" });
+  }
+
+  if (piece.diamondBondExpiry) {
+    const b = dateBadge(piece.diamondBondExpiry);
+    if (b) {
+      const isExpired = b.label === "Expired";
+      badges.push({
+        label: isExpired ? "Bond Exp." : `Bond ${b.label}`,
+        color: b.color,
+        key: "diamond",
+      });
+    }
+  }
+
+  return badges;
 }
 
 interface JewelryCardProps {
@@ -31,7 +56,7 @@ interface JewelryCardProps {
 export function JewelryCard({ piece, onPress }: JewelryCardProps) {
   const colors = useColors();
   const icon = TYPE_ICONS[piece.type] ?? "package";
-  const warranty = warrantyStatus(piece.warrantyExpiry);
+  const badges = warrantyBadges(piece);
 
   return (
     <Pressable
@@ -42,7 +67,7 @@ export function JewelryCard({ piece, onPress }: JewelryCardProps) {
       ]}
     >
       <View style={[styles.iconWrap, { backgroundColor: colors.secondary }]}>
-        <Feather name={icon} size={20} color={colors.gold} />
+        <Feather name={icon} size={20} color={colors.primary} />
       </View>
       <View style={styles.info}>
         <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
@@ -51,20 +76,17 @@ export function JewelryCard({ piece, onPress }: JewelryCardProps) {
         <Text style={[styles.meta, { color: colors.mutedForeground }]} numberOfLines={1}>
           {[piece.brand, piece.material].filter(Boolean).join(" · ")}
         </Text>
-        {piece.retailer ? (
-          <Text style={[styles.retailer, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {piece.retailer}
-          </Text>
-        ) : null}
-      </View>
-      <View style={styles.right}>
-        {warranty ? (
-          <View style={[styles.badge, { backgroundColor: warranty.color + "18" }]}>
-            <Text style={[styles.badgeText, { color: warranty.color }]}>{warranty.label}</Text>
+        {badges.length > 0 ? (
+          <View style={styles.badgeRow}>
+            {badges.map((b) => (
+              <View key={b.key} style={[styles.badge, { backgroundColor: b.color + "18" }]}>
+                <Text style={[styles.badgeText, { color: b.color }]}>{b.label}</Text>
+              </View>
+            ))}
           </View>
         ) : null}
-        <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
       </View>
+      <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
     </Pressable>
   );
 }
@@ -86,11 +108,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  info: { flex: 1, gap: 2 },
+  info: { flex: 1, gap: 4 },
   name: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
   meta: { fontSize: 13, fontFamily: "Inter_400Regular" },
-  retailer: { fontSize: 12, fontFamily: "Inter_400Regular" },
-  right: { alignItems: "flex-end", gap: 6 },
-  badge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
+  badgeRow: { flexDirection: "row", gap: 6, flexWrap: "wrap" },
+  badge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 20 },
   badgeText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
 });

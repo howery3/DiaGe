@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useDiGe, type JewelryType } from "@/context/DiGeContext";
+import { useDiGe, type GoldWarrantyType, type JewelryType } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
 const TYPES: { value: JewelryType; label: string }[] = [
@@ -27,6 +27,12 @@ const TYPES: { value: JewelryType; label: string }[] = [
   { value: "watch", label: "Watch" },
   { value: "brooch", label: "Brooch" },
   { value: "other", label: "Other" },
+];
+
+const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: string }[] = [
+  { value: "lifetime", label: "Lifetime Warranty", desc: "No expiry" },
+  { value: "dated", label: "Set Date", desc: "Has expiry" },
+  { value: "none", label: "None", desc: "No coverage" },
 ];
 
 async function pickFromLibrary(): Promise<string | null> {
@@ -74,8 +80,14 @@ export default function AddPieceScreen() {
     prefillRetailer ? decodeURIComponent(prefillRetailer) : ""
   );
   const [serialNumber, setSerialNumber] = useState("");
-  const [warrantyExpiry, setWarrantyExpiry] = useState("");
-  const [warrantyDetails, setWarrantyDetails] = useState("");
+
+  const [goldWarrantyType, setGoldWarrantyType] = useState<GoldWarrantyType>("none");
+  const [goldWarrantyExpiry, setGoldWarrantyExpiry] = useState("");
+  const [goldWarrantyDetails, setGoldWarrantyDetails] = useState("");
+
+  const [diamondBondExpiry, setDiamondBondExpiry] = useState("");
+  const [diamondBondDetails, setDiamondBondDetails] = useState("");
+
   const [description, setDescription] = useState("");
   const [lastInspection, setLastInspection] = useState("");
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
@@ -94,8 +106,11 @@ export default function AddPieceScreen() {
       purchasePrice: purchasePrice.trim(),
       retailer: retailer.trim(),
       serialNumber: serialNumber.trim(),
-      warrantyExpiry,
-      warrantyDetails: warrantyDetails.trim(),
+      goldWarrantyType,
+      goldWarrantyExpiry,
+      goldWarrantyDetails: goldWarrantyDetails.trim(),
+      diamondBondExpiry,
+      diamondBondDetails: diamondBondDetails.trim(),
       description: description.trim(),
       lastInspection,
       imageUri,
@@ -107,37 +122,17 @@ export default function AddPieceScreen() {
   function handlePickPhoto() {
     if (Platform.OS === "ios") {
       ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ["Cancel", "Take Photo", "Choose from Library"],
-          cancelButtonIndex: 0,
-        },
-        async (buttonIndex) => {
-          if (buttonIndex === 1) {
-            const uri = await pickFromCamera();
-            if (uri) setImageUri(uri);
-          } else if (buttonIndex === 2) {
-            const uri = await pickFromLibrary();
-            if (uri) setImageUri(uri);
-          }
+        { options: ["Cancel", "Take Photo", "Choose from Library"], cancelButtonIndex: 0 },
+        async (idx) => {
+          if (idx === 1) { const u = await pickFromCamera(); if (u) setImageUri(u); }
+          else if (idx === 2) { const u = await pickFromLibrary(); if (u) setImageUri(u); }
         }
       );
     } else {
       Alert.alert("Add Photo", "Choose a source", [
         { text: "Cancel", style: "cancel" },
-        {
-          text: "Camera",
-          onPress: async () => {
-            const uri = await pickFromCamera();
-            if (uri) setImageUri(uri);
-          },
-        },
-        {
-          text: "Photo Library",
-          onPress: async () => {
-            const uri = await pickFromLibrary();
-            if (uri) setImageUri(uri);
-          },
-        },
+        { text: "Camera", onPress: async () => { const u = await pickFromCamera(); if (u) setImageUri(u); } },
+        { text: "Photo Library", onPress: async () => { const u = await pickFromLibrary(); if (u) setImageUri(u); } },
       ]);
     }
   }
@@ -168,189 +163,131 @@ export default function AddPieceScreen() {
           {imageUri ? (
             <View style={styles.photoPreviewWrap}>
               <Image source={{ uri: imageUri }} style={styles.photoPreview} resizeMode="cover" />
-              <Pressable
-                onPress={() => setImageUri(undefined)}
-                style={[styles.removePhoto, { backgroundColor: colors.destructive }]}
-              >
+              <Pressable onPress={() => setImageUri(undefined)} style={[styles.removePhoto, { backgroundColor: colors.destructive }]}>
                 <Feather name="x" size={14} color="#fff" />
               </Pressable>
-              <Pressable
-                onPress={handlePickPhoto}
-                style={[styles.changePhoto, { backgroundColor: colors.card, borderColor: colors.border }]}
-              >
+              <Pressable onPress={handlePickPhoto} style={[styles.changePhoto, { backgroundColor: colors.card, borderColor: colors.border }]}>
                 <Feather name="camera" size={14} color={colors.primary} />
                 <Text style={[styles.changePhotoText, { color: colors.primary }]}>Change</Text>
               </Pressable>
             </View>
           ) : (
-            <Pressable
-              onPress={handlePickPhoto}
-              style={[
-                styles.photoPlaceholder,
-                { backgroundColor: colors.secondary, borderColor: colors.border },
-              ]}
-            >
+            <Pressable onPress={handlePickPhoto} style={[styles.photoPlaceholder, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
               <Feather name="camera" size={26} color={colors.primary} />
               <Text style={[styles.photoLabel, { color: colors.primary }]}>Add Photo</Text>
-              <Text style={[styles.photoHint, { color: colors.mutedForeground }]}>
-                Receipt, certificate, or piece photo
-              </Text>
+              <Text style={[styles.photoHint, { color: colors.mutedForeground }]}>Receipt, certificate, or piece photo</Text>
             </Pressable>
           )}
         </View>
 
         <SectionLabel label="Basic Info" colors={colors} />
-
         <Field label="Name *" colors={colors}>
-          <TextInput
-            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="e.g. Engagement Ring"
-            placeholderTextColor={colors.mutedForeground}
-            value={name}
-            onChangeText={setName}
-          />
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Engagement Ring" placeholderTextColor={colors.mutedForeground} value={name} onChangeText={setName} />
         </Field>
-
         <Field label="Type" colors={colors}>
           <View style={styles.typeRow}>
             {TYPES.map((t) => (
-              <Pressable
-                key={t.value}
-                onPress={() => setType(t.value)}
-                style={[
-                  styles.typePill,
-                  {
-                    backgroundColor: type === t.value ? colors.primary : colors.secondary,
-                    borderColor: type === t.value ? colors.primary : colors.border,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.typePillText,
-                    { color: type === t.value ? colors.primaryForeground : colors.foreground },
-                  ]}
-                >
-                  {t.label}
-                </Text>
+              <Pressable key={t.value} onPress={() => setType(t.value)} style={[styles.typePill, { backgroundColor: type === t.value ? colors.primary : colors.secondary, borderColor: type === t.value ? colors.primary : colors.border }]}>
+                <Text style={[styles.typePillText, { color: type === t.value ? colors.primaryForeground : colors.foreground }]}>{t.label}</Text>
               </Pressable>
             ))}
           </View>
         </Field>
-
         <Field label="Brand" colors={colors}>
-          <TextInput
-            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="e.g. Tiffany & Co."
-            placeholderTextColor={colors.mutedForeground}
-            value={brand}
-            onChangeText={setBrand}
-          />
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Tiffany & Co." placeholderTextColor={colors.mutedForeground} value={brand} onChangeText={setBrand} />
         </Field>
-
         <Field label="Material" colors={colors}>
-          <TextInput
-            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="e.g. 18K Yellow Gold, Diamond"
-            placeholderTextColor={colors.mutedForeground}
-            value={material}
-            onChangeText={setMaterial}
-          />
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. 18K Yellow Gold, Diamond" placeholderTextColor={colors.mutedForeground} value={material} onChangeText={setMaterial} />
         </Field>
 
         <SectionLabel label="Purchase Details" colors={colors} />
-
         <Field label="Retailer" colors={colors}>
-          <TextInput
-            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="e.g. Zales, Kay, Helzberg..."
-            placeholderTextColor={colors.mutedForeground}
-            value={retailer}
-            onChangeText={setRetailer}
-          />
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Zales, Kay, Helzberg..." placeholderTextColor={colors.mutedForeground} value={retailer} onChangeText={setRetailer} />
         </Field>
-
         <View style={styles.row}>
           <Field label="Purchase Date" colors={colors} style={{ flex: 1 }}>
-            <TextInput
-              style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor={colors.mutedForeground}
-              value={purchaseDate}
-              onChangeText={setPurchaseDate}
-            />
+            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={purchaseDate} onChangeText={setPurchaseDate} />
           </Field>
           <Field label="Price ($)" colors={colors} style={{ flex: 1 }}>
-            <TextInput
-              style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-              placeholder="0.00"
-              placeholderTextColor={colors.mutedForeground}
-              value={purchasePrice}
-              onChangeText={setPurchasePrice}
-              keyboardType="decimal-pad"
-            />
+            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="0.00" placeholderTextColor={colors.mutedForeground} value={purchasePrice} onChangeText={setPurchasePrice} keyboardType="decimal-pad" />
           </Field>
         </View>
-
         <Field label="Serial / Certificate Number" colors={colors}>
-          <TextInput
-            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="Optional"
-            placeholderTextColor={colors.mutedForeground}
-            value={serialNumber}
-            onChangeText={setSerialNumber}
-          />
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="Optional" placeholderTextColor={colors.mutedForeground} value={serialNumber} onChangeText={setSerialNumber} />
         </Field>
 
-        <SectionLabel label="Warranty" colors={colors} />
+        <View style={[styles.warrantyBlock, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.warrantyHeader}>
+            <View style={[styles.warrantyIconWrap, { backgroundColor: "#D4AA3A18" }]}>
+              <Feather name="shield" size={16} color="#D4AA3A" />
+            </View>
+            <View>
+              <Text style={[styles.warrantyTitle, { color: colors.foreground }]}>Lifetime Warranty</Text>
+              <Text style={[styles.warrantySubtitle, { color: colors.mutedForeground }]}>Gold / Metal Coverage</Text>
+            </View>
+          </View>
 
-        <View style={styles.row}>
-          <Field label="Warranty Expiry" colors={colors} style={{ flex: 1 }}>
-            <TextInput
-              style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor={colors.mutedForeground}
-              value={warrantyExpiry}
-              onChangeText={setWarrantyExpiry}
-            />
-          </Field>
-          <Field label="Last Inspection" colors={colors} style={{ flex: 1 }}>
-            <TextInput
-              style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor={colors.mutedForeground}
-              value={lastInspection}
-              onChangeText={setLastInspection}
-            />
-          </Field>
+          <View style={styles.optionRow}>
+            {GOLD_WARRANTY_OPTIONS.map((opt) => (
+              <Pressable
+                key={opt.value}
+                onPress={() => setGoldWarrantyType(opt.value)}
+                style={[
+                  styles.optionPill,
+                  {
+                    backgroundColor: goldWarrantyType === opt.value ? colors.primary + "18" : colors.secondary,
+                    borderColor: goldWarrantyType === opt.value ? colors.primary : colors.border,
+                    borderWidth: 1.5,
+                  },
+                ]}
+              >
+                <Text style={[styles.optionPillLabel, { color: goldWarrantyType === opt.value ? colors.primary : colors.foreground }]}>{opt.label}</Text>
+                <Text style={[styles.optionPillDesc, { color: colors.mutedForeground }]}>{opt.desc}</Text>
+              </Pressable>
+            ))}
+          </View>
+
+          {goldWarrantyType === "dated" ? (
+            <Field label="Expiry Date" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
+              <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={goldWarrantyExpiry} onChangeText={setGoldWarrantyExpiry} />
+            </Field>
+          ) : null}
+
+          {goldWarrantyType !== "none" ? (
+            <Field label="Details (retailer, terms, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
+              <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Coverage info, inspection schedule, contact..." placeholderTextColor={colors.mutedForeground} value={goldWarrantyDetails} onChangeText={setGoldWarrantyDetails} multiline numberOfLines={2} textAlignVertical="top" />
+            </Field>
+          ) : null}
         </View>
 
-        <Field label="Warranty Details" colors={colors}>
-          <TextInput
-            style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="Coverage details, terms, contact info..."
-            placeholderTextColor={colors.mutedForeground}
-            value={warrantyDetails}
-            onChangeText={setWarrantyDetails}
-            multiline
-            numberOfLines={3}
-            textAlignVertical="top"
-          />
+        <View style={[styles.warrantyBlock, { backgroundColor: colors.card, borderColor: colors.border, marginTop: 10 }]}>
+          <View style={styles.warrantyHeader}>
+            <View style={[styles.warrantyIconWrap, { backgroundColor: colors.primary + "18" }]}>
+              <Feather name="hexagon" size={16} color={colors.primary} />
+            </View>
+            <View>
+              <Text style={[styles.warrantyTitle, { color: colors.foreground }]}>Diamond Bond</Text>
+              <Text style={[styles.warrantySubtitle, { color: colors.mutedForeground }]}>Stone / Diamond Coverage</Text>
+            </View>
+          </View>
+
+          <Field label="Bond Expiry Date (leave blank if no bond)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
+            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={diamondBondExpiry} onChangeText={setDiamondBondExpiry} />
+          </Field>
+
+          {diamondBondExpiry ? (
+            <Field label="Bond Details (retailer, terms, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
+              <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Bond number, coverage terms, what's included..." placeholderTextColor={colors.mutedForeground} value={diamondBondDetails} onChangeText={setDiamondBondDetails} multiline numberOfLines={2} textAlignVertical="top" />
+            </Field>
+          ) : null}
+        </View>
+
+        <SectionLabel label="Inspection & Notes" colors={colors} />
+        <Field label="Last Inspection" colors={colors}>
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={lastInspection} onChangeText={setLastInspection} />
         </Field>
-
-        <SectionLabel label="Documents & Notes" colors={colors} />
-
-        <Field label="Receipts, Appraisals, Care Instructions" colors={colors}>
-          <TextInput
-            style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="Paste details from receipts, appraisals, care instructions, or any other notes..."
-            placeholderTextColor={colors.mutedForeground}
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-          />
+        <Field label="Documents & Notes" colors={colors}>
+          <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Receipts, appraisals, care instructions, special notes..." placeholderTextColor={colors.mutedForeground} value={description} onChangeText={setDescription} multiline numberOfLines={4} textAlignVertical="top" />
         </Field>
       </KeyboardAwareScrollView>
     </>
@@ -361,17 +298,7 @@ function SectionLabel({ label, colors }: { label: string; colors: ReturnType<typ
   return <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>{label}</Text>;
 }
 
-function Field({
-  label,
-  children,
-  colors,
-  style,
-}: {
-  label: string;
-  children: React.ReactNode;
-  colors: ReturnType<typeof useColors>;
-  style?: object;
-}) {
+function Field({ label, children, colors, style }: { label: string; children: React.ReactNode; colors: ReturnType<typeof useColors>; style?: object }) {
   return (
     <View style={[styles.field, style]}>
       <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>{label}</Text>
@@ -384,76 +311,30 @@ const styles = StyleSheet.create({
   content: { padding: 20, gap: 4 },
   saveBtn: { fontSize: 16, fontFamily: "Inter_600SemiBold" },
   photoSection: { marginBottom: 8 },
-  photoPlaceholder: {
-    height: 140,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderStyle: "dashed",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-  },
+  photoPlaceholder: { height: 140, borderRadius: 14, borderWidth: 1.5, borderStyle: "dashed", alignItems: "center", justifyContent: "center", gap: 6 },
   photoLabel: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
   photoHint: { fontSize: 12, fontFamily: "Inter_400Regular" },
   photoPreviewWrap: { height: 200, borderRadius: 14, overflow: "visible" },
   photoPreview: { width: "100%", height: 200, borderRadius: 14 },
-  removePhoto: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  changePhoto: {
-    position: "absolute",
-    bottom: 10,
-    right: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
+  removePhoto: { position: "absolute", top: 10, right: 10, width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
+  changePhoto: { position: "absolute", bottom: 10, right: 10, flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
   changePhotoText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
-  sectionLabel: {
-    fontSize: 11,
-    fontFamily: "Inter_600SemiBold",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginTop: 20,
-    marginBottom: 4,
-  },
+  sectionLabel: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 0.8, textTransform: "uppercase", marginTop: 20, marginBottom: 4 },
   field: { marginBottom: 10 },
   fieldLabel: { fontSize: 12, fontFamily: "Inter_500Medium", marginBottom: 6 },
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    fontSize: 14,
-    fontFamily: "Inter_400Regular",
-  },
-  textarea: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    fontSize: 14,
-    fontFamily: "Inter_400Regular",
-    minHeight: 90,
-  },
+  input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11, fontSize: 14, fontFamily: "Inter_400Regular" },
+  textarea: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11, fontSize: 14, fontFamily: "Inter_400Regular", minHeight: 72 },
   typeRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  typePill: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
+  typePill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1 },
   typePillText: { fontSize: 13, fontFamily: "Inter_500Medium" },
   row: { flexDirection: "row", gap: 12 },
+  warrantyBlock: { borderRadius: 16, borderWidth: 1, padding: 16, marginTop: 20 },
+  warrantyHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 },
+  warrantyIconWrap: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
+  warrantyTitle: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
+  warrantySubtitle: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  optionRow: { flexDirection: "row", gap: 8 },
+  optionPill: { flex: 1, paddingVertical: 10, paddingHorizontal: 8, borderRadius: 12, alignItems: "center", gap: 2 },
+  optionPillLabel: { fontSize: 12, fontFamily: "Inter_600SemiBold", textAlign: "center" },
+  optionPillDesc: { fontSize: 10, fontFamily: "Inter_400Regular" },
 });
