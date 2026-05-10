@@ -11,12 +11,22 @@
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0E0B08"
+      "backgroundColor": "#0A0714"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "DiGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
+        "NSCameraUsageDescription": "DiGe uses your camera to photograph jewelry pieces and paperwork for your vault."
+      }
     },
-    "android": {},
+    "android": {
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "CAMERA"
+      ]
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
@@ -28,7 +38,14 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "DiGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
+          "cameraPermission": "DiGe uses your camera to photograph jewelry pieces and paperwork for your vault."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

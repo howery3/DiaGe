@@ -1,9 +1,13 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  ActionSheetIOS,
   Alert,
+  Image,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -31,11 +35,40 @@ function warrantyDaysLeft(expiry: string): { text: string; color: string } | nul
   return { text: `Warranty active — ${days} days remaining`, color: "#15803D" };
 }
 
+async function pickFromLibrary(): Promise<string | null> {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== "granted") {
+    Alert.alert("Permission needed", "Allow photo library access to attach images.");
+    return null;
+  }
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ["images"],
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 0.85,
+  });
+  return result.canceled ? null : result.assets[0].uri;
+}
+
+async function pickFromCamera(): Promise<string | null> {
+  const { status } = await ImagePicker.requestCameraPermissionsAsync();
+  if (status !== "granted") {
+    Alert.alert("Permission needed", "Allow camera access to take photos.");
+    return null;
+  }
+  const result = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 0.85,
+  });
+  return result.canceled ? null : result.assets[0].uri;
+}
+
 export default function PieceDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getPiece, deletePiece } = useDiGe();
+  const { getPiece, deletePiece, updatePiece } = useDiGe();
 
   const piece = getPiece(id ?? "");
 
@@ -69,6 +102,57 @@ export default function PieceDetailScreen() {
     ]);
   }
 
+  function handleChangePhoto() {
+    if (Platform.OS === "ios") {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: piece!.imageUri
+            ? ["Cancel", "Take Photo", "Choose from Library", "Remove Photo"]
+            : ["Cancel", "Take Photo", "Choose from Library"],
+          cancelButtonIndex: 0,
+          destructiveButtonIndex: piece!.imageUri ? 3 : undefined,
+        },
+        async (buttonIndex) => {
+          if (buttonIndex === 1) {
+            const uri = await pickFromCamera();
+            if (uri) updatePiece(piece!.id, { imageUri: uri });
+          } else if (buttonIndex === 2) {
+            const uri = await pickFromLibrary();
+            if (uri) updatePiece(piece!.id, { imageUri: uri });
+          } else if (buttonIndex === 3 && piece!.imageUri) {
+            updatePiece(piece!.id, { imageUri: undefined });
+          }
+        }
+      );
+    } else {
+      const options: Alert.AlertButton[] = [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Camera",
+          onPress: async () => {
+            const uri = await pickFromCamera();
+            if (uri) updatePiece(piece!.id, { imageUri: uri });
+          },
+        },
+        {
+          text: "Photo Library",
+          onPress: async () => {
+            const uri = await pickFromLibrary();
+            if (uri) updatePiece(piece!.id, { imageUri: uri });
+          },
+        },
+      ];
+      if (piece.imageUri) {
+        options.push({
+          text: "Remove Photo",
+          style: "destructive",
+          onPress: () => updatePiece(piece!.id, { imageUri: undefined }),
+        });
+      }
+      Alert.alert("Photo", "Choose an option", options);
+    }
+  }
+
   return (
     <>
       <Stack.Screen
@@ -89,6 +173,28 @@ export default function PieceDetailScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
       >
+        {piece.imageUri ? (
+          <Pressable onPress={handleChangePhoto} style={styles.heroImageWrap}>
+            <Image
+              source={{ uri: piece.imageUri }}
+              style={styles.heroImage}
+              resizeMode="cover"
+            />
+            <View style={[styles.photoEditChip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Feather name="camera" size={12} color={colors.primary} />
+              <Text style={[styles.photoEditText, { color: colors.primary }]}>Change Photo</Text>
+            </View>
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={handleChangePhoto}
+            style={[styles.photoAdd, { backgroundColor: colors.secondary, borderColor: colors.border }]}
+          >
+            <Feather name="camera" size={20} color={colors.primary} />
+            <Text style={[styles.photoAddText, { color: colors.primary }]}>Add Photo</Text>
+          </Pressable>
+        )}
+
         <View style={[styles.heroCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={[styles.typeTag, { backgroundColor: colors.secondary }]}>
             <Text style={[styles.typeTagText, { color: colors.mutedForeground }]}>
@@ -100,12 +206,20 @@ export default function PieceDetailScreen() {
             <Text style={[styles.heroBrand, { color: colors.mutedForeground }]}>{piece.brand}</Text>
           ) : null}
           {piece.material ? (
-            <Text style={[styles.heroMaterial, { color: colors.gold }]}>{piece.material}</Text>
+            <Text style={[styles.heroMaterial, { color: colors.primary }]}>{piece.material}</Text>
           ) : null}
         </View>
 
         {warrantyInfo ? (
-          <View style={[styles.warrantyBanner, { backgroundColor: warrantyInfo.color + "15", borderColor: warrantyInfo.color + "40" }]}>
+          <View
+            style={[
+              styles.warrantyBanner,
+              {
+                backgroundColor: warrantyInfo.color + "15",
+                borderColor: warrantyInfo.color + "40",
+              },
+            ]}
+          >
             <Feather name="shield" size={16} color={warrantyInfo.color} />
             <Text style={[styles.warrantyBannerText, { color: warrantyInfo.color }]}>
               {warrantyInfo.text}
@@ -161,7 +275,12 @@ function SectionCard({
   return (
     <View style={styles.section}>
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>{label}</Text>
-      <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View
+        style={[
+          styles.sectionCard,
+          { backgroundColor: colors.card, borderColor: colors.border },
+        ]}
+      >
         {children}
       </View>
     </View>
@@ -190,6 +309,40 @@ const styles = StyleSheet.create({
   content: { padding: 20, gap: 16 },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
   notFound: { fontSize: 16, fontFamily: "Inter_400Regular" },
+  heroImageWrap: {
+    borderRadius: 16,
+    overflow: "hidden",
+    position: "relative",
+  },
+  heroImage: {
+    width: "100%",
+    height: 220,
+    borderRadius: 16,
+  },
+  photoEditChip: {
+    position: "absolute",
+    bottom: 12,
+    right: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  photoEditText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
+  photoAdd: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    height: 64,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+  },
+  photoAddText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
   heroCard: {
     padding: 20,
     borderRadius: 16,
@@ -203,7 +356,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 4,
   },
-  typeTagText: { fontSize: 11, fontFamily: "Inter_600SemiBold", textTransform: "uppercase", letterSpacing: 0.5 },
+  typeTagText: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
   heroName: { fontSize: 22, fontFamily: "Inter_700Bold", letterSpacing: -0.3 },
   heroBrand: { fontSize: 15, fontFamily: "Inter_400Regular" },
   heroMaterial: { fontSize: 14, fontFamily: "Inter_500Medium" },
