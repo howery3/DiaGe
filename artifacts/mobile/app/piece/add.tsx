@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
-import { router, Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
   ActionSheetIOS,
@@ -62,6 +62,7 @@ export default function AddPieceScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { addPiece } = useDiGe();
+  const { retailer: prefillRetailer } = useLocalSearchParams<{ retailer?: string }>();
 
   const [name, setName] = useState("");
   const [type, setType] = useState<JewelryType>("ring");
@@ -69,7 +70,9 @@ export default function AddPieceScreen() {
   const [material, setMaterial] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [purchasePrice, setPurchasePrice] = useState("");
-  const [retailer, setRetailer] = useState("");
+  const [retailer, setRetailer] = useState(
+    prefillRetailer ? decodeURIComponent(prefillRetailer) : ""
+  );
   const [serialNumber, setSerialNumber] = useState("");
   const [warrantyExpiry, setWarrantyExpiry] = useState("");
   const [warrantyDetails, setWarrantyDetails] = useState("");
@@ -143,7 +146,7 @@ export default function AddPieceScreen() {
     <>
       <Stack.Screen
         options={{
-          title: "Add Piece",
+          title: retailer ? `Add to ${retailer}` : "Add Piece",
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.foreground,
           headerTitleStyle: { fontFamily: "Inter_600SemiBold" },
@@ -156,10 +159,7 @@ export default function AddPieceScreen() {
       />
       <KeyboardAwareScrollView
         style={{ backgroundColor: colors.background }}
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: insets.bottom + 40 },
-        ]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         keyboardShouldPersistTaps="handled"
         bottomOffset={20}
         showsVerticalScrollIndicator={false}
@@ -263,7 +263,7 @@ export default function AddPieceScreen() {
         <Field label="Retailer" colors={colors}>
           <TextInput
             style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="e.g. Tiffany & Co. NYC"
+            placeholder="e.g. Zales, Kay, Helzberg..."
             placeholderTextColor={colors.mutedForeground}
             value={retailer}
             onChangeText={setRetailer}
@@ -343,7 +343,7 @@ export default function AddPieceScreen() {
         <Field label="Receipts, Appraisals, Care Instructions" colors={colors}>
           <TextInput
             style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="Paste details from receipts, appraisals, care instructions, or any other notes about this piece..."
+            placeholder="Paste details from receipts, appraisals, care instructions, or any other notes..."
             placeholderTextColor={colors.mutedForeground}
             value={description}
             onChangeText={setDescription}
@@ -357,16 +357,8 @@ export default function AddPieceScreen() {
   );
 }
 
-function SectionLabel({
-  label,
-  colors,
-}: {
-  label: string;
-  colors: ReturnType<typeof useColors>;
-}) {
-  return (
-    <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>{label}</Text>
-  );
+function SectionLabel({ label, colors }: { label: string; colors: ReturnType<typeof useColors> }) {
+  return <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>{label}</Text>;
 }
 
 function Field({

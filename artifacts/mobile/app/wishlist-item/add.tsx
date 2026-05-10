@@ -1,10 +1,9 @@
 import * as Haptics from "expo-haptics";
-import { router, Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -25,11 +24,14 @@ export default function AddWishlistItemScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { addWishlistItem } = useDiGe();
+  const { retailer: prefillRetailer } = useLocalSearchParams<{ retailer?: string }>();
 
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [type, setType] = useState("");
-  const [retailer, setRetailer] = useState("");
+  const [retailer, setRetailer] = useState(
+    prefillRetailer ? decodeURIComponent(prefillRetailer) : ""
+  );
   const [retailerUrl, setRetailerUrl] = useState("");
   const [estimatedPrice, setEstimatedPrice] = useState("");
   const [priority, setPriority] = useState<WishlistPriority>("medium");
@@ -58,7 +60,7 @@ export default function AddWishlistItemScreen() {
     <>
       <Stack.Screen
         options={{
-          title: "Add to Wishlist",
+          title: retailer ? `Wishlist — ${retailer}` : "Add to Wishlist",
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.foreground,
           headerTitleStyle: { fontFamily: "Inter_600SemiBold" },
@@ -113,7 +115,7 @@ export default function AddWishlistItemScreen() {
         <Field label="Retailer Name" colors={colors}>
           <TextInput
             style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="e.g. Cartier Fifth Avenue"
+            placeholder="e.g. Zales, Kay, Helzberg..."
             placeholderTextColor={colors.mutedForeground}
             value={retailer}
             onChangeText={setRetailer}
@@ -191,16 +193,8 @@ export default function AddWishlistItemScreen() {
   );
 }
 
-function SectionLabel({
-  label,
-  colors,
-}: {
-  label: string;
-  colors: ReturnType<typeof useColors>;
-}) {
-  return (
-    <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>{label}</Text>
-  );
+function SectionLabel({ label, colors }: { label: string; colors: ReturnType<typeof useColors> }) {
+  return <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>{label}</Text>;
 }
 
 function Field({

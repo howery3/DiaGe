@@ -13,12 +13,8 @@ function NativeTabLayout() {
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="index">
-        <Icon sf={{ default: "archivebox", selected: "archivebox.fill" }} />
-        <Label>Vault</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="wishlist">
-        <Icon sf={{ default: "heart", selected: "heart.fill" }} />
-        <Label>Wishlist</Label>
+        <Icon sf={{ default: "building.2", selected: "building.2.fill" }} />
+        <Label>Retailers</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="reminders">
         <Icon sf={{ default: "bell", selected: "bell.fill" }} />
@@ -67,24 +63,12 @@ function ClassicTabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Vault",
+          title: "Retailers",
           tabBarIcon: ({ color }) =>
             isIOS ? (
-              <SymbolView name="archivebox" tintColor={color} size={24} />
+              <SymbolView name="building.2" tintColor={color} size={24} />
             ) : (
-              <Feather name="archive" size={22} color={color} />
-            ),
-        }}
-      />
-      <Tabs.Screen
-        name="wishlist"
-        options={{
-          title: "Wishlist",
-          tabBarIcon: ({ color }) =>
-            isIOS ? (
-              <SymbolView name="heart" tintColor={color} size={24} />
-            ) : (
-              <Feather name="heart" size={22} color={color} />
+              <Feather name="shopping-bag" size={22} color={color} />
             ),
         }}
       />
@@ -101,6 +85,7 @@ function ClassicTabLayout() {
             ),
         }}
       />
+      <Tabs.Screen name="wishlist" options={{ href: null }} />
     </Tabs>
   );
 }

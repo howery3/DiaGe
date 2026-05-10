@@ -26,30 +26,23 @@ function RootLayoutNav() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="piece/add"
-        options={{
-          presentation: "modal",
-          headerShown: true,
-        }}
+        options={{ presentation: "modal", headerShown: true }}
       />
       <Stack.Screen
         name="piece/[id]"
-        options={{
-          headerShown: true,
-        }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="wishlist-item/add"
-        options={{
-          presentation: "modal",
-          headerShown: true,
-        }}
+        options={{ presentation: "modal", headerShown: true }}
       />
       <Stack.Screen
         name="reminder/add"
-        options={{
-          presentation: "modal",
-          headerShown: true,
-        }}
+        options={{ presentation: "modal", headerShown: true }}
+      />
+      <Stack.Screen
+        name="retailer/[name]"
+        options={{ headerShown: true }}
       />
     </Stack>
   );
