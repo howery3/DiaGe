@@ -30,37 +30,22 @@ const TYPES: { value: JewelryType; label: string }[] = [
 ];
 
 const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: string }[] = [
-  { value: "lifetime", label: "Lifetime Warranty", desc: "No expiry" },
+  { value: "lifetime", label: "Lifetime", desc: "No expiry" },
   { value: "dated", label: "Set Date", desc: "Has expiry" },
   { value: "none", label: "None", desc: "No coverage" },
 ];
 
 async function pickFromLibrary(): Promise<string | null> {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== "granted") {
-    Alert.alert("Permission needed", "Allow photo library access to attach images.");
-    return null;
-  }
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ["images"],
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 0.85,
-  });
+  if (status !== "granted") { Alert.alert("Permission needed", "Allow photo library access."); return null; }
+  const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], allowsEditing: true, aspect: [4, 3], quality: 0.85 });
   return result.canceled ? null : result.assets[0].uri;
 }
 
 async function pickFromCamera(): Promise<string | null> {
   const { status } = await ImagePicker.requestCameraPermissionsAsync();
-  if (status !== "granted") {
-    Alert.alert("Permission needed", "Allow camera access to take photos.");
-    return null;
-  }
-  const result = await ImagePicker.launchCameraAsync({
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 0.85,
-  });
+  if (status !== "granted") { Alert.alert("Permission needed", "Allow camera access."); return null; }
+  const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, aspect: [4, 3], quality: 0.85 });
   return result.canceled ? null : result.assets[0].uri;
 }
 
@@ -76,15 +61,15 @@ export default function AddPieceScreen() {
   const [material, setMaterial] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [purchasePrice, setPurchasePrice] = useState("");
-  const [retailer, setRetailer] = useState(
-    prefillRetailer ? decodeURIComponent(prefillRetailer) : ""
-  );
+  const [retailer, setRetailer] = useState(prefillRetailer ? decodeURIComponent(prefillRetailer) : "");
   const [serialNumber, setSerialNumber] = useState("");
 
   const [goldWarrantyType, setGoldWarrantyType] = useState<GoldWarrantyType>("none");
+  const [goldWarrantyNumber, setGoldWarrantyNumber] = useState("");
   const [goldWarrantyExpiry, setGoldWarrantyExpiry] = useState("");
   const [goldWarrantyDetails, setGoldWarrantyDetails] = useState("");
 
+  const [diamondBondNumber, setDiamondBondNumber] = useState("");
   const [diamondBondExpiry, setDiamondBondExpiry] = useState("");
   const [diamondBondDetails, setDiamondBondDetails] = useState("");
 
@@ -93,27 +78,17 @@ export default function AddPieceScreen() {
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
 
   function handleSave() {
-    if (!name.trim()) {
-      Alert.alert("Required", "Please enter a name for this piece.");
-      return;
-    }
+    if (!name.trim()) { Alert.alert("Required", "Please enter a name for this piece."); return; }
     addPiece({
-      name: name.trim(),
-      type,
-      brand: brand.trim(),
-      material: material.trim(),
-      purchaseDate,
-      purchasePrice: purchasePrice.trim(),
-      retailer: retailer.trim(),
+      name: name.trim(), type, brand: brand.trim(), material: material.trim(),
+      purchaseDate, purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
       serialNumber: serialNumber.trim(),
-      goldWarrantyType,
-      goldWarrantyExpiry,
-      goldWarrantyDetails: goldWarrantyDetails.trim(),
-      diamondBondExpiry,
-      diamondBondDetails: diamondBondDetails.trim(),
-      description: description.trim(),
-      lastInspection,
-      imageUri,
+      goldWarrantyType, goldWarrantyNumber: goldWarrantyNumber.trim(),
+      goldWarrantyExpiry, goldWarrantyDetails: goldWarrantyDetails.trim(),
+      diamondBondNumber: diamondBondNumber.trim(),
+      diamondBondExpiry, diamondBondDetails: diamondBondDetails.trim(),
+      repairHistory: [],
+      description: description.trim(), lastInspection, imageUri,
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
@@ -159,6 +134,7 @@ export default function AddPieceScreen() {
         bottomOffset={20}
         showsVerticalScrollIndicator={false}
       >
+        {/* Photo */}
         <View style={styles.photoSection}>
           {imageUri ? (
             <View style={styles.photoPreviewWrap}>
@@ -185,10 +161,10 @@ export default function AddPieceScreen() {
           <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Engagement Ring" placeholderTextColor={colors.mutedForeground} value={name} onChangeText={setName} />
         </Field>
         <Field label="Type" colors={colors}>
-          <View style={styles.typeRow}>
+          <View style={styles.pillRow}>
             {TYPES.map((t) => (
-              <Pressable key={t.value} onPress={() => setType(t.value)} style={[styles.typePill, { backgroundColor: type === t.value ? colors.primary : colors.secondary, borderColor: type === t.value ? colors.primary : colors.border }]}>
-                <Text style={[styles.typePillText, { color: type === t.value ? colors.primaryForeground : colors.foreground }]}>{t.label}</Text>
+              <Pressable key={t.value} onPress={() => setType(t.value)} style={[styles.pill, { backgroundColor: type === t.value ? colors.primary : colors.secondary, borderColor: type === t.value ? colors.primary : colors.border }]}>
+                <Text style={[styles.pillText, { color: type === t.value ? colors.primaryForeground : colors.foreground }]}>{t.label}</Text>
               </Pressable>
             ))}
           </View>
@@ -216,6 +192,7 @@ export default function AddPieceScreen() {
           <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="Optional" placeholderTextColor={colors.mutedForeground} value={serialNumber} onChangeText={setSerialNumber} />
         </Field>
 
+        {/* Gold / Lifetime Warranty */}
         <View style={[styles.warrantyBlock, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.warrantyHeader}>
             <View style={[styles.warrantyIconWrap, { backgroundColor: "#D4AA3A18" }]}>
@@ -229,37 +206,32 @@ export default function AddPieceScreen() {
 
           <View style={styles.optionRow}>
             {GOLD_WARRANTY_OPTIONS.map((opt) => (
-              <Pressable
-                key={opt.value}
-                onPress={() => setGoldWarrantyType(opt.value)}
-                style={[
-                  styles.optionPill,
-                  {
-                    backgroundColor: goldWarrantyType === opt.value ? colors.primary + "18" : colors.secondary,
-                    borderColor: goldWarrantyType === opt.value ? colors.primary : colors.border,
-                    borderWidth: 1.5,
-                  },
-                ]}
-              >
+              <Pressable key={opt.value} onPress={() => setGoldWarrantyType(opt.value)}
+                style={[styles.optionPill, { backgroundColor: goldWarrantyType === opt.value ? colors.primary + "18" : colors.secondary, borderColor: goldWarrantyType === opt.value ? colors.primary : colors.border, borderWidth: 1.5 }]}>
                 <Text style={[styles.optionPillLabel, { color: goldWarrantyType === opt.value ? colors.primary : colors.foreground }]}>{opt.label}</Text>
                 <Text style={[styles.optionPillDesc, { color: colors.mutedForeground }]}>{opt.desc}</Text>
               </Pressable>
             ))}
           </View>
 
-          {goldWarrantyType === "dated" ? (
-            <Field label="Expiry Date" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
-              <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={goldWarrantyExpiry} onChangeText={setGoldWarrantyExpiry} />
-            </Field>
-          ) : null}
-
           {goldWarrantyType !== "none" ? (
-            <Field label="Details (retailer, terms, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
-              <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Coverage info, inspection schedule, contact..." placeholderTextColor={colors.mutedForeground} value={goldWarrantyDetails} onChangeText={setGoldWarrantyDetails} multiline numberOfLines={2} textAlignVertical="top" />
-            </Field>
+            <>
+              <Field label="Warranty Number" colors={colors} style={{ marginTop: 12, marginBottom: 0 }}>
+                <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. LW-2024-001234" placeholderTextColor={colors.mutedForeground} value={goldWarrantyNumber} onChangeText={setGoldWarrantyNumber} autoCapitalize="characters" />
+              </Field>
+              {goldWarrantyType === "dated" ? (
+                <Field label="Expiry Date" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
+                  <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={goldWarrantyExpiry} onChangeText={setGoldWarrantyExpiry} />
+                </Field>
+              ) : null}
+              <Field label="Details (retailer, terms, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
+                <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Coverage info, inspection schedule, contact..." placeholderTextColor={colors.mutedForeground} value={goldWarrantyDetails} onChangeText={setGoldWarrantyDetails} multiline numberOfLines={2} textAlignVertical="top" />
+              </Field>
+            </>
           ) : null}
         </View>
 
+        {/* Diamond Bond */}
         <View style={[styles.warrantyBlock, { backgroundColor: colors.card, borderColor: colors.border, marginTop: 10 }]}>
           <View style={styles.warrantyHeader}>
             <View style={[styles.warrantyIconWrap, { backgroundColor: colors.primary + "18" }]}>
@@ -271,13 +243,15 @@ export default function AddPieceScreen() {
             </View>
           </View>
 
+          <Field label="Bond Number" colors={colors} style={{ marginTop: 12, marginBottom: 0 }}>
+            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. DB-2024-567890" placeholderTextColor={colors.mutedForeground} value={diamondBondNumber} onChangeText={setDiamondBondNumber} autoCapitalize="characters" />
+          </Field>
           <Field label="Bond Expiry Date (leave blank if no bond)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
             <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={diamondBondExpiry} onChangeText={setDiamondBondExpiry} />
           </Field>
-
-          {diamondBondExpiry ? (
-            <Field label="Bond Details (retailer, terms, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
-              <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Bond number, coverage terms, what's included..." placeholderTextColor={colors.mutedForeground} value={diamondBondDetails} onChangeText={setDiamondBondDetails} multiline numberOfLines={2} textAlignVertical="top" />
+          {diamondBondExpiry || diamondBondNumber ? (
+            <Field label="Bond Details (terms, coverage, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
+              <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Bond coverage terms, what's included, claim process..." placeholderTextColor={colors.mutedForeground} value={diamondBondDetails} onChangeText={setDiamondBondDetails} multiline numberOfLines={2} textAlignVertical="top" />
             </Field>
           ) : null}
         </View>
@@ -297,7 +271,6 @@ export default function AddPieceScreen() {
 function SectionLabel({ label, colors }: { label: string; colors: ReturnType<typeof useColors> }) {
   return <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>{label}</Text>;
 }
-
 function Field({ label, children, colors, style }: { label: string; children: React.ReactNode; colors: ReturnType<typeof useColors>; style?: object }) {
   return (
     <View style={[styles.field, style]}>
@@ -324,9 +297,9 @@ const styles = StyleSheet.create({
   fieldLabel: { fontSize: 12, fontFamily: "Inter_500Medium", marginBottom: 6 },
   input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11, fontSize: 14, fontFamily: "Inter_400Regular" },
   textarea: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11, fontSize: 14, fontFamily: "Inter_400Regular", minHeight: 72 },
-  typeRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  typePill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1 },
-  typePillText: { fontSize: 13, fontFamily: "Inter_500Medium" },
+  pillRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  pill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1 },
+  pillText: { fontSize: 13, fontFamily: "Inter_500Medium" },
   row: { flexDirection: "row", gap: 12 },
   warrantyBlock: { borderRadius: 16, borderWidth: 1, padding: 16, marginTop: 20 },
   warrantyHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 },

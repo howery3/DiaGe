@@ -15,14 +15,14 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useDiGe } from "@/context/DiGeContext";
+import { useDiGe, type RepairEntry } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
 function formatDate(iso: string): string {
   if (!iso) return "—";
   const d = new Date(iso);
   if (isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function daysStatus(expiry: string): { text: string; color: string } | null {
@@ -49,11 +49,24 @@ async function pickFromCamera(): Promise<string | null> {
   return result.canceled ? null : result.assets[0].uri;
 }
 
+const REPAIR_TYPE_COLORS: Record<string, string> = {
+  "Resize": "#7C3AED",
+  "Stone Replacement": "#0EA5E9",
+  "Prong Repair": "#F59E0B",
+  "Setting Repair": "#F59E0B",
+  "Cleaning & Polish": "#10B981",
+  "Chain Repair": "#8B5CF6",
+  "Clasp Repair": "#6366F1",
+  "Re-dipping / Rhodium": "#EC4899",
+  "Engraving": "#14B8A6",
+  "Other": "#78716C",
+};
+
 export default function PieceDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getPiece, deletePiece, updatePiece } = useDiGe();
+  const { getPiece, deletePiece, updatePiece, deleteRepair } = useDiGe();
   const piece = getPiece(id ?? "");
 
   if (!piece) {
@@ -67,18 +80,29 @@ export default function PieceDetailScreen() {
     );
   }
 
-  const goldStatus = piece.goldWarrantyType === "lifetime"
-    ? { text: "Lifetime Warranty — no expiry", color: "#15803D" }
-    : piece.goldWarrantyType === "dated"
-    ? daysStatus(piece.goldWarrantyExpiry)
-    : null;
+  const goldStatus =
+    piece.goldWarrantyType === "lifetime"
+      ? { text: "Lifetime — no expiry", color: "#15803D" }
+      : piece.goldWarrantyType === "dated"
+      ? daysStatus(piece.goldWarrantyExpiry)
+      : null;
 
   const diamondStatus = daysStatus(piece.diamondBondExpiry);
+  const repairs = (piece.repairHistory ?? []).slice().sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
   function handleDelete() {
     Alert.alert("Delete Piece", `Remove "${piece!.name}" from your vault?`, [
       { text: "Cancel", style: "cancel" },
       { text: "Delete", style: "destructive", onPress: () => { Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning); deletePiece(piece!.id); router.back(); } },
+    ]);
+  }
+
+  function handleDeleteRepair(repair: RepairEntry) {
+    Alert.alert("Delete Repair", `Remove this ${repair.repairType} entry?`, [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: () => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); deleteRepair(piece!.id, repair.id); } },
     ]);
   }
 
@@ -123,6 +147,7 @@ export default function PieceDetailScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
       >
+        {/* Photo */}
         {piece.imageUri ? (
           <Pressable onPress={handleChangePhoto} style={styles.heroImageWrap}>
             <Image source={{ uri: piece.imageUri }} style={styles.heroImage} resizeMode="cover" />
@@ -138,6 +163,7 @@ export default function PieceDetailScreen() {
           </Pressable>
         )}
 
+        {/* Hero */}
         <View style={[styles.heroCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={[styles.typeTag, { backgroundColor: colors.secondary }]}>
             <Text style={[styles.typeTagText, { color: colors.mutedForeground }]}>
@@ -149,8 +175,10 @@ export default function PieceDetailScreen() {
           {piece.material ? <Text style={[styles.heroMaterial, { color: colors.primary }]}>{piece.material}</Text> : null}
         </View>
 
+        {/* Warranties side by side */}
         <View style={styles.warrantiesRow}>
-          <View style={[styles.warrantyCard, { backgroundColor: colors.card, borderColor: colors.border, flex: 1 }]}>
+          {/* Gold / Lifetime */}
+          <View style={[styles.warrantyCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.warrantyCardHeader}>
               <View style={[styles.warrantyCardIcon, { backgroundColor: "#D4AA3A18" }]}>
                 <Feather name="shield" size={14} color="#D4AA3A" />
@@ -158,30 +186,38 @@ export default function PieceDetailScreen() {
               <Text style={[styles.warrantyCardTitle, { color: colors.foreground }]}>Lifetime Warranty</Text>
             </View>
             <Text style={[styles.warrantyCardSub, { color: colors.mutedForeground }]}>Gold / Metal</Text>
+
             {piece.goldWarrantyType === "none" || !piece.goldWarrantyType ? (
-              <Text style={[styles.warrantyCardStatus, { color: colors.mutedForeground }]}>Not set</Text>
-            ) : piece.goldWarrantyType === "lifetime" ? (
-              <View style={[styles.statusPill, { backgroundColor: "#15803D18" }]}>
-                <Text style={[styles.statusPillText, { color: "#15803D" }]}>Lifetime ∞</Text>
-              </View>
-            ) : goldStatus ? (
-              <View style={[styles.statusPill, { backgroundColor: goldStatus.color + "18" }]}>
-                <Text style={[styles.statusPillText, { color: goldStatus.color }]}>{goldStatus.text}</Text>
-              </View>
-            ) : null}
-            {piece.goldWarrantyType === "dated" && piece.goldWarrantyExpiry ? (
-              <Text style={[styles.warrantyDate, { color: colors.mutedForeground }]}>
-                Exp. {formatDate(piece.goldWarrantyExpiry)}
-              </Text>
-            ) : null}
-            {piece.goldWarrantyDetails ? (
-              <Text style={[styles.warrantyDetails, { color: colors.mutedForeground }]} numberOfLines={3}>
-                {piece.goldWarrantyDetails}
-              </Text>
-            ) : null}
+              <Text style={[styles.notSetText, { color: colors.mutedForeground }]}>Not set</Text>
+            ) : (
+              <>
+                {piece.goldWarrantyType === "lifetime" ? (
+                  <View style={[styles.statusPill, { backgroundColor: "#15803D18" }]}>
+                    <Text style={[styles.statusPillText, { color: "#15803D" }]}>Lifetime ∞</Text>
+                  </View>
+                ) : goldStatus ? (
+                  <View style={[styles.statusPill, { backgroundColor: goldStatus.color + "18" }]}>
+                    <Text style={[styles.statusPillText, { color: goldStatus.color }]}>{goldStatus.text}</Text>
+                  </View>
+                ) : null}
+                {piece.goldWarrantyNumber ? (
+                  <View style={[styles.warrantyNumberChip, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
+                    <Feather name="hash" size={11} color={colors.mutedForeground} />
+                    <Text style={[styles.warrantyNumberText, { color: colors.foreground }]}>{piece.goldWarrantyNumber}</Text>
+                  </View>
+                ) : null}
+                {piece.goldWarrantyType === "dated" && piece.goldWarrantyExpiry ? (
+                  <Text style={[styles.expiryText, { color: colors.mutedForeground }]}>Exp. {formatDate(piece.goldWarrantyExpiry)}</Text>
+                ) : null}
+                {piece.goldWarrantyDetails ? (
+                  <Text style={[styles.detailsText, { color: colors.mutedForeground }]} numberOfLines={4}>{piece.goldWarrantyDetails}</Text>
+                ) : null}
+              </>
+            )}
           </View>
 
-          <View style={[styles.warrantyCard, { backgroundColor: colors.card, borderColor: colors.border, flex: 1 }]}>
+          {/* Diamond Bond */}
+          <View style={[styles.warrantyCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.warrantyCardHeader}>
               <View style={[styles.warrantyCardIcon, { backgroundColor: colors.primary + "18" }]}>
                 <Feather name="hexagon" size={14} color={colors.primary} />
@@ -189,26 +225,34 @@ export default function PieceDetailScreen() {
               <Text style={[styles.warrantyCardTitle, { color: colors.foreground }]}>Diamond Bond</Text>
             </View>
             <Text style={[styles.warrantyCardSub, { color: colors.mutedForeground }]}>Stone / Diamond</Text>
-            {!piece.diamondBondExpiry ? (
-              <Text style={[styles.warrantyCardStatus, { color: colors.mutedForeground }]}>Not set</Text>
-            ) : diamondStatus ? (
-              <View style={[styles.statusPill, { backgroundColor: diamondStatus.color + "18" }]}>
-                <Text style={[styles.statusPillText, { color: diamondStatus.color }]}>{diamondStatus.text}</Text>
-              </View>
-            ) : null}
-            {piece.diamondBondExpiry ? (
-              <Text style={[styles.warrantyDate, { color: colors.mutedForeground }]}>
-                Exp. {formatDate(piece.diamondBondExpiry)}
-              </Text>
-            ) : null}
-            {piece.diamondBondDetails ? (
-              <Text style={[styles.warrantyDetails, { color: colors.mutedForeground }]} numberOfLines={3}>
-                {piece.diamondBondDetails}
-              </Text>
-            ) : null}
+
+            {!piece.diamondBondExpiry && !piece.diamondBondNumber ? (
+              <Text style={[styles.notSetText, { color: colors.mutedForeground }]}>Not set</Text>
+            ) : (
+              <>
+                {diamondStatus ? (
+                  <View style={[styles.statusPill, { backgroundColor: diamondStatus.color + "18" }]}>
+                    <Text style={[styles.statusPillText, { color: diamondStatus.color }]}>{diamondStatus.text}</Text>
+                  </View>
+                ) : null}
+                {piece.diamondBondNumber ? (
+                  <View style={[styles.warrantyNumberChip, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
+                    <Feather name="hash" size={11} color={colors.mutedForeground} />
+                    <Text style={[styles.warrantyNumberText, { color: colors.foreground }]}>{piece.diamondBondNumber}</Text>
+                  </View>
+                ) : null}
+                {piece.diamondBondExpiry ? (
+                  <Text style={[styles.expiryText, { color: colors.mutedForeground }]}>Exp. {formatDate(piece.diamondBondExpiry)}</Text>
+                ) : null}
+                {piece.diamondBondDetails ? (
+                  <Text style={[styles.detailsText, { color: colors.mutedForeground }]} numberOfLines={4}>{piece.diamondBondDetails}</Text>
+                ) : null}
+              </>
+            )}
           </View>
         </View>
 
+        {/* Purchase Details */}
         <SectionCard label="Purchase Details" colors={colors}>
           <Row label="Retailer" value={piece.retailer} colors={colors} />
           <Row label="Purchase Date" value={formatDate(piece.purchaseDate)} colors={colors} />
@@ -216,15 +260,75 @@ export default function PieceDetailScreen() {
           <Row label="Serial / Certificate" value={piece.serialNumber} colors={colors} />
         </SectionCard>
 
+        {/* Inspection */}
         <SectionCard label="Inspection" colors={colors}>
           <Row label="Last Inspection" value={formatDate(piece.lastInspection)} colors={colors} />
         </SectionCard>
 
+        {/* Documents */}
         {piece.description ? (
           <SectionCard label="Documents & Notes" colors={colors}>
-            <Text style={[styles.textBlockContent, { color: colors.foreground }]}>{piece.description}</Text>
+            <Text style={[styles.notesText, { color: colors.foreground }]}>{piece.description}</Text>
           </SectionCard>
         ) : null}
+
+        {/* Repair History */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeaderRow}>
+            <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Repair History</Text>
+            <Pressable
+              onPress={() =>
+                router.push(
+                  `/piece/add-repair?pieceId=${piece.id}&pieceName=${encodeURIComponent(piece.name)}`
+                )
+              }
+              style={[styles.addRepairBtn, { backgroundColor: colors.primary + "15", borderColor: colors.primary + "40" }]}
+            >
+              <Feather name="plus" size={13} color={colors.primary} />
+              <Text style={[styles.addRepairText, { color: colors.primary }]}>Add Repair</Text>
+            </Pressable>
+          </View>
+
+          {repairs.length === 0 ? (
+            <View style={[styles.emptyRepairs, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Feather name="tool" size={20} color={colors.mutedForeground} />
+              <Text style={[styles.emptyRepairsText, { color: colors.mutedForeground }]}>
+                No repairs logged yet
+              </Text>
+            </View>
+          ) : (
+            repairs.map((repair) => {
+              const typeColor = REPAIR_TYPE_COLORS[repair.repairType] ?? "#78716C";
+              return (
+                <View key={repair.id} style={[styles.repairEntry, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <View style={[styles.repairLeft, { borderColor: typeColor }]}>
+                    <View style={styles.repairTopRow}>
+                      <View style={[styles.repairTypeBadge, { backgroundColor: typeColor + "18" }]}>
+                        <Text style={[styles.repairTypeText, { color: typeColor }]}>{repair.repairType}</Text>
+                      </View>
+                      {repair.cost ? (
+                        <Text style={[styles.repairCost, { color: colors.foreground }]}>${repair.cost}</Text>
+                      ) : (
+                        <View style={[styles.coveredBadge, { backgroundColor: "#15803D18" }]}>
+                          <Text style={[styles.coveredText, { color: "#15803D" }]}>Under Warranty</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={[styles.repairDate, { color: colors.mutedForeground }]}>
+                      {formatDate(repair.date)}{repair.retailer ? ` · ${repair.retailer}` : ""}
+                    </Text>
+                    {repair.description ? (
+                      <Text style={[styles.repairDesc, { color: colors.foreground }]}>{repair.description}</Text>
+                    ) : null}
+                  </View>
+                  <Pressable onPress={() => handleDeleteRepair(repair)} hitSlop={8} style={styles.repairDelete}>
+                    <Feather name="trash-2" size={15} color={colors.mutedForeground} />
+                  </Pressable>
+                </View>
+              );
+            })
+          )}
+        </View>
       </ScrollView>
     </>
   );
@@ -266,21 +370,39 @@ const styles = StyleSheet.create({
   heroBrand: { fontSize: 15, fontFamily: "Inter_400Regular" },
   heroMaterial: { fontSize: 14, fontFamily: "Inter_500Medium" },
   warrantiesRow: { flexDirection: "row", gap: 10 },
-  warrantyCard: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 6 },
+  warrantyCard: { flex: 1, borderRadius: 16, borderWidth: 1, padding: 14, gap: 7 },
   warrantyCardHeader: { flexDirection: "row", alignItems: "center", gap: 8 },
   warrantyCardIcon: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
-  warrantyCardTitle: { fontSize: 13, fontFamily: "Inter_600SemiBold", flex: 1 },
+  warrantyCardTitle: { fontSize: 12, fontFamily: "Inter_600SemiBold", flex: 1 },
   warrantyCardSub: { fontSize: 11, fontFamily: "Inter_400Regular" },
-  warrantyCardStatus: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  notSetText: { fontSize: 12, fontFamily: "Inter_400Regular", fontStyle: "italic" },
   statusPill: { alignSelf: "flex-start", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   statusPillText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
-  warrantyDate: { fontSize: 11, fontFamily: "Inter_400Regular" },
-  warrantyDetails: { fontSize: 11, fontFamily: "Inter_400Regular", lineHeight: 15 },
+  warrantyNumberChip: { flexDirection: "row", alignItems: "center", gap: 4, alignSelf: "flex-start", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, borderWidth: 1 },
+  warrantyNumberText: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 0.3 },
+  expiryText: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  detailsText: { fontSize: 11, fontFamily: "Inter_400Regular", lineHeight: 15 },
   section: { gap: 8 },
+  sectionHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   sectionLabel: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 0.8, textTransform: "uppercase" },
+  addRepairBtn: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
+  addRepairText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
   sectionCard: { borderRadius: 14, borderWidth: 1, padding: 16, gap: 12 },
   row: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
   rowLabel: { fontSize: 13, fontFamily: "Inter_400Regular", flex: 1 },
   rowValue: { fontSize: 13, fontFamily: "Inter_500Medium", flex: 1, textAlign: "right" },
-  textBlockContent: { fontSize: 14, fontFamily: "Inter_400Regular", lineHeight: 20 },
+  notesText: { fontSize: 14, fontFamily: "Inter_400Regular", lineHeight: 20 },
+  emptyRepairs: { flexDirection: "row", alignItems: "center", gap: 10, padding: 16, borderRadius: 14, borderWidth: 1 },
+  emptyRepairsText: { fontSize: 14, fontFamily: "Inter_400Regular" },
+  repairEntry: { borderRadius: 14, borderWidth: 1, padding: 14, flexDirection: "row", gap: 10 },
+  repairLeft: { flex: 1, gap: 6, borderLeftWidth: 3, paddingLeft: 10 },
+  repairTopRow: { flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" },
+  repairTypeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
+  repairTypeText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
+  repairCost: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  coveredBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
+  coveredText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
+  repairDate: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  repairDesc: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 18 },
+  repairDelete: { padding: 4 },
 });

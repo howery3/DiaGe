@@ -18,6 +18,16 @@ export type JewelryType =
 
 export type GoldWarrantyType = "lifetime" | "dated" | "none";
 
+export interface RepairEntry {
+  id: string;
+  date: string;
+  repairType: string;
+  retailer: string;
+  cost: string;
+  description: string;
+  createdAt: string;
+}
+
 export interface JewelryPiece {
   id: string;
   name: string;
@@ -29,10 +39,13 @@ export interface JewelryPiece {
   retailer: string;
   serialNumber: string;
   goldWarrantyType: GoldWarrantyType;
+  goldWarrantyNumber: string;
   goldWarrantyExpiry: string;
   goldWarrantyDetails: string;
+  diamondBondNumber: string;
   diamondBondExpiry: string;
   diamondBondDetails: string;
+  repairHistory: RepairEntry[];
   description: string;
   lastInspection: string;
   imageUri?: string;
@@ -77,6 +90,8 @@ interface DiGeContextType {
   updatePiece: (id: string, updates: Partial<JewelryPiece>) => void;
   deletePiece: (id: string) => void;
   getPiece: (id: string) => JewelryPiece | undefined;
+  addRepair: (pieceId: string, repair: Omit<RepairEntry, "id" | "createdAt">) => void;
+  deleteRepair: (pieceId: string, repairId: string) => void;
   addWishlistItem: (item: Omit<WishlistItem, "id" | "createdAt">) => void;
   updateWishlistItem: (id: string, updates: Partial<WishlistItem>) => void;
   deleteWishlistItem: (id: string) => void;
@@ -152,6 +167,34 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
 
   const getPiece = useCallback((id: string) => pieces.find((p) => p.id === id), [pieces]);
 
+  const addRepair = useCallback(
+    (pieceId: string, repair: Omit<RepairEntry, "id" | "createdAt">) => {
+      const entry: RepairEntry = {
+        ...repair,
+        id: generateId(),
+        createdAt: new Date().toISOString(),
+      };
+      setPieces((prev) =>
+        prev.map((p) =>
+          p.id === pieceId
+            ? { ...p, repairHistory: [entry, ...(p.repairHistory ?? [])] }
+            : p
+        )
+      );
+    },
+    []
+  );
+
+  const deleteRepair = useCallback((pieceId: string, repairId: string) => {
+    setPieces((prev) =>
+      prev.map((p) =>
+        p.id === pieceId
+          ? { ...p, repairHistory: (p.repairHistory ?? []).filter((r) => r.id !== repairId) }
+          : p
+      )
+    );
+  }, []);
+
   const addWishlistItem = useCallback((item: Omit<WishlistItem, "id" | "createdAt">) => {
     setWishlistItems((prev) => [
       { ...item, id: generateId(), createdAt: new Date().toISOString() },
@@ -225,6 +268,8 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
         updatePiece,
         deletePiece,
         getPiece,
+        addRepair,
+        deleteRepair,
         addWishlistItem,
         updateWishlistItem,
         deleteWishlistItem,
