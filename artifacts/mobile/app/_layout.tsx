@@ -15,8 +15,13 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { DiGeProvider } from "@/context/DiGeContext";
+import {
+  configureNotificationHandler,
+  requestNotificationPermissions,
+} from "@/utils/notifications";
 
 SplashScreen.preventAutoHideAsync();
+configureNotificationHandler();
 
 const queryClient = new QueryClient();
 
@@ -67,6 +72,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
+      requestNotificationPermissions();
     }
   }, [fontsLoaded, fontError]);
 

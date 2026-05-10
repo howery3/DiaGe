@@ -24,7 +24,10 @@
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
-        "CAMERA"
+        "CAMERA",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "SCHEDULE_EXACT_ALARM"
       ]
     },
     "web": {
@@ -44,6 +47,15 @@
         {
           "photosPermission": "DiGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
           "cameraPermission": "DiGe uses your camera to photograph jewelry pieces and paperwork for your vault."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#5B21B6",
+          "sounds": [],
+          "iosDisplayInForeground": true
         }
       ]
     ],

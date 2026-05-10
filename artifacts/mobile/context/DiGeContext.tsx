@@ -6,6 +6,12 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import {
+  cancelNotification,
+  cancelWarrantyNotifications,
+  scheduleReminderNotification,
+  syncWarrantyNotifications,
+} from "@/utils/notifications";
 
 export type JewelryType =
   | "ring"
@@ -160,15 +166,24 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => { if (!loaded) return; AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders)); }, [reminders, loaded]);
 
   const addPiece = useCallback((piece: Omit<JewelryPiece, "id" | "createdAt">) => {
-    setPieces((prev) => [{ ...piece, id: generateId(), createdAt: new Date().toISOString() }, ...prev]);
+    const newPiece: JewelryPiece = { ...piece, id: generateId(), createdAt: new Date().toISOString() };
+    setPieces((prev) => [newPiece, ...prev]);
+    // Schedule warranty expiry notifications
+    void syncWarrantyNotifications(newPiece);
   }, []);
 
   const updatePiece = useCallback((id: string, updates: Partial<JewelryPiece>) => {
-    setPieces((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
+    setPieces((prev) => {
+      const updated = prev.map((p) => (p.id === id ? { ...p, ...updates } : p));
+      const updatedPiece = updated.find((p) => p.id === id);
+      if (updatedPiece) void syncWarrantyNotifications(updatedPiece);
+      return updated;
+    });
   }, []);
 
   const deletePiece = useCallback((id: string) => {
     setPieces((prev) => prev.filter((p) => p.id !== id));
+    void cancelWarrantyNotifications(id);
   }, []);
 
   const getPiece = useCallback((id: string) => pieces.find((p) => p.id === id), [pieces]);
@@ -224,7 +239,18 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addReminder = useCallback((reminder: Omit<InspectionReminder, "id" | "createdAt">) => {
-    setReminders((prev) => [{ ...reminder, id: generateId(), createdAt: new Date().toISOString() }, ...prev]);
+    const id = generateId();
+    const newReminder: InspectionReminder = { ...reminder, id, createdAt: new Date().toISOString() };
+    setReminders((prev) => [newReminder, ...prev]);
+
+    // Schedule notification; store the returned ID back onto the reminder
+    scheduleReminderNotification(newReminder).then((notifId) => {
+      if (notifId) {
+        setReminders((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, notificationId: notifId } : r))
+        );
+      }
+    });
   }, []);
 
   const updateReminder = useCallback((id: string, updates: Partial<InspectionReminder>) => {
@@ -232,20 +258,44 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deleteReminder = useCallback((id: string) => {
-    setReminders((prev) => prev.filter((r) => r.id !== id));
+    setReminders((prev) => {
+      const target = prev.find((r) => r.id === id);
+      if (target?.notificationId) void cancelNotification(target.notificationId);
+      return prev.filter((r) => r.id !== id);
+    });
   }, []);
 
   const completeReminder = useCallback((id: string) => {
     setReminders((prev) =>
       prev.map((r) => {
         if (r.id !== id) return r;
-        const completed = { ...r, isCompleted: true };
+        // Cancel the existing notification
+        if (r.notificationId) void cancelNotification(r.notificationId);
+        const completed = { ...r, isCompleted: true, notificationId: undefined };
+
         if (r.recurrence !== "none") {
           const base = new Date(r.scheduledDate);
           const months = r.recurrence === "6months" ? 6 : r.recurrence === "1year" ? 12 : 24;
           base.setMonth(base.getMonth() + months);
-          const next: InspectionReminder = { ...r, id: generateId(), scheduledDate: base.toISOString(), isCompleted: false, createdAt: new Date().toISOString() };
-          setTimeout(() => { setReminders((prev2) => [next, ...prev2.filter((x) => x.id !== id), completed]); }, 0);
+          const next: InspectionReminder = {
+            ...r,
+            id: generateId(),
+            scheduledDate: base.toISOString(),
+            isCompleted: false,
+            notificationId: undefined,
+            createdAt: new Date().toISOString(),
+          };
+          // Schedule notification for the next occurrence
+          scheduleReminderNotification(next).then((notifId) => {
+            if (notifId) {
+              setReminders((prev2) =>
+                prev2.map((x) => (x.id === next.id ? { ...x, notificationId: notifId } : x))
+              );
+            }
+          });
+          setTimeout(() => {
+            setReminders((prev2) => [next, ...prev2.filter((x) => x.id !== id), completed]);
+          }, 0);
           return completed;
         }
         return completed;
