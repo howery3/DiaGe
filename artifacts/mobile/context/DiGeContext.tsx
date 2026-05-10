@@ -18,6 +18,23 @@ export type JewelryType =
 
 export type GoldWarrantyType = "lifetime" | "dated" | "none";
 
+export type DocumentLabel =
+  | "Receipt"
+  | "Certificate"
+  | "Appraisal"
+  | "Insurance Doc"
+  | "Warranty Card"
+  | "Photo"
+  | "Other";
+
+export interface DocumentAttachment {
+  id: string;
+  uri: string;
+  label: DocumentLabel;
+  caption: string;
+  createdAt: string;
+}
+
 export interface RepairEntry {
   id: string;
   date: string;
@@ -46,6 +63,7 @@ export interface JewelryPiece {
   diamondBondExpiry: string;
   diamondBondDetails: string;
   repairHistory: RepairEntry[];
+  documents: DocumentAttachment[];
   description: string;
   lastInspection: string;
   imageUri?: string;
@@ -92,6 +110,8 @@ interface DiGeContextType {
   getPiece: (id: string) => JewelryPiece | undefined;
   addRepair: (pieceId: string, repair: Omit<RepairEntry, "id" | "createdAt">) => void;
   deleteRepair: (pieceId: string, repairId: string) => void;
+  addDocument: (pieceId: string, doc: Omit<DocumentAttachment, "id" | "createdAt">) => void;
+  deleteDocument: (pieceId: string, docId: string) => void;
   addWishlistItem: (item: Omit<WishlistItem, "id" | "createdAt">) => void;
   updateWishlistItem: (id: string, updates: Partial<WishlistItem>) => void;
   deleteWishlistItem: (id: string) => void;
@@ -135,26 +155,12 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
     load();
   }, []);
 
-  useEffect(() => {
-    if (!loaded) return;
-    AsyncStorage.setItem(PIECES_KEY, JSON.stringify(pieces));
-  }, [pieces, loaded]);
-
-  useEffect(() => {
-    if (!loaded) return;
-    AsyncStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistItems));
-  }, [wishlistItems, loaded]);
-
-  useEffect(() => {
-    if (!loaded) return;
-    AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders));
-  }, [reminders, loaded]);
+  useEffect(() => { if (!loaded) return; AsyncStorage.setItem(PIECES_KEY, JSON.stringify(pieces)); }, [pieces, loaded]);
+  useEffect(() => { if (!loaded) return; AsyncStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistItems)); }, [wishlistItems, loaded]);
+  useEffect(() => { if (!loaded) return; AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders)); }, [reminders, loaded]);
 
   const addPiece = useCallback((piece: Omit<JewelryPiece, "id" | "createdAt">) => {
-    setPieces((prev) => [
-      { ...piece, id: generateId(), createdAt: new Date().toISOString() },
-      ...prev,
-    ]);
+    setPieces((prev) => [{ ...piece, id: generateId(), createdAt: new Date().toISOString() }, ...prev]);
   }, []);
 
   const updatePiece = useCallback((id: string, updates: Partial<JewelryPiece>) => {
@@ -167,23 +173,14 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
 
   const getPiece = useCallback((id: string) => pieces.find((p) => p.id === id), [pieces]);
 
-  const addRepair = useCallback(
-    (pieceId: string, repair: Omit<RepairEntry, "id" | "createdAt">) => {
-      const entry: RepairEntry = {
-        ...repair,
-        id: generateId(),
-        createdAt: new Date().toISOString(),
-      };
-      setPieces((prev) =>
-        prev.map((p) =>
-          p.id === pieceId
-            ? { ...p, repairHistory: [entry, ...(p.repairHistory ?? [])] }
-            : p
-        )
-      );
-    },
-    []
-  );
+  const addRepair = useCallback((pieceId: string, repair: Omit<RepairEntry, "id" | "createdAt">) => {
+    const entry: RepairEntry = { ...repair, id: generateId(), createdAt: new Date().toISOString() };
+    setPieces((prev) =>
+      prev.map((p) =>
+        p.id === pieceId ? { ...p, repairHistory: [entry, ...(p.repairHistory ?? [])] } : p
+      )
+    );
+  }, []);
 
   const deleteRepair = useCallback((pieceId: string, repairId: string) => {
     setPieces((prev) =>
@@ -195,11 +192,27 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const addDocument = useCallback((pieceId: string, doc: Omit<DocumentAttachment, "id" | "createdAt">) => {
+    const entry: DocumentAttachment = { ...doc, id: generateId(), createdAt: new Date().toISOString() };
+    setPieces((prev) =>
+      prev.map((p) =>
+        p.id === pieceId ? { ...p, documents: [...(p.documents ?? []), entry] } : p
+      )
+    );
+  }, []);
+
+  const deleteDocument = useCallback((pieceId: string, docId: string) => {
+    setPieces((prev) =>
+      prev.map((p) =>
+        p.id === pieceId
+          ? { ...p, documents: (p.documents ?? []).filter((d) => d.id !== docId) }
+          : p
+      )
+    );
+  }, []);
+
   const addWishlistItem = useCallback((item: Omit<WishlistItem, "id" | "createdAt">) => {
-    setWishlistItems((prev) => [
-      { ...item, id: generateId(), createdAt: new Date().toISOString() },
-      ...prev,
-    ]);
+    setWishlistItems((prev) => [{ ...item, id: generateId(), createdAt: new Date().toISOString() }, ...prev]);
   }, []);
 
   const updateWishlistItem = useCallback((id: string, updates: Partial<WishlistItem>) => {
@@ -211,10 +224,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addReminder = useCallback((reminder: Omit<InspectionReminder, "id" | "createdAt">) => {
-    setReminders((prev) => [
-      { ...reminder, id: generateId(), createdAt: new Date().toISOString() },
-      ...prev,
-    ]);
+    setReminders((prev) => [{ ...reminder, id: generateId(), createdAt: new Date().toISOString() }, ...prev]);
   }, []);
 
   const updateReminder = useCallback((id: string, updates: Partial<InspectionReminder>) => {
@@ -232,19 +242,10 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
         const completed = { ...r, isCompleted: true };
         if (r.recurrence !== "none") {
           const base = new Date(r.scheduledDate);
-          const months =
-            r.recurrence === "6months" ? 6 : r.recurrence === "1year" ? 12 : 24;
+          const months = r.recurrence === "6months" ? 6 : r.recurrence === "1year" ? 12 : 24;
           base.setMonth(base.getMonth() + months);
-          const next: InspectionReminder = {
-            ...r,
-            id: generateId(),
-            scheduledDate: base.toISOString(),
-            isCompleted: false,
-            createdAt: new Date().toISOString(),
-          };
-          setTimeout(() => {
-            setReminders((prev2) => [next, ...prev2.filter((x) => x.id !== id), completed]);
-          }, 0);
+          const next: InspectionReminder = { ...r, id: generateId(), scheduledDate: base.toISOString(), isCompleted: false, createdAt: new Date().toISOString() };
+          setTimeout(() => { setReminders((prev2) => [next, ...prev2.filter((x) => x.id !== id), completed]); }, 0);
           return completed;
         }
         return completed;
@@ -261,22 +262,12 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   return (
     <DiGeContext.Provider
       value={{
-        pieces,
-        wishlistItems,
-        reminders,
-        addPiece,
-        updatePiece,
-        deletePiece,
-        getPiece,
-        addRepair,
-        deleteRepair,
-        addWishlistItem,
-        updateWishlistItem,
-        deleteWishlistItem,
-        addReminder,
-        updateReminder,
-        deleteReminder,
-        completeReminder,
+        pieces, wishlistItems, reminders,
+        addPiece, updatePiece, deletePiece, getPiece,
+        addRepair, deleteRepair,
+        addDocument, deleteDocument,
+        addWishlistItem, updateWishlistItem, deleteWishlistItem,
+        addReminder, updateReminder, deleteReminder, completeReminder,
         upcomingReminderCount,
       }}
     >
