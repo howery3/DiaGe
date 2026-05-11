@@ -18,3 +18,9 @@ id = "h3zLSotUX6T2XBkHKq5qZ"
 uri = "file://artifacts/mobile/assets/images/icon_generated.png"
 type = "image"
 title = "DiGe geometric gem icon"
+
+[[generated]]
+id = "Mu4RKZK75RPVOEJCfEoJa"
+uri = "file://artifacts/mobile/assets/images/icon_v2.png"
+type = "image"
+title = "DiGe diamond shield logo"
