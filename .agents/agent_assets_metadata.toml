@@ -24,3 +24,9 @@ id = "Mu4RKZK75RPVOEJCfEoJa"
 uri = "file://artifacts/mobile/assets/images/icon_v2.png"
 type = "image"
 title = "DiGe diamond shield logo"
+
+[[generated]]
+id = "AEEMEzeUBmifhC0OWnckI"
+uri = "file://artifacts/mobile/assets/images/icon_v3.png"
+type = "image"
+title = "DiGe text breaking through diamond outline"
