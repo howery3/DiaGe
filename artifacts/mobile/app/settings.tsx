@@ -249,10 +249,10 @@ export default function SettingsScreen() {
             <SettingsRow
               icon="shield"
               iconBg="#5B21B6"
-              label="Privacy & Data Sharing"
-              sublabel="We share anonymized analytics with partners"
+              label="Privacy Policy"
+              sublabel="Data storage, sharing & your rights"
               colors={colors}
-              onPress={() => router.push("/terms")}
+              onPress={() => router.push("/privacy")}
               chevron
             />
           </View>
