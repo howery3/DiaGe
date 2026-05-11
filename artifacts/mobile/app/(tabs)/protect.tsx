@@ -176,39 +176,6 @@ export default function ProtectScreen() {
           )}
         </View>
 
-        {/* Shop & Sync */}
-        <SectionHeader
-          title="Shop & Sync"
-          subtitle="Browse partner catalogs or scan in-store"
-          colors={colors}
-        />
-        <View style={styles.catalogActions}>
-          <Pressable
-            onPress={() => router.push("/catalog-scan")}
-            style={[styles.catalogActionCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <View style={[styles.catalogActionIcon, { backgroundColor: "#5B21B6" }]}>
-              <Feather name="maximize" size={22} color="#fff" />
-            </View>
-            <Text style={[styles.catalogActionTitle, { color: colors.foreground }]}>Scan In-Store</Text>
-            <Text style={[styles.catalogActionSub, { color: colors.mutedForeground }]}>
-              Point camera at retailer's QR to load their catalog
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => router.push("/catalog-browse")}
-            style={[styles.catalogActionCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <View style={[styles.catalogActionIcon, { backgroundColor: "#0E6655" }]}>
-              <Feather name="grid" size={22} color="#fff" />
-            </View>
-            <Text style={[styles.catalogActionTitle, { color: colors.foreground }]}>Browse Online</Text>
-            <Text style={[styles.catalogActionSub, { color: colors.mutedForeground }]}>
-              Shop partner catalogs and save items to your wishlist
-            </Text>
-          </Pressable>
-        </View>
-
         {/* Insurance Partners */}
         <SectionHeader
           title="Insurance Partners"
@@ -515,24 +482,6 @@ const styles = StyleSheet.create({
   },
   insurerCtaText: { fontSize: 15, fontFamily: "Inter_600SemiBold", color: "#fff" },
 
-  catalogActions: { flexDirection: "row", gap: 10 },
-  catalogActionCard: {
-    flex: 1,
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 14,
-    gap: 10,
-    alignItems: "flex-start",
-  },
-  catalogActionIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  catalogActionTitle: { fontSize: 14, fontFamily: "Inter_700Bold" },
-  catalogActionSub: { fontSize: 11, fontFamily: "Inter_400Regular", lineHeight: 15 },
 
   bizCard: { borderRadius: 16, borderWidth: 1, overflow: "hidden" },
   bizHeader: { flexDirection: "row", alignItems: "center", gap: 12, padding: 16 },

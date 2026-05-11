@@ -120,6 +120,44 @@ export default function RetailersScreen() {
           styles.list,
           { paddingBottom: insets.bottom + 120 },
         ]}
+        ListHeaderComponent={
+          <View style={styles.shopSync}>
+            <Text style={[styles.shopSyncLabel, { color: colors.mutedForeground }]}>
+              SHOP &amp; SYNC
+            </Text>
+            <View style={styles.shopSyncRow}>
+              <Pressable
+                onPress={() => router.push("/catalog-scan")}
+                style={[styles.shopSyncCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+              >
+                <View style={[styles.shopSyncIcon, { backgroundColor: "#5B21B6" }]}>
+                  <Feather name="maximize" size={18} color="#fff" />
+                </View>
+                <View style={styles.shopSyncText}>
+                  <Text style={[styles.shopSyncTitle, { color: colors.foreground }]}>Scan In-Store</Text>
+                  <Text style={[styles.shopSyncSub, { color: colors.mutedForeground }]}>Load catalog via QR</Text>
+                </View>
+                <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+              </Pressable>
+              <Pressable
+                onPress={() => router.push("/catalog-browse")}
+                style={[styles.shopSyncCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+              >
+                <View style={[styles.shopSyncIcon, { backgroundColor: "#0E6655" }]}>
+                  <Feather name="grid" size={18} color="#fff" />
+                </View>
+                <View style={styles.shopSyncText}>
+                  <Text style={[styles.shopSyncTitle, { color: colors.foreground }]}>Browse Online</Text>
+                  <Text style={[styles.shopSyncSub, { color: colors.mutedForeground }]}>Shop partner catalogs</Text>
+                </View>
+                <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+            {filtered.length > 0 ? (
+              <Text style={[styles.retailersLabel, { color: colors.mutedForeground }]}>YOUR RETAILERS</Text>
+            ) : null}
+          </View>
+        }
         renderItem={({ item }) => (
           <RetailerCard
             retailer={item}
@@ -140,7 +178,6 @@ export default function RetailersScreen() {
             }
           />
         }
-        scrollEnabled={!!filtered.length}
         showsVerticalScrollIndicator={false}
       />
 
@@ -364,5 +401,41 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
+  },
+
+  shopSync: { paddingTop: 4, paddingBottom: 8, gap: 10 },
+  shopSyncLabel: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 2,
+  },
+  shopSyncRow: { gap: 8 },
+  shopSyncCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    padding: 13,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  shopSyncIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  shopSyncText: { flex: 1, gap: 2 },
+  shopSyncTitle: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
+  shopSyncSub: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  retailersLabel: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginTop: 6,
+    marginBottom: 2,
   },
 });
