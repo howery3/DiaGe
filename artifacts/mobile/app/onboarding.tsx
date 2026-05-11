@@ -55,6 +55,8 @@ export default function OnboardingScreen() {
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const isLastSlide = activeIndex === SLIDES.length - 1;
 
   const topPad = Platform.OS === "web" ? 60 : insets.top;
   const bottomPad = Platform.OS === "web" ? 32 : insets.bottom;
@@ -162,21 +164,54 @@ export default function OnboardingScreen() {
           ))}
         </View>
 
+        {/* T&C acceptance — only on last slide */}
+        {isLastSlide ? (
+          <Pressable
+            onPress={() => setTermsAccepted((v) => !v)}
+            style={styles.termsRow}
+          >
+            <View
+              style={[
+                styles.checkbox,
+                {
+                  backgroundColor: termsAccepted ? "#5B21B6" : "transparent",
+                  borderColor: termsAccepted ? "#5B21B6" : "#DDD5F5",
+                },
+              ]}
+            >
+              {termsAccepted ? <Feather name="check" size={13} color="#fff" /> : null}
+            </View>
+            <Text style={styles.termsText}>
+              I agree to the{" "}
+              <Text
+                style={styles.termsLink}
+                onPress={() => router.push("/terms")}
+              >
+                Terms &amp; Conditions
+              </Text>
+              , including data sharing with business partners.
+            </Text>
+          </Pressable>
+        ) : null}
+
         {/* CTA */}
         <Pressable
-          onPress={goNext}
+          onPress={isLastSlide && !termsAccepted ? undefined : goNext}
           style={({ pressed }) => [
             styles.cta,
-            { backgroundColor: slide.iconBg, opacity: pressed ? 0.9 : 1 },
+            {
+              backgroundColor: isLastSlide && !termsAccepted ? "#DDD5F5" : slide.iconBg,
+              opacity: pressed && !(isLastSlide && !termsAccepted) ? 0.9 : 1,
+            },
           ]}
         >
-          <Text style={styles.ctaText}>
-            {activeIndex < SLIDES.length - 1 ? "Continue" : "Get Started"}
+          <Text style={[styles.ctaText, { color: isLastSlide && !termsAccepted ? "#9E8FC4" : "#fff" }]}>
+            {!isLastSlide ? "Continue" : "Get Started"}
           </Text>
           <Feather
-            name={activeIndex < SLIDES.length - 1 ? "arrow-right" : "check"}
+            name={!isLastSlide ? "arrow-right" : "check"}
             size={18}
-            color="#fff"
+            color={isLastSlide && !termsAccepted ? "#9E8FC4" : "#fff"}
           />
         </Pressable>
       </View>
@@ -330,5 +365,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter_700Bold",
     color: "#fff",
+  },
+  termsRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    marginTop: 1,
+  },
+  termsText: {
+    flex: 1,
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "#7C6D9A",
+    lineHeight: 20,
+  },
+  termsLink: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+    color: "#5B21B6",
+    textDecorationLine: "underline",
   },
 });

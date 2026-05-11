@@ -85,6 +85,10 @@ function RootLayoutNav() {
         name="reminder/book-appointment"
         options={{ presentation: "modal", headerShown: true }}
       />
+      <Stack.Screen
+        name="terms"
+        options={{ presentation: "modal", headerShown: true }}
+      />
     </Stack>
   );
 }
