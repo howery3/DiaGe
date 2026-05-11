@@ -12,3 +12,9 @@ id = "QYOIX7gYDqaKxGruCIU50"
 uri = "file://artifacts/mobile/assets/images/icon_concept.png"
 type = "image"
 title = "DiGe diamond logo icon"
+
+[[generated]]
+id = "h3zLSotUX6T2XBkHKq5qZ"
+uri = "file://artifacts/mobile/assets/images/icon_generated.png"
+type = "image"
+title = "DiGe geometric gem icon"
