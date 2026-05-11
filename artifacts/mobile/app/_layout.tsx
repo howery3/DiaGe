@@ -61,6 +61,14 @@ function RootLayoutNav() {
         name="insurance-report"
         options={{ headerShown: true }}
       />
+      <Stack.Screen
+        name="insurance-quote"
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="partner-inquiry"
+        options={{ headerShown: true }}
+      />
     </Stack>
   );
 }

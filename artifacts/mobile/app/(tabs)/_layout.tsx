@@ -20,6 +20,10 @@ function NativeTabLayout() {
         <Icon sf={{ default: "bell", selected: "bell.fill" }} />
         <Label>Reminders</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="protect">
+        <Icon sf={{ default: "shield", selected: "shield.fill" }} />
+        <Label>Protect</Label>
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
@@ -82,6 +86,18 @@ function ClassicTabLayout() {
               <SymbolView name="bell" tintColor={color} size={24} />
             ) : (
               <Feather name="bell" size={22} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="protect"
+        options={{
+          title: "Protect",
+          tabBarIcon: ({ color }) =>
+            isIOS ? (
+              <SymbolView name="shield" tintColor={color} size={24} />
+            ) : (
+              <Feather name="shield" size={22} color={color} />
             ),
         }}
       />
