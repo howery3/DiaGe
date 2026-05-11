@@ -15,12 +15,14 @@
     },
     "ios": {
       "supportsTablet": false,
+      "bundleIdentifier": "com.dige.app",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "DiGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
         "NSCameraUsageDescription": "DiGe uses your camera to photograph jewelry pieces and paperwork for your vault."
       }
     },
     "android": {
+      "package": "com.dige.app",
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
