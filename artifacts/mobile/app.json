@@ -50,6 +50,12 @@
         }
       ],
       [
+        "expo-camera",
+        {
+          "cameraPermission": "DiGe uses your camera to scan retailer QR codes and sync jewelry catalogs to your wishlist."
+        }
+      ],
+      [
         "expo-notifications",
         {
           "icon": "./assets/images/icon.png",

@@ -69,6 +69,14 @@ function RootLayoutNav() {
         name="partner-inquiry"
         options={{ headerShown: true }}
       />
+      <Stack.Screen
+        name="catalog-browse"
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="catalog-scan"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
