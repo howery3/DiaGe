@@ -73,7 +73,7 @@ export default function RetailersScreen() {
       <View style={[styles.header, { paddingTop: topPad + 16 }]}>
         <View style={styles.headerRow}>
           <View>
-            <Text style={[styles.logo, { color: colors.primary }]}>DiGe</Text>
+            <Text style={[styles.logo, { color: colors.primary }]}>DiaGe</Text>
             <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
               {retailers.length} {retailers.length === 1 ? "retailer" : "retailers"}
             </Text>

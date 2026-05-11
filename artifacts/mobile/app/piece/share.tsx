@@ -62,7 +62,7 @@ export default function SharePieceScreen() {
 
   function buildShareLines(includeContact: boolean): string[] {
     const lines: string[] = [
-      "💎 DiGe — Digital Jewelry Record",
+      "💎 DiaGe — Digital Jewelry Record",
       "─────────────────────────────",
       `${piece!.type.toUpperCase()} · ${piece!.name}`,
     ];
@@ -105,7 +105,7 @@ export default function SharePieceScreen() {
       if (profile.email) lines.push(`📧 ${profile.email}`);
     }
     lines.push("");
-    lines.push(`Generated with DiGe • ${today}`);
+    lines.push(`Generated with DiaGe • ${today}`);
     return lines;
   }
 
@@ -164,7 +164,7 @@ export default function SharePieceScreen() {
             <View style={styles.cardHeaderTop}>
               <View style={styles.digeWordmark}>
                 <View style={[styles.diamondDot, { backgroundColor: "#fff" }]} />
-                <Text style={styles.digeText}>DiGe</Text>
+                <Text style={styles.digeText}>DiaGe</Text>
               </View>
               <Text style={styles.recordLabel}>Digital Jewelry Record</Text>
             </View>
@@ -330,7 +330,7 @@ export default function SharePieceScreen() {
           <View style={[styles.cardFooter, { backgroundColor: "#F5F3FF" }]}>
             <View style={styles.footerLeft}>
               <View style={[styles.diamondDot, { backgroundColor: PURPLE }]} />
-              <Text style={[styles.footerBrand, { color: PURPLE }]}>DiGe</Text>
+              <Text style={[styles.footerBrand, { color: PURPLE }]}>DiaGe</Text>
             </View>
             <Text style={styles.footerDate}>Generated {today}</Text>
           </View>

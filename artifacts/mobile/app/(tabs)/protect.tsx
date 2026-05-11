@@ -75,7 +75,7 @@ const RETAILER_BENEFITS = [
   {
     icon: "shield",
     title: "Digital Warranty Management",
-    desc: "Customers store and track your warranty plans in DiGe, reducing support calls and improving satisfaction.",
+    desc: "Customers store and track your warranty plans in DiaGe, reducing support calls and improving satisfaction.",
   },
   {
     icon: "heart",
@@ -236,7 +236,7 @@ export default function ProtectScreen() {
             >
               <Feather name="zap" size={13} color={colors.primary} />
               <Text style={[styles.oneClickText, { color: colors.primary }]}>
-                One-click quote using your DiGe vault data
+                One-click quote using your DiaGe vault data
               </Text>
               <Feather name="chevron-right" size={13} color={colors.primary} />
             </Pressable>

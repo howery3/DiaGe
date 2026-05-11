@@ -47,12 +47,12 @@ export default function PrivacyScreen() {
         </Text>
 
         <InfoBox colors={colors}>
-          This Privacy Policy explains what information DiGe collects, how it is used, and the choices you have. DiGe is designed with privacy first — your jewelry data stays on your device.
+          This Privacy Policy explains what information DiaGe collects, how it is used, and the choices you have. DiaGe is designed with privacy first — your jewelry data stays on your device.
         </InfoBox>
 
         <Section title="Who We Are">
           <Body colors={colors}>
-            DiGe ("we", "us", "our") is a personal jewelry organizer app that helps you store warranty documents, purchase records, wishlists, and inspection reminders. This Privacy Policy applies to all users of the DiGe mobile application.
+            DiaGe ("we", "us", "our") is a personal jewelry organizer app that helps you store warranty documents, purchase records, wishlists, and inspection reminders. This Privacy Policy applies to all users of the DiaGe mobile application.
           </Body>
           <Body colors={colors}>
             For any privacy-related questions, you can reach us at: <Strong colors={colors}>privacy@digeapp.com</Strong>
@@ -61,7 +61,7 @@ export default function PrivacyScreen() {
 
         <Section title="What Information We Collect">
           <Body colors={colors}>
-            DiGe collects only what you choose to provide:
+            DiaGe collects only what you choose to provide:
           </Body>
           <BulletList
             colors={colors}
@@ -80,7 +80,7 @@ export default function PrivacyScreen() {
 
         <Section title="Where Your Data Is Stored">
           <InfoBox colors={colors} icon="lock">
-            All personal jewelry data, profile information, and photos are stored exclusively on your device using local storage. DiGe does not operate a cloud server that holds your personal records.
+            All personal jewelry data, profile information, and photos are stored exclusively on your device using local storage. DiaGe does not operate a cloud server that holds your personal records.
           </InfoBox>
           <Body colors={colors}>
             Because data lives on your device, if you uninstall the app, lose your device, or clear app data, your vault contents cannot be recovered by us. We strongly recommend keeping original physical copies of all important documents.
@@ -89,7 +89,7 @@ export default function PrivacyScreen() {
 
         <Section title="How We Use Your Information">
           <Body colors={colors}>
-            Information you enter into DiGe is used solely to:
+            Information you enter into DiaGe is used solely to:
           </Body>
           <BulletList
             colors={colors}
@@ -168,7 +168,7 @@ export default function PrivacyScreen() {
 
         <Section title="Third-Party Services">
           <Body colors={colors}>
-            DiGe may display information from or link to third-party retailers and insurance providers. These third parties have their own privacy policies, and we are not responsible for their data practices.
+            DiaGe may display information from or link to third-party retailers and insurance providers. These third parties have their own privacy policies, and we are not responsible for their data practices.
           </Body>
           <Body colors={colors}>
             The app uses the following device services, subject to their respective privacy policies:
@@ -185,19 +185,19 @@ export default function PrivacyScreen() {
 
         <Section title="Children's Privacy">
           <Body colors={colors}>
-            DiGe is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal data, please contact us and we will delete it promptly.
+            DiaGe is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal data, please contact us and we will delete it promptly.
           </Body>
         </Section>
 
         <Section title="Data Security">
           <Body colors={colors}>
-            Since your data is stored locally on your device, its security depends on your device's security settings. We recommend enabling a passcode or biometric lock on your device. DiGe does not transmit your personal jewelry records over the internet.
+            Since your data is stored locally on your device, its security depends on your device's security settings. We recommend enabling a passcode or biometric lock on your device. DiaGe does not transmit your personal jewelry records over the internet.
           </Body>
         </Section>
 
         <Section title="Changes to This Policy">
           <Body colors={colors}>
-            We may update this Privacy Policy from time to time. We will notify you of any material changes through the app. Continued use of DiGe after changes are posted constitutes your acceptance of the updated policy.
+            We may update this Privacy Policy from time to time. We will notify you of any material changes through the app. Continued use of DiaGe after changes are posted constitutes your acceptance of the updated policy.
           </Body>
         </Section>
 
@@ -222,7 +222,7 @@ export default function PrivacyScreen() {
 
         <View style={[styles.footer, { borderTopColor: colors.border }]}>
           <Text style={[styles.footerText, { color: colors.mutedForeground }]}>
-            Your trust matters to us. DiGe is built to keep your jewelry data private and secure — on your device, in your control.
+            Your trust matters to us. DiaGe is built to keep your jewelry data private and secure — on your device, in your control.
           </Text>
         </View>
       </ScrollView>

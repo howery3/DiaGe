@@ -54,7 +54,7 @@ export default function SettingsScreen() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     Alert.alert(
       "Reset Onboarding",
-      "This will show the welcome screens again the next time you open DiGe.",
+      "This will show the welcome screens again the next time you open DiaGe.",
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -287,7 +287,7 @@ export default function SettingsScreen() {
           </View>
 
           <Text style={[styles.disclaimer, { color: colors.mutedForeground }]}>
-            DiGe is a personal jewelry organizer. Keep original hard copies of all important documents — we are not responsible for data loss. See Terms & Conditions for full details.
+            DiaGe is a personal jewelry organizer. Keep original hard copies of all important documents — we are not responsible for data loss. See Terms & Conditions for full details.
           </Text>
         </ScrollView>
       </View>

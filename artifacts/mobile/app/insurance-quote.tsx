@@ -79,7 +79,7 @@ export default function InsuranceQuoteScreen() {
   function buildReportText(): string {
     const hr = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
     const lines: string[] = [
-      "💎 DiGe — Insurance Quote Request",
+      "💎 DiaGe — Insurance Quote Request",
       `Date: ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`,
       hr,
       "",
@@ -125,7 +125,7 @@ export default function InsuranceQuoteScreen() {
     });
 
     lines.push(hr);
-    lines.push("Sent via DiGe — Jewelry Vault & Insurance App");
+    lines.push("Sent via DiaGe — Jewelry Vault & Insurance App");
 
     return lines.join("\n");
   }
@@ -145,7 +145,7 @@ export default function InsuranceQuoteScreen() {
 
     if (emailBodies.length > 0) {
       const to = emailBodies.map((i) => i!.email).join(",");
-      const subject = encodeURIComponent("DiGe — Jewelry Insurance Quote Request");
+      const subject = encodeURIComponent("DiaGe — Jewelry Insurance Quote Request");
       const body = encodeURIComponent(report);
       const mailto = `mailto:${to}?subject=${subject}&body=${body}`;
       const canOpen = await Linking.canOpenURL(mailto);
@@ -191,7 +191,7 @@ export default function InsuranceQuoteScreen() {
       >
         {/* Vault snapshot */}
         <View style={[styles.vaultCard, { backgroundColor: "#5B21B6" }]}>
-          <Text style={styles.vaultLabel}>Your DiGe Vault — Pre-filled</Text>
+          <Text style={styles.vaultLabel}>Your DiaGe Vault — Pre-filled</Text>
           <View style={styles.vaultRow}>
             <View>
               <Text style={styles.vaultNum}>{pieces.length}</Text>

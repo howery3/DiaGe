@@ -43,7 +43,7 @@ export function WishlistCard({ item, onPress, onDelete }: WishlistCardProps) {
         if (profile.email) lines.push(`📧 ${profile.email}`);
       }
 
-      lines.push("\nShared via DiGe");
+      lines.push("\nShared via DiaGe");
       await Share.share({ message: lines.join("\n"), title: item.name });
     }
 

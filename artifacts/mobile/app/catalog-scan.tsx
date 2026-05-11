@@ -65,7 +65,7 @@ export default function CatalogScanScreen() {
       setScanned(true);
       setFoundCatalog(catalog);
     } else {
-      Alert.alert("Unrecognized Code", "This QR code isn't a DiGe retailer catalog. Ask your retailer for a DiGe partner code.");
+      Alert.alert("Unrecognized Code", "This QR code isn't a DiaGe retailer catalog. Ask your retailer for a DiaGe partner code.");
       setTimeout(() => { scanCooldown.current = false; }, 2000);
     }
   }
@@ -257,7 +257,7 @@ export default function CatalogScanScreen() {
           </View>
 
           <Text style={styles.scanHint}>
-            Ask your jeweler for a DiGe catalog QR code or sync code
+            Ask your jeweler for a DiaGe catalog QR code or sync code
           </Text>
 
           {/* Demo scan */}

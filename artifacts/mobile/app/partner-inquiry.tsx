@@ -22,7 +22,7 @@ const INSURANCE_BENEFITS = [
   "Receive pre-filled quote data: piece names, prices, serials",
   "Co-branded reminders and warranty alerts drive engagement",
   "Reduce underwriting friction with structured data",
-  "In-app partner listing reaches active DiGe users",
+  "In-app partner listing reaches active DiaGe users",
 ];
 
 const RETAIL_BENEFITS = [
@@ -49,7 +49,7 @@ export default function PartnerInquiryScreen() {
   function buildInquiry(): string {
     const type = partnerType === "insurance" ? "Insurance Provider" : "Jewelry Retailer";
     const lines = [
-      `💎 DiGe — Partnership Inquiry`,
+      `💎 DiaGe — Partnership Inquiry`,
       `Date: ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`,
       `Partner Type: ${type}`,
       "",
@@ -64,7 +64,7 @@ export default function PartnerInquiryScreen() {
       message || "(no message provided)",
       "",
       "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-      "Sent via DiGe — Jewelry Vault & Insurance App",
+      "Sent via DiaGe — Jewelry Vault & Insurance App",
     ];
     return lines.join("\n");
   }
@@ -76,7 +76,7 @@ export default function PartnerInquiryScreen() {
     }
 
     const body = buildInquiry();
-    const subject = encodeURIComponent(`DiGe Partnership Inquiry — ${company}`);
+    const subject = encodeURIComponent(`DiaGe Partnership Inquiry — ${company}`);
     const bodyEncoded = encodeURIComponent(body);
     const mailto = `mailto:partnerships@digejewelry.com?subject=${subject}&body=${bodyEncoded}`;
 
@@ -107,7 +107,7 @@ export default function PartnerInquiryScreen() {
           </View>
           <Text style={[styles.successTitle, { color: colors.foreground }]}>Inquiry Sent!</Text>
           <Text style={[styles.successBody, { color: colors.mutedForeground }]}>
-            Thank you for your interest in partnering with DiGe. Our partnerships team will review your inquiry and reach out within 2-3 business days.
+            Thank you for your interest in partnering with DiaGe. Our partnerships team will review your inquiry and reach out within 2-3 business days.
           </Text>
           <View style={[styles.successCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Feather name="mail" size={16} color={colors.primary} />
@@ -142,7 +142,7 @@ export default function PartnerInquiryScreen() {
           <View style={styles.heroIcon}>
             <Feather name="briefcase" size={28} color="#fff" />
           </View>
-          <Text style={styles.heroTitle}>Partner with DiGe</Text>
+          <Text style={styles.heroTitle}>Partner with DiaGe</Text>
           <Text style={styles.heroSub}>
             Connect your business with an engaged audience of jewelry owners who actively document and protect their collections.
           </Text>
@@ -200,7 +200,7 @@ export default function PartnerInquiryScreen() {
         {/* Benefits */}
         <View style={[styles.benefitsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <Text style={[styles.benefitsTitle, { color: colors.foreground }]}>
-            {partnerType === "insurance" ? "Why insurance providers partner with DiGe" : "Why retailers partner with DiGe"}
+            {partnerType === "insurance" ? "Why insurance providers partner with DiaGe" : "Why retailers partner with DiaGe"}
           </Text>
           {benefits.map((b, i) => (
             <View key={i} style={styles.benefitRow}>
@@ -258,7 +258,7 @@ export default function PartnerInquiryScreen() {
               onChangeText={setMessage}
               placeholder={
                 partnerType === "insurance"
-                  ? "Tell us about your coverage offerings, target markets, and how you'd like to integrate with DiGe..."
+                  ? "Tell us about your coverage offerings, target markets, and how you'd like to integrate with DiaGe..."
                   : "Tell us about your store(s), your customer base, and what kind of partnership you have in mind..."
               }
               placeholderTextColor={colors.mutedForeground + "88"}

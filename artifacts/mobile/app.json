@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "DiGe",
-    "slug": "mobile",
+    "name": "DiaGe",
+    "slug": "diage",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "dige",
+    "scheme": "diage",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.dige.app",
+      "bundleIdentifier": "com.diage.app",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "DiGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
-        "NSCameraUsageDescription": "DiGe uses your camera to photograph jewelry pieces and paperwork for your vault."
+        "NSPhotoLibraryUsageDescription": "DiaGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
+        "NSCameraUsageDescription": "DiaGe uses your camera to photograph jewelry pieces and paperwork for your vault."
       }
     },
     "android": {
-      "package": "com.dige.app",
+      "package": "com.diage.app",
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
@@ -47,14 +47,14 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "DiGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
-          "cameraPermission": "DiGe uses your camera to photograph jewelry pieces and paperwork for your vault."
+          "photosPermission": "DiaGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
+          "cameraPermission": "DiaGe uses your camera to photograph jewelry pieces and paperwork for your vault."
         }
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "DiGe uses your camera to scan retailer QR codes and sync jewelry catalogs to your wishlist."
+          "cameraPermission": "DiaGe uses your camera to scan retailer QR codes and sync jewelry catalogs to your wishlist."
         }
       ],
       [

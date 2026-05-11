@@ -113,7 +113,7 @@ export default function BookAppointmentScreen() {
     const end = new Date(start.getTime() + 60 * 60 * 1000);
     const title = encodeURIComponent(`Jewelry Inspection — ${reminder!.jewelryName}`);
     const details = encodeURIComponent(
-      `Inspection at ${reminder!.retailer || "jeweler"}.\n\nTime preference: ${timeLabel}\n\nScheduled via DiGe.`
+      `Inspection at ${reminder!.retailer || "jeweler"}.\n\nTime preference: ${timeLabel}\n\nScheduled via DiaGe.`
     );
     const startStr = gcalDate(start.toISOString());
     const endStr = gcalDate(end.toISOString());

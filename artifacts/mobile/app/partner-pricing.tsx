@@ -26,8 +26,8 @@ const RETAILER_TIERS = [
     accentColor: "#7C3AED",
     description: "Perfect for independent jewelers and boutiques getting started with digital clientelling.",
     features: [
-      "QR catalog sync — your pieces appear in DiGe",
-      "Listed in the DiGe retailer directory",
+      "QR catalog sync — your pieces appear in DiaGe",
+      "Listed in the DiaGe retailer directory",
       "Customers can submit one-click quote requests",
       "Basic analytics: wishlist saves & catalog views",
       "Email support",
@@ -87,12 +87,12 @@ const RETAILER_TIERS = [
 
 const INSURANCE_MODEL = {
   headline: "Revenue Share — not a flat fee",
-  body: "We don't charge insurance providers a monthly license. Instead, we earn a referral fee on policies that originate from DiGe quote requests. That means our incentives are perfectly aligned — we only win when your customers convert.",
+  body: "We don't charge insurance providers a monthly license. Instead, we earn a referral fee on policies that originate from DiaGe quote requests. That means our incentives are perfectly aligned — we only win when your customers convert.",
   terms: [
     {
       icon: "percent",
       title: "5–15% referral fee",
-      desc: "On first-year premiums for policies originating from DiGe quote requests. Rate negotiated based on volume.",
+      desc: "On first-year premiums for policies originating from DiaGe quote requests. Rate negotiated based on volume.",
     },
     {
       icon: "database",
@@ -102,7 +102,7 @@ const INSURANCE_MODEL = {
     {
       icon: "users",
       title: "High-intent prospects only",
-      desc: "DiGe users are actively documenting and protecting their jewelry. These are not tire-kickers — they're already in the mindset to insure.",
+      desc: "DiaGe users are actively documenting and protecting their jewelry. These are not tire-kickers — they're already in the mindset to insure.",
     },
     {
       icon: "bell",
@@ -147,7 +147,7 @@ export default function PartnerPricingScreen() {
               <Feather name="briefcase" size={22} color="#fff" />
             </View>
           </View>
-          <Text style={styles.heroTitle}>Partner with DiGe</Text>
+          <Text style={styles.heroTitle}>Partner with DiaGe</Text>
           <Text style={styles.heroSub}>
             Transparent pricing for retailers. Revenue-share alignment for insurers. No surprises.
           </Text>

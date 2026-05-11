@@ -61,7 +61,7 @@ export default function CatalogBrowseScreen() {
           <View style={styles.footerText}>
             <Text style={[styles.footerTitle, { color: colors.foreground }]}>Are you a retailer?</Text>
             <Text style={[styles.footerSub, { color: colors.mutedForeground }]}>
-              List your catalog in DiGe and connect with your customers directly.
+              List your catalog in DiaGe and connect with your customers directly.
             </Text>
           </View>
           <Pressable

@@ -73,7 +73,7 @@ export default function InsuranceReportScreen() {
   async function handleShareText() {
     const hr = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
     const lines: string[] = [
-      "💎 DiGe — Insurance Summary",
+      "💎 DiaGe — Insurance Summary",
       `Generated: ${today}`,
       hr,
       "",
@@ -123,7 +123,7 @@ export default function InsuranceReportScreen() {
     });
 
     lines.push(hr);
-    lines.push(`Generated with DiGe • ${today}`);
+    lines.push(`Generated with DiaGe • ${today}`);
 
     await Share.share({ message: lines.join("\n") });
   }
@@ -164,7 +164,7 @@ export default function InsuranceReportScreen() {
           <View style={styles.statsTop}>
             <View style={[styles.digeWordmark]}>
               <View style={styles.diamondDot} />
-              <Text style={styles.statsTitle}>DiGe</Text>
+              <Text style={styles.statsTitle}>DiaGe</Text>
             </View>
             <Text style={styles.statsDate}>Generated {today}</Text>
           </View>

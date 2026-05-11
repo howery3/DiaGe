@@ -42,21 +42,21 @@ export default function TermsScreen() {
           Last updated: {LAST_UPDATED}
         </Text>
 
-        <Section title="About DiGe">
+        <Section title="About DiaGe">
           <Body colors={colors}>
-            DiGe ("the App", "we", "us") is a personal jewelry organizer that helps you store and manage copies of your jewelry-related documents, warranty information, purchase records, wishlists, and inspection reminders in one place.
+            DiaGe ("the App", "we", "us") is a personal jewelry organizer that helps you store and manage copies of your jewelry-related documents, warranty information, purchase records, wishlists, and inspection reminders in one place.
           </Body>
           <Body colors={colors}>
-            DiGe is a third-party organizational tool only. We are not a jewelry retailer, insurer, warranty provider, or document custodian. Nothing in this App creates any legal relationship between you and any retailer, insurer, or other third party.
+            DiaGe is a third-party organizational tool only. We are not a jewelry retailer, insurer, warranty provider, or document custodian. Nothing in this App creates any legal relationship between you and any retailer, insurer, or other third party.
           </Body>
         </Section>
 
         <Section title="Data Storage — No Backup Guarantee">
           <Body colors={colors}>
-            All information you enter into DiGe is stored locally on your device. <Strong colors={colors}>We do not maintain server-side backups of your personal jewelry records.</Strong>
+            All information you enter into DiaGe is stored locally on your device. <Strong colors={colors}>We do not maintain server-side backups of your personal jewelry records.</Strong>
           </Body>
           <Body colors={colors}>
-            You acknowledge and agree that DiGe is not a substitute for keeping original hard copies of your jewelry paperwork, including but not limited to:
+            You acknowledge and agree that DiaGe is not a substitute for keeping original hard copies of your jewelry paperwork, including but not limited to:
           </Body>
           <BulletList colors={colors} items={[
             "Warranty cards and certificates",
@@ -66,13 +66,13 @@ export default function TermsScreen() {
             "Serial number records",
           ]} />
           <Warning colors={colors}>
-            Always retain physical copies of all important documents. DiGe strongly recommends keeping originals in a secure location (such as a safe or safe-deposit box) independent of this App.
+            Always retain physical copies of all important documents. DiaGe strongly recommends keeping originals in a secure location (such as a safe or safe-deposit box) independent of this App.
           </Warning>
         </Section>
 
         <Section title="No Liability for Data Loss">
           <Body colors={colors}>
-            To the fullest extent permitted by law, DiGe and its owners, developers, officers, and affiliates shall not be liable for any loss, corruption, or unavailability of data stored in the App, including losses arising from:
+            To the fullest extent permitted by law, DiaGe and its owners, developers, officers, and affiliates shall not be liable for any loss, corruption, or unavailability of data stored in the App, including losses arising from:
           </Body>
           <BulletList colors={colors} items={[
             "App crashes, bugs, or technical failures",
@@ -83,13 +83,13 @@ export default function TermsScreen() {
             "Any other cause beyond our reasonable control",
           ]} />
           <Body colors={colors}>
-            Your use of DiGe as a sole record-keeping system is at your own risk. We expressly disclaim any warranty that information stored in the App will be available, accurate, or recoverable at any time.
+            Your use of DiaGe as a sole record-keeping system is at your own risk. We expressly disclaim any warranty that information stored in the App will be available, accurate, or recoverable at any time.
           </Body>
         </Section>
 
         <Section title="No Liability for Third-Party Actions">
           <Body colors={colors}>
-            DiGe displays information about third-party retailers, insurance providers, and partner businesses for organizational and convenience purposes only. We do not endorse, guarantee, or take responsibility for:
+            DiaGe displays information about third-party retailers, insurance providers, and partner businesses for organizational and convenience purposes only. We do not endorse, guarantee, or take responsibility for:
           </Body>
           <BulletList colors={colors} items={[
             "The accuracy of any retailer or insurance information displayed",
@@ -102,7 +102,7 @@ export default function TermsScreen() {
 
         <Section title="Analytics & Partner Data Sharing">
           <Body colors={colors}>
-            By using DiGe, you agree that we may collect and share certain anonymized usage and behavioral data with our business partners, including but not limited to:
+            By using DiaGe, you agree that we may collect and share certain anonymized usage and behavioral data with our business partners, including but not limited to:
           </Body>
           <BulletList colors={colors} items={[
             "Wishlist item categories and estimated price ranges",
@@ -121,16 +121,16 @@ export default function TermsScreen() {
 
         <Section title="Limitation of Liability">
           <Body colors={colors}>
-            In no event shall DiGe be liable to you for any indirect, incidental, special, consequential, or punitive damages, or any loss of data, revenue, profits, goodwill, or other intangible losses, resulting from your use of or inability to use the App.
+            In no event shall DiaGe be liable to you for any indirect, incidental, special, consequential, or punitive damages, or any loss of data, revenue, profits, goodwill, or other intangible losses, resulting from your use of or inability to use the App.
           </Body>
           <Body colors={colors}>
-            To the extent permitted by applicable law, DiGe's total liability to you for all claims arising from or related to your use of the App shall not exceed the amount you have paid for the App (if any) in the twelve months preceding the claim.
+            To the extent permitted by applicable law, DiaGe's total liability to you for all claims arising from or related to your use of the App shall not exceed the amount you have paid for the App (if any) in the twelve months preceding the claim.
           </Body>
         </Section>
 
         <Section title="Disclaimer of Warranties">
           <Body colors={colors}>
-            DiGe is provided "as is" and "as available" without warranties of any kind, either express or implied. We do not warrant that the App will be uninterrupted, error-free, secure, or free of viruses or other harmful components.
+            DiaGe is provided "as is" and "as available" without warranties of any kind, either express or implied. We do not warrant that the App will be uninterrupted, error-free, secure, or free of viruses or other harmful components.
           </Body>
         </Section>
 
@@ -148,7 +148,7 @@ export default function TermsScreen() {
 
         <View style={[styles.footer, { borderTopColor: colors.border }]}>
           <Text style={[styles.footerText, { color: colors.mutedForeground }]}>
-            By using DiGe, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.
+            By using DiaGe, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.
           </Text>
         </View>
       </ScrollView>
