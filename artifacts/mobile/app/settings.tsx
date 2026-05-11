@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { router, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Platform,
@@ -11,11 +11,13 @@ import {
   StyleSheet,
   Switch,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { useProfile } from "@/hooks/useProfile";
 
 const ONBOARDING_KEY = "@dige_onboarded";
 const APP_VERSION = "1.0.0";
@@ -24,14 +26,29 @@ export default function SettingsScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { pieces, wishlistItems, reminders, clearAllData } = useDiGe();
+  const { profile, saveProfile, hasProfile, initials } = useProfile();
   const [darkMode, setDarkMode] = useState(false);
   const [onboardingDone, setOnboardingDone] = useState(true);
 
-  const topPad = Platform.OS === "web" ? 60 : insets.top;
+  const [name, setName] = useState(profile.name);
+  const [email, setEmail] = useState(profile.email);
+  const [phone, setPhone] = useState(profile.phone);
+
+  const nameRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const phoneRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    setName(profile.name);
+    setEmail(profile.email);
+    setPhone(profile.phone);
+  }, [profile.name, profile.email, profile.phone]);
 
   useEffect(() => {
     AsyncStorage.getItem(ONBOARDING_KEY).then((v) => setOnboardingDone(!!v));
   }, []);
+
+  const topPad = Platform.OS === "web" ? 60 : insets.top;
 
   async function handleResetOnboarding() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -73,10 +90,12 @@ export default function SettingsScreen() {
     );
   }
 
+  const profileInitials = initials();
+
   const vaultStats = [
-    { label: "Jewelry Pieces", value: pieces.length, icon: "box" },
-    { label: "Wishlist Items", value: wishlistItems.length, icon: "heart" },
-    { label: "Reminders", value: reminders.length, icon: "bell" },
+    { label: "Jewelry Pieces", value: pieces.length },
+    { label: "Wishlist Items", value: wishlistItems.length },
+    { label: "Reminders", value: reminders.length },
   ];
 
   return (
@@ -94,7 +113,82 @@ export default function SettingsScreen() {
         <ScrollView
           contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 40 }]}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
+          {/* My Profile */}
+          <SectionLabel label="My Profile" colors={colors} />
+          <View style={[styles.profileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {/* Avatar + name row */}
+            <View style={styles.profileTop}>
+              <View style={[styles.avatar, { backgroundColor: hasProfile ? "#5B21B6" : colors.muted }]}>
+                {hasProfile ? (
+                  <Text style={styles.avatarText}>{profileInitials}</Text>
+                ) : (
+                  <Feather name="user" size={22} color={colors.mutedForeground} />
+                )}
+              </View>
+              <View style={styles.profileTopText}>
+                <Text style={[styles.profileName, { color: colors.foreground }]}>
+                  {profile.name || "No name set"}
+                </Text>
+                <Text style={[styles.profileHint, { color: colors.mutedForeground }]}>
+                  {hasProfile
+                    ? "Shared with retailers when you opt in"
+                    : "Add your info to enable retailer clientelling"}
+                </Text>
+              </View>
+            </View>
+
+            <View style={[styles.profileDivider, { backgroundColor: colors.border }]} />
+
+            {/* Fields */}
+            <ProfileField
+              icon="user"
+              placeholder="Full name"
+              value={name}
+              onChangeText={setName}
+              onBlur={() => saveProfile({ name })}
+              returnKeyType="next"
+              onSubmitEditing={() => emailRef.current?.focus()}
+              ref={nameRef}
+              colors={colors}
+            />
+            <View style={[styles.fieldDivider, { backgroundColor: colors.border }]} />
+            <ProfileField
+              icon="mail"
+              placeholder="Email address"
+              value={email}
+              onChangeText={setEmail}
+              onBlur={() => saveProfile({ email })}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              returnKeyType="next"
+              onSubmitEditing={() => phoneRef.current?.focus()}
+              ref={emailRef}
+              colors={colors}
+            />
+            <View style={[styles.fieldDivider, { backgroundColor: colors.border }]} />
+            <ProfileField
+              icon="phone"
+              placeholder="Phone number"
+              value={phone}
+              onChangeText={setPhone}
+              onBlur={() => saveProfile({ phone })}
+              keyboardType="phone-pad"
+              returnKeyType="done"
+              ref={phoneRef}
+              colors={colors}
+            />
+
+            <View style={[styles.profileDivider, { backgroundColor: colors.border }]} />
+            <View style={[styles.privacyNote, { backgroundColor: colors.secondary }]}>
+              <Feather name="lock" size={12} color={colors.mutedForeground} />
+              <Text style={[styles.privacyNoteText, { color: colors.mutedForeground }]}>
+                Stored only on your device. Shared with retailers only when you explicitly share a wishlist or piece summary.
+              </Text>
+            </View>
+          </View>
+
           {/* Vault snapshot */}
           <View style={[styles.vaultCard, { backgroundColor: "#5B21B6" }]}>
             <Text style={styles.vaultCardLabel}>Your Vault</Text>
@@ -177,7 +271,7 @@ export default function SettingsScreen() {
             />
           </View>
 
-          {/* Danger zone */}
+          {/* Data */}
           <SectionLabel label="Data" colors={colors} />
           <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <SettingsRow
@@ -200,6 +294,45 @@ export default function SettingsScreen() {
     </>
   );
 }
+
+const ProfileField = React.forwardRef<
+  TextInput,
+  {
+    icon: string;
+    placeholder: string;
+    value: string;
+    onChangeText: (v: string) => void;
+    onBlur: () => void;
+    keyboardType?: "default" | "email-address" | "phone-pad";
+    autoCapitalize?: "none" | "words";
+    returnKeyType?: "next" | "done";
+    onSubmitEditing?: () => void;
+    colors: ReturnType<typeof useColors>;
+  }
+>(function ProfileField(
+  { icon, placeholder, value, onChangeText, onBlur, keyboardType = "default", autoCapitalize = "words", returnKeyType = "done", onSubmitEditing, colors },
+  ref
+) {
+  return (
+    <View style={styles.profileField}>
+      <Feather name={icon as any} size={16} color={colors.mutedForeground} style={styles.fieldIcon} />
+      <TextInput
+        ref={ref}
+        style={[styles.fieldInput, { color: colors.foreground }]}
+        placeholder={placeholder}
+        placeholderTextColor={colors.mutedForeground}
+        value={value}
+        onChangeText={onChangeText}
+        onBlur={onBlur}
+        keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
+        blurOnSubmit={returnKeyType === "done"}
+      />
+    </View>
+  );
+});
 
 function SectionLabel({ label, colors }: { label: string; colors: ReturnType<typeof useColors> }) {
   return (
@@ -284,9 +417,69 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  scroll: { paddingHorizontal: 20, paddingTop: 20, gap: 8 },
+  scroll: { paddingHorizontal: 20, paddingTop: 16, gap: 8 },
 
-  vaultCard: { borderRadius: 18, padding: 20, marginBottom: 8 },
+  profileCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    overflow: "hidden",
+    marginBottom: 8,
+  },
+  profileTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    padding: 16,
+  },
+  avatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  avatarText: {
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: -0.5,
+  },
+  profileTopText: { flex: 1, gap: 3 },
+  profileName: { fontSize: 16, fontFamily: "Inter_600SemiBold" },
+  profileHint: { fontSize: 12, fontFamily: "Inter_400Regular", lineHeight: 17 },
+  profileDivider: { height: StyleSheet.hairlineWidth },
+  profileField: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 12,
+  },
+  fieldIcon: { width: 20, textAlign: "center" },
+  fieldInput: {
+    flex: 1,
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
+    paddingVertical: 0,
+  },
+  fieldDivider: { height: StyleSheet.hairlineWidth, marginLeft: 48 },
+  privacyNote: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
+    padding: 12,
+    margin: 10,
+    borderRadius: 10,
+  },
+  privacyNoteText: {
+    flex: 1,
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    lineHeight: 16,
+  },
+
+  vaultCard: { borderRadius: 18, padding: 20, marginTop: 4, marginBottom: 4 },
   vaultCardLabel: {
     fontSize: 11,
     fontFamily: "Inter_600SemiBold",

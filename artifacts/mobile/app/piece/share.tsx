@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -13,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { useProfile } from "@/hooks/useProfile";
 
 const PURPLE = "#5B21B6";
 const PURPLE_LIGHT = "#7C3AED";
@@ -36,6 +38,7 @@ export default function SharePieceScreen() {
   const insets = useSafeAreaInsets();
   const { pieceId } = useLocalSearchParams<{ pieceId: string }>();
   const { getPiece } = useDiGe();
+  const { profile, hasProfile } = useProfile();
   const piece = getPiece(pieceId ?? "");
 
   if (!piece) {
@@ -57,7 +60,7 @@ export default function SharePieceScreen() {
   const hasGoldWarranty = piece.goldWarrantyType && piece.goldWarrantyType !== "none";
   const hasDiamondBond = !!(piece.diamondBondNumber || piece.diamondBondExpiry);
 
-  async function handleShareText() {
+  function buildShareLines(includeContact: boolean): string[] {
     const lines: string[] = [
       "💎 DiGe — Digital Jewelry Record",
       "─────────────────────────────",
@@ -94,10 +97,41 @@ export default function SharePieceScreen() {
     lines.push("");
     if (piece!.lastInspection) lines.push(`Last Inspection: ${fmt(piece!.lastInspection)}`);
     lines.push(`Repairs Logged: ${repairs.length}`);
+    if (includeContact) {
+      lines.push("");
+      lines.push("─────────────────────────────");
+      if (profile.name) lines.push(`Owner: ${profile.name}`);
+      if (profile.phone) lines.push(`📞 ${profile.phone}`);
+      if (profile.email) lines.push(`📧 ${profile.email}`);
+    }
     lines.push("");
     lines.push(`Generated with DiGe • ${today}`);
+    return lines;
+  }
 
-    await Share.share({ message: lines.join("\n") });
+  async function handleShareText() {
+    if (hasProfile) {
+      Alert.alert(
+        "Share Piece Summary",
+        "Include your contact info so the recipient can follow up?",
+        [
+          {
+            text: "No, share anonymously",
+            onPress: async () => {
+              await Share.share({ message: buildShareLines(false).join("\n") });
+            },
+          },
+          {
+            text: "Yes, include my details",
+            onPress: async () => {
+              await Share.share({ message: buildShareLines(true).join("\n") });
+            },
+          },
+        ]
+      );
+    } else {
+      await Share.share({ message: buildShareLines(false).join("\n") });
+    }
   }
 
   return (
@@ -257,6 +291,41 @@ export default function SharePieceScreen() {
             ) : null}
           </View>
 
+          {/* Owner section — only when profile is set */}
+          {hasProfile ? (
+            <>
+              <View style={styles.cardDivider} />
+              <View style={styles.cardSection}>
+                <View style={styles.cardSectionHeader}>
+                  <View style={[styles.cardSectionDot, { backgroundColor: PURPLE_LIGHT }]} />
+                  <Text style={[styles.cardSectionTitle, { color: PURPLE }]}>Owner</Text>
+                </View>
+                <View style={styles.ownerRow}>
+                  <View style={[styles.ownerAvatar, { backgroundColor: PURPLE }]}>
+                    <Text style={styles.ownerInitials}>
+                      {profile.name
+                        ? profile.name.trim().split(" ").filter(Boolean).length > 1
+                          ? (profile.name.trim().split(" ")[0][0] + profile.name.trim().split(" ").pop()![0]).toUpperCase()
+                          : profile.name.trim()[0].toUpperCase()
+                        : "?"}
+                    </Text>
+                  </View>
+                  <View style={styles.ownerInfo}>
+                    {profile.name ? (
+                      <Text style={styles.ownerName}>{profile.name}</Text>
+                    ) : null}
+                    {profile.phone ? (
+                      <Text style={styles.ownerContact}>{profile.phone}</Text>
+                    ) : null}
+                    {profile.email ? (
+                      <Text style={styles.ownerContact}>{profile.email}</Text>
+                    ) : null}
+                  </View>
+                </View>
+              </View>
+            </>
+          ) : null}
+
           {/* Card footer */}
           <View style={[styles.cardFooter, { backgroundColor: "#F5F3FF" }]}>
             <View style={styles.footerLeft}>
@@ -372,4 +441,18 @@ const styles = StyleSheet.create({
   shareBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, height: 52, borderRadius: 16 },
   shareBtnText: { fontSize: 16, fontFamily: "Inter_600SemiBold", color: "#fff" },
   shareNote: { fontSize: 12, fontFamily: "Inter_400Regular", textAlign: "center" },
+
+  ownerRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+  ownerAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  ownerInitials: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#fff" },
+  ownerInfo: { flex: 1, gap: 2 },
+  ownerName: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#111827" },
+  ownerContact: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#6B7280" },
 });

@@ -1,8 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, Share, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, Share, StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
+import { useProfile } from "@/hooks/useProfile";
 import type { WishlistItem, WishlistPriority } from "@/context/DiGeContext";
 
 const PRIORITY_COLORS: Record<WishlistPriority, string> = {
@@ -19,20 +20,51 @@ interface WishlistCardProps {
 
 export function WishlistCard({ item, onPress, onDelete }: WishlistCardProps) {
   const colors = useColors();
+  const { profile, hasProfile } = useProfile();
   const priorityColor = PRIORITY_COLORS[item.priority];
 
   async function handleShare() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const lines = [
-      `✨ ${item.name}`,
-      item.brand ? `by ${item.brand}` : "",
-      item.retailer ? `Available at ${item.retailer}` : "",
-      item.retailerUrl ? item.retailerUrl : "",
-      item.estimatedPrice ? `Est. $${item.estimatedPrice}` : "",
-      item.notes ? `\n${item.notes}` : "",
-      "\nShared via DiGe",
-    ].filter(Boolean);
-    await Share.share({ message: lines.join("\n"), title: item.name });
+
+    async function doShare(includeContact: boolean) {
+      const lines = [
+        `✨ ${item.name}`,
+        item.brand ? `by ${item.brand}` : "",
+        item.retailer ? `Available at ${item.retailer}` : "",
+        item.retailerUrl ? item.retailerUrl : "",
+        item.estimatedPrice ? `Est. $${item.estimatedPrice}` : "",
+        item.notes ? `\n${item.notes}` : "",
+      ].filter(Boolean);
+
+      if (includeContact) {
+        lines.push("─────────────");
+        if (profile.name) lines.push(`From: ${profile.name}`);
+        if (profile.phone) lines.push(`📞 ${profile.phone}`);
+        if (profile.email) lines.push(`📧 ${profile.email}`);
+      }
+
+      lines.push("\nShared via DiGe");
+      await Share.share({ message: lines.join("\n"), title: item.name });
+    }
+
+    if (hasProfile) {
+      Alert.alert(
+        "Share Wishlist Item",
+        "Include your contact info so the retailer can follow up?",
+        [
+          {
+            text: "No, share anonymously",
+            onPress: () => doShare(false),
+          },
+          {
+            text: `Yes, include my details`,
+            onPress: () => doShare(true),
+          },
+        ]
+      );
+    } else {
+      await doShare(false);
+    }
   }
 
   return (
