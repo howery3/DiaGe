@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { router } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/useColors";
@@ -33,10 +34,16 @@ interface ReminderCardProps {
 export function ReminderCard({ reminder, onComplete, onDelete }: ReminderCardProps) {
   const colors = useColors();
   const urg = urgency(reminder.scheduledDate, reminder.isCompleted);
+  const showBook = !reminder.isCompleted && !!reminder.retailer;
 
   async function handleComplete() {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     onComplete();
+  }
+
+  async function handleBook() {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(`/reminder/book-appointment?reminderId=${reminder.id}`);
   }
 
   return (
@@ -50,65 +57,85 @@ export function ReminderCard({ reminder, onComplete, onDelete }: ReminderCardPro
         },
       ]}
     >
-      <Pressable
-        onPress={reminder.isCompleted ? undefined : handleComplete}
-        style={[
-          styles.checkBtn,
-          {
-            borderColor: urg.color,
-            backgroundColor: reminder.isCompleted ? urg.color : "transparent",
-          },
-        ]}
-      >
-        {reminder.isCompleted ? (
-          <Feather name="check" size={14} color="#fff" />
-        ) : null}
-      </Pressable>
-      <View style={styles.content}>
-        <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
-          {reminder.jewelryName}
-        </Text>
-        {reminder.retailer ? (
-          <Text style={[styles.meta, { color: colors.mutedForeground }]}>{reminder.retailer}</Text>
-        ) : null}
-        <View style={styles.row}>
-          <Feather name="calendar" size={12} color={colors.mutedForeground} />
-          <Text style={[styles.date, { color: colors.mutedForeground }]}>
-            {formatDate(reminder.scheduledDate)}
+      {/* Main row */}
+      <View style={styles.mainRow}>
+        <Pressable
+          onPress={reminder.isCompleted ? undefined : handleComplete}
+          style={[
+            styles.checkBtn,
+            {
+              borderColor: urg.color,
+              backgroundColor: reminder.isCompleted ? urg.color : "transparent",
+            },
+          ]}
+        >
+          {reminder.isCompleted ? (
+            <Feather name="check" size={14} color="#fff" />
+          ) : null}
+        </Pressable>
+        <View style={styles.content}>
+          <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
+            {reminder.jewelryName}
           </Text>
-          {reminder.recurrence !== "none" ? (
-            <View style={[styles.recBadge, { backgroundColor: colors.secondary }]}>
-              <Text style={[styles.recText, { color: colors.mutedForeground }]}>
-                {reminder.recurrence === "6months" ? "6mo" : reminder.recurrence === "1year" ? "1yr" : "2yr"}
-              </Text>
-            </View>
+          {reminder.retailer ? (
+            <Text style={[styles.meta, { color: colors.mutedForeground }]}>{reminder.retailer}</Text>
+          ) : null}
+          <View style={styles.row}>
+            <Feather name="calendar" size={12} color={colors.mutedForeground} />
+            <Text style={[styles.date, { color: colors.mutedForeground }]}>
+              {formatDate(reminder.scheduledDate)}
+            </Text>
+            {reminder.recurrence !== "none" ? (
+              <View style={[styles.recBadge, { backgroundColor: colors.secondary }]}>
+                <Text style={[styles.recText, { color: colors.mutedForeground }]}>
+                  {reminder.recurrence === "6months" ? "6mo" : reminder.recurrence === "1year" ? "1yr" : "2yr"}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+          {reminder.notes ? (
+            <Text style={[styles.notes, { color: colors.mutedForeground }]} numberOfLines={1}>
+              {reminder.notes}
+            </Text>
           ) : null}
         </View>
-        {reminder.notes ? (
-          <Text style={[styles.notes, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {reminder.notes}
-          </Text>
-        ) : null}
-      </View>
-      <View style={styles.right}>
-        <View style={[styles.urgBadge, { backgroundColor: urg.color + "18" }]}>
-          <Text style={[styles.urgText, { color: urg.color }]}>{urg.label}</Text>
+        <View style={styles.right}>
+          <View style={[styles.urgBadge, { backgroundColor: urg.color + "18" }]}>
+            <Text style={[styles.urgText, { color: urg.color }]}>{urg.label}</Text>
+          </View>
+          <Pressable onPress={onDelete} hitSlop={8} style={styles.deleteBtn}>
+            <Feather name="trash-2" size={15} color={colors.mutedForeground} />
+          </Pressable>
         </View>
-        <Pressable onPress={onDelete} hitSlop={8} style={styles.deleteBtn}>
-          <Feather name="trash-2" size={15} color={colors.mutedForeground} />
-        </Pressable>
       </View>
+
+      {/* Book appointment strip */}
+      {showBook ? (
+        <Pressable
+          onPress={handleBook}
+          style={[styles.bookStrip, { borderTopColor: colors.border, backgroundColor: colors.primary + "08" }]}
+        >
+          <Feather name="calendar" size={13} color={colors.primary} />
+          <Text style={[styles.bookText, { color: colors.primary }]}>
+            Book appointment at {reminder.retailer}
+          </Text>
+          <Feather name="chevron-right" size={13} color={colors.primary} />
+        </Pressable>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: "row",
-    alignItems: "center",
     borderRadius: 14,
     borderWidth: 1,
     marginBottom: 10,
+    overflow: "hidden",
+  },
+  mainRow: {
+    flexDirection: "row",
+    alignItems: "center",
     padding: 14,
     gap: 12,
   },
@@ -132,4 +159,18 @@ const styles = StyleSheet.create({
   urgBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   urgText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
   deleteBtn: { padding: 2 },
+
+  bookStrip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  bookText: {
+    flex: 1,
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+  },
 });

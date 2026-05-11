@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Linking,
   Platform,
@@ -276,74 +276,81 @@ export default function ProtectScreen() {
           </View>
         ))}
 
-        {/* Retail Partnerships */}
-        <SectionHeader
-          title="Retail Partnerships"
-          subtitle="Grow your store with DiGe integration"
+        {/* For Businesses — collapsible */}
+        <ForBusinessesSection
           colors={colors}
+          onRetailerInquiry={pressPartner}
+          onInsuranceInquiry={pressPartner}
         />
-
-        <View style={[styles.retailCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Text style={[styles.retailIntro, { color: colors.mutedForeground }]}>
-            Partner with DiGe to connect your customers with powerful digital tools — and drive repeat business automatically.
-          </Text>
-          <View style={styles.benefitsList}>
-            {RETAILER_BENEFITS.map((b) => (
-              <View key={b.icon} style={styles.benefitRow}>
-                <View style={[styles.benefitIcon, { backgroundColor: colors.primary + "12" }]}>
-                  <Feather name={b.icon as any} size={16} color={colors.primary} />
-                </View>
-                <View style={styles.benefitText}>
-                  <Text style={[styles.benefitTitle, { color: colors.foreground }]}>{b.title}</Text>
-                  <Text style={[styles.benefitDesc, { color: colors.mutedForeground }]}>{b.desc}</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-          <Pressable
-            onPress={pressPartner}
-            style={[styles.retailCta, { backgroundColor: colors.primary }]}
-          >
-            <Feather name="briefcase" size={16} color="#fff" />
-            <Text style={styles.retailCtaText}>Become a Retail Partner</Text>
-          </Pressable>
-        </View>
-
-        {/* Insurance Provider Partnership */}
-        <SectionHeader
-          title="Insurance Providers"
-          subtitle="Join the DiGe partner network"
-          colors={colors}
-        />
-
-        <View style={[styles.insurerCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={[styles.insurerIconWrap, { backgroundColor: "#5B21B6" }]}>
-            <Feather name="trending-up" size={28} color="#fff" />
-          </View>
-          <Text style={[styles.insurerHeadline, { color: colors.foreground }]}>
-            Reach qualified jewelry owners
-          </Text>
-          <Text style={[styles.insurerBody, { color: colors.mutedForeground }]}>
-            DiGe users actively document their jewelry collections — they are the highest-intent insurance prospects in the market. Partner with us to reach them at the moment they're thinking about protection.
-          </Text>
-          <View style={styles.statsRow}>
-            <StatPill label="Vault Data" icon="database" colors={colors} />
-            <StatPill label="Photo Docs" icon="image" colors={colors} />
-            <StatPill label="Serial Numbers" icon="hash" colors={colors} />
-            <StatPill label="Appraisals" icon="file-text" colors={colors} />
-          </View>
-          <Text style={[styles.insurerBody, { color: colors.mutedForeground, marginTop: 4 }]}>
-            Every quote request arrives pre-loaded with piece names, purchase prices, serial numbers, and warranty data — dramatically reducing underwriting friction.
-          </Text>
-          <Pressable
-            onPress={pressPartner}
-            style={[styles.insurerCta, { backgroundColor: colors.primary }]}
-          >
-            <Feather name="mail" size={16} color="#fff" />
-            <Text style={styles.insurerCtaText}>Inquire About Partnership</Text>
-          </Pressable>
-        </View>
       </ScrollView>
+    </View>
+  );
+}
+
+function ForBusinessesSection({
+  colors,
+  onRetailerInquiry,
+  onInsuranceInquiry,
+}: {
+  colors: ReturnType<typeof useColors>;
+  onRetailerInquiry: () => void;
+  onInsuranceInquiry: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={[styles.bizCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <Pressable onPress={() => setOpen((v) => !v)} style={styles.bizHeader}>
+        <View style={[styles.bizIconWrap, { backgroundColor: colors.primary + "12" }]}>
+          <Feather name="briefcase" size={18} color={colors.primary} />
+        </View>
+        <View style={styles.bizTitles}>
+          <Text style={[styles.bizTitle, { color: colors.foreground }]}>For Businesses</Text>
+          <Text style={[styles.bizSub, { color: colors.mutedForeground }]}>
+            Retailers & insurance providers
+          </Text>
+        </View>
+        <Feather name={open ? "chevron-up" : "chevron-down"} size={18} color={colors.mutedForeground} />
+      </Pressable>
+
+      {open && (
+        <View style={[styles.bizBody, { borderTopColor: colors.border }]}>
+          {/* Retailers */}
+          <View style={styles.bizSection}>
+            <Text style={[styles.bizSectionTitle, { color: colors.foreground }]}>
+              Jewelry Retailers
+            </Text>
+            <Text style={[styles.bizSectionBody, { color: colors.mutedForeground }]}>
+              Automated inspection reminders bring customers back. Digital warranty tracking reduces support calls. Wishlist integration converts browsers into buyers — and your store is featured prominently in customers' insurance reports.
+            </Text>
+            <Pressable
+              onPress={onRetailerInquiry}
+              style={[styles.bizBtn, { borderColor: colors.primary }]}
+            >
+              <Feather name="shopping-bag" size={14} color={colors.primary} />
+              <Text style={[styles.bizBtnText, { color: colors.primary }]}>Retailer Partnership Inquiry</Text>
+            </Pressable>
+          </View>
+
+          <View style={[styles.bizDivider, { backgroundColor: colors.border }]} />
+
+          {/* Insurance providers */}
+          <View style={styles.bizSection}>
+            <Text style={[styles.bizSectionTitle, { color: colors.foreground }]}>
+              Insurance Providers
+            </Text>
+            <Text style={[styles.bizSectionBody, { color: colors.mutedForeground }]}>
+              DiGe users document their collections with serial numbers, purchase prices, and appraisals — the highest-intent insurance prospects in the market. Quote requests arrive pre-loaded with structured data, dramatically reducing underwriting friction.
+            </Text>
+            <Pressable
+              onPress={onInsuranceInquiry}
+              style={[styles.bizBtn, { borderColor: colors.primary }]}
+            >
+              <Feather name="shield" size={14} color={colors.primary} />
+              <Text style={[styles.bizBtnText, { color: colors.primary }]}>Insurance Provider Inquiry</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -526,4 +533,27 @@ const styles = StyleSheet.create({
   },
   catalogActionTitle: { fontSize: 14, fontFamily: "Inter_700Bold" },
   catalogActionSub: { fontSize: 11, fontFamily: "Inter_400Regular", lineHeight: 15 },
+
+  bizCard: { borderRadius: 16, borderWidth: 1, overflow: "hidden" },
+  bizHeader: { flexDirection: "row", alignItems: "center", gap: 12, padding: 16 },
+  bizIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+  bizTitles: { flex: 1, gap: 2 },
+  bizTitle: { fontSize: 15, fontFamily: "Inter_700Bold" },
+  bizSub: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  bizBody: { borderTopWidth: StyleSheet.hairlineWidth, padding: 16, gap: 16 },
+  bizSection: { gap: 10 },
+  bizSectionTitle: { fontSize: 14, fontFamily: "Inter_700Bold" },
+  bizSectionBody: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19 },
+  bizBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    alignSelf: "flex-start",
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 20,
+    borderWidth: 1.5,
+  },
+  bizBtnText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  bizDivider: { height: StyleSheet.hairlineWidth },
 });

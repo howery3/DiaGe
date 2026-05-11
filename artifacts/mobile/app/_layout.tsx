@@ -77,6 +77,10 @@ function RootLayoutNav() {
         name="catalog-scan"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="reminder/book-appointment"
+        options={{ presentation: "modal", headerShown: true }}
+      />
     </Stack>
   );
 }
