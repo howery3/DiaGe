@@ -35,6 +35,12 @@ const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: str
   { value: "none", label: "None", desc: "No coverage" },
 ];
 
+function toStorage(display: string): string {
+  if (!display.trim()) return "";
+  const m = display.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  return m ? `${m[3]}-${m[1]}-${m[2]}` : display;
+}
+
 async function pickFromLibrary(): Promise<string | null> {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (status !== "granted") { Alert.alert("Permission needed", "Allow photo library access."); return null; }
@@ -81,14 +87,14 @@ export default function AddPieceScreen() {
     if (!name.trim()) { Alert.alert("Required", "Please enter a name for this piece."); return; }
     addPiece({
       name: name.trim(), type, brand: brand.trim(), material: material.trim(),
-      purchaseDate, purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
+      purchaseDate: toStorage(purchaseDate), purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
       serialNumber: serialNumber.trim(),
       goldWarrantyType, goldWarrantyNumber: goldWarrantyNumber.trim(),
-      goldWarrantyExpiry, goldWarrantyDetails: goldWarrantyDetails.trim(),
+      goldWarrantyExpiry: toStorage(goldWarrantyExpiry), goldWarrantyDetails: goldWarrantyDetails.trim(),
       diamondBondNumber: diamondBondNumber.trim(),
-      diamondBondExpiry, diamondBondDetails: diamondBondDetails.trim(),
+      diamondBondExpiry: toStorage(diamondBondExpiry), diamondBondDetails: diamondBondDetails.trim(),
       repairHistory: [],
-      description: description.trim(), lastInspection, imageUri,
+      description: description.trim(), lastInspection: toStorage(lastInspection), imageUri,
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
@@ -182,7 +188,7 @@ export default function AddPieceScreen() {
         </Field>
         <View style={styles.row}>
           <Field label="Purchase Date" colors={colors} style={{ flex: 1 }}>
-            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={purchaseDate} onChangeText={setPurchaseDate} />
+            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={purchaseDate} onChangeText={setPurchaseDate} />
           </Field>
           <Field label="Price ($)" colors={colors} style={{ flex: 1 }}>
             <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="0.00" placeholderTextColor={colors.mutedForeground} value={purchasePrice} onChangeText={setPurchasePrice} keyboardType="decimal-pad" />
@@ -221,7 +227,7 @@ export default function AddPieceScreen() {
               </Field>
               {goldWarrantyType === "dated" ? (
                 <Field label="Expiry Date" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
-                  <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={goldWarrantyExpiry} onChangeText={setGoldWarrantyExpiry} />
+                  <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={goldWarrantyExpiry} onChangeText={setGoldWarrantyExpiry} />
                 </Field>
               ) : null}
               <Field label="Details (retailer, terms, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
@@ -247,7 +253,7 @@ export default function AddPieceScreen() {
             <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. DB-2024-567890" placeholderTextColor={colors.mutedForeground} value={diamondBondNumber} onChangeText={setDiamondBondNumber} autoCapitalize="characters" />
           </Field>
           <Field label="Bond Expiry Date (leave blank if no bond)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
-            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={diamondBondExpiry} onChangeText={setDiamondBondExpiry} />
+            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={diamondBondExpiry} onChangeText={setDiamondBondExpiry} />
           </Field>
           {diamondBondExpiry || diamondBondNumber ? (
             <Field label="Bond Details (terms, coverage, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
@@ -258,7 +264,7 @@ export default function AddPieceScreen() {
 
         <SectionLabel label="Inspection & Notes" colors={colors} />
         <Field label="Last Inspection" colors={colors}>
-          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="YYYY-MM-DD" placeholderTextColor={colors.mutedForeground} value={lastInspection} onChangeText={setLastInspection} />
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={lastInspection} onChangeText={setLastInspection} />
         </Field>
         <Field label="Documents & Notes" colors={colors}>
           <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Receipts, appraisals, care instructions, special notes..." placeholderTextColor={colors.mutedForeground} value={description} onChangeText={setDescription} multiline numberOfLines={4} textAlignVertical="top" />

@@ -28,6 +28,12 @@ const REPAIR_TYPES = [
   "Other",
 ];
 
+function toStorage(display: string): string {
+  if (!display.trim()) return "";
+  const m = display.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  return m ? `${m[3]}-${m[1]}-${m[2]}` : display;
+}
+
 export default function AddRepairScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -53,7 +59,7 @@ export default function AddRepairScreen() {
       return;
     }
     addRepair(pieceId, {
-      date: date.trim(),
+      date: toStorage(date),
       repairType,
       retailer: retailer.trim(),
       cost: cost.trim(),
@@ -133,7 +139,7 @@ export default function AddRepairScreen() {
         <Field label="Date of Repair *" colors={colors}>
           <TextInput
             style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="YYYY-MM-DD"
+            placeholder="MM-DD-YYYY"
             placeholderTextColor={colors.mutedForeground}
             value={date}
             onChangeText={setDate}

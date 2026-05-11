@@ -22,6 +22,12 @@ const RECURRENCES: { value: ReminderRecurrence; label: string; desc: string }[] 
   { value: "2years", label: "2 Years", desc: "Biennial" },
 ];
 
+function toStorage(display: string): string {
+  if (!display.trim()) return "";
+  const m = display.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  return m ? `${m[3]}-${m[1]}-${m[2]}` : display;
+}
+
 export default function AddReminderScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -54,9 +60,10 @@ export default function AddReminderScreen() {
       Alert.alert("Required", "Please enter the inspection date.");
       return;
     }
-    const d = new Date(scheduledDate);
+    const stored = toStorage(scheduledDate);
+    const d = new Date(stored);
     if (isNaN(d.getTime())) {
-      Alert.alert("Invalid Date", "Please use YYYY-MM-DD format.");
+      Alert.alert("Invalid Date", "Please use MM-DD-YYYY format.");
       return;
     }
     addReminder({
@@ -163,7 +170,7 @@ export default function AddReminderScreen() {
         <Field label="Inspection Date *" colors={colors}>
           <TextInput
             style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="YYYY-MM-DD"
+            placeholder="MM-DD-YYYY"
             placeholderTextColor={colors.mutedForeground}
             value={scheduledDate}
             onChangeText={setScheduledDate}
