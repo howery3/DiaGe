@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/useColors";
 import type { JewelryPiece, JewelryType } from "@/context/DiGeContext";
 
@@ -66,9 +66,13 @@ export function JewelryCard({ piece, onPress }: JewelryCardProps) {
         { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
       ]}
     >
-      <View style={[styles.iconWrap, { backgroundColor: colors.secondary }]}>
-        <Feather name={icon} size={20} color={colors.primary} />
-      </View>
+      {piece.imageUri ? (
+        <Image source={{ uri: piece.imageUri }} style={styles.thumbnail} resizeMode="cover" />
+      ) : (
+        <View style={[styles.iconWrap, { backgroundColor: colors.secondary }]}>
+          <Feather name={icon} size={20} color={colors.primary} />
+        </View>
+      )}
       <View style={styles.info}>
         <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
           {piece.name}
@@ -107,6 +111,11 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
+  },
+  thumbnail: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
   },
   info: { flex: 1, gap: 4 },
   name: { fontSize: 15, fontFamily: "Inter_600SemiBold" },

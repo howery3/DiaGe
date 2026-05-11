@@ -281,6 +281,12 @@ export default function PieceDetailScreen() {
           headerRight: () => (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 18 }}>
               <Pressable
+                onPress={() => router.push(`/piece/edit?id=${piece!.id}`)}
+                hitSlop={8}
+              >
+                <Feather name="edit-2" size={20} color={colors.primary} />
+              </Pressable>
+              <Pressable
                 onPress={() => router.push(`/piece/share?pieceId=${piece!.id}`)}
                 hitSlop={8}
               >

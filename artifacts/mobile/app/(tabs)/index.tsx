@@ -85,8 +85,8 @@ export default function RetailersScreen() {
                 style={[styles.insuranceBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]}
                 hitSlop={8}
               >
-                <Feather name="file-text" size={14} color={colors.primary} />
-                <Text style={[styles.insuranceBtnText, { color: colors.primary }]}>Insurance</Text>
+                <Feather name="archive" size={14} color={colors.primary} />
+                <Text style={[styles.insuranceBtnText, { color: colors.primary }]}>My Vault</Text>
               </Pressable>
             ) : null}
             <Pressable
