@@ -125,6 +125,7 @@ interface DiGeContextType {
   updateReminder: (id: string, updates: Partial<InspectionReminder>) => void;
   deleteReminder: (id: string) => void;
   completeReminder: (id: string) => void;
+  clearAllData: () => Promise<void>;
   upcomingReminderCount: number;
 }
 
@@ -309,6 +310,13 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
     return diff <= 30 * 24 * 60 * 60 * 1000;
   }).length;
 
+  const clearAllData = useCallback(async () => {
+    setPieces([]);
+    setWishlistItems([]);
+    setReminders([]);
+    await AsyncStorage.multiRemove([PIECES_KEY, WISHLIST_KEY, REMINDERS_KEY]);
+  }, []);
+
   return (
     <DiGeContext.Provider
       value={{
@@ -318,6 +326,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
         addDocument, deleteDocument,
         addWishlistItem, updateWishlistItem, deleteWishlistItem,
         addReminder, updateReminder, deleteReminder, completeReminder,
+        clearAllData,
         upcomingReminderCount,
       }}
     >

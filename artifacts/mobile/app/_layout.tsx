@@ -89,6 +89,10 @@ function RootLayoutNav() {
         name="terms"
         options={{ presentation: "modal", headerShown: true }}
       />
+      <Stack.Screen
+        name="settings"
+        options={{ presentation: "modal", headerShown: false }}
+      />
     </Stack>
   );
 }

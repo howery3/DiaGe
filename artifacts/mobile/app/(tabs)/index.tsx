@@ -78,16 +78,25 @@ export default function RetailersScreen() {
               {retailers.length} {retailers.length === 1 ? "retailer" : "retailers"}
             </Text>
           </View>
-          {pieces.length > 0 ? (
+          <View style={styles.headerActions}>
+            {pieces.length > 0 ? (
+              <Pressable
+                onPress={() => router.push("/insurance-report")}
+                style={[styles.insuranceBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]}
+                hitSlop={8}
+              >
+                <Feather name="file-text" size={14} color={colors.primary} />
+                <Text style={[styles.insuranceBtnText, { color: colors.primary }]}>Insurance</Text>
+              </Pressable>
+            ) : null}
             <Pressable
-              onPress={() => router.push("/insurance-report")}
-              style={[styles.insuranceBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]}
+              onPress={() => router.push("/settings")}
+              style={[styles.settingsBtn, { backgroundColor: colors.muted }]}
               hitSlop={8}
             >
-              <Feather name="file-text" size={14} color={colors.primary} />
-              <Text style={[styles.insuranceBtnText, { color: colors.primary }]}>Insurance</Text>
+              <Feather name="settings" size={18} color={colors.mutedForeground} />
             </Pressable>
-          ) : null}
+          </View>
         </View>
       </View>
 
@@ -329,6 +338,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   insuranceBtnText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 8 },
+  settingsBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   logo: {
     fontSize: 28,
     fontFamily: "Inter_700Bold",
