@@ -243,11 +243,10 @@ export default function ProtectScreen() {
           </View>
         ))}
 
-        {/* For Businesses — collapsible */}
+        {/* For Businesses */}
         <ForBusinessesSection
           colors={colors}
           onRetailerInquiry={pressPartner}
-          onInsuranceInquiry={pressPartner}
         />
       </ScrollView>
     </View>
@@ -257,67 +256,60 @@ export default function ProtectScreen() {
 function ForBusinessesSection({
   colors,
   onRetailerInquiry,
-  onInsuranceInquiry,
 }: {
   colors: ReturnType<typeof useColors>;
   onRetailerInquiry: () => void;
-  onInsuranceInquiry: () => void;
 }) {
-  const [open, setOpen] = useState(false);
   return (
-    <View style={[styles.bizCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-      <Pressable onPress={() => setOpen((v) => !v)} style={styles.bizHeader}>
-        <View style={[styles.bizIconWrap, { backgroundColor: colors.primary + "12" }]}>
-          <Feather name="briefcase" size={18} color={colors.primary} />
+    <View style={[styles.bizCard, { backgroundColor: "#1C1435", borderColor: "#1C1435" }]}>
+      {/* Header */}
+      <View style={styles.bizHeader}>
+        <View style={[styles.bizIconWrap, { backgroundColor: "rgba(255,255,255,0.12)" }]}>
+          <Feather name="briefcase" size={18} color="#fff" />
         </View>
         <View style={styles.bizTitles}>
-          <Text style={[styles.bizTitle, { color: colors.foreground }]}>For Businesses</Text>
-          <Text style={[styles.bizSub, { color: colors.mutedForeground }]}>
+          <Text style={[styles.bizTitle, { color: "#fff" }]}>For Businesses</Text>
+          <Text style={[styles.bizSub, { color: "rgba(255,255,255,0.6)" }]}>
             Retailers & insurance providers
           </Text>
         </View>
-        <Feather name={open ? "chevron-up" : "chevron-down"} size={18} color={colors.mutedForeground} />
-      </Pressable>
+      </View>
 
-      {open && (
-        <View style={[styles.bizBody, { borderTopColor: colors.border }]}>
-          {/* Retailers */}
-          <View style={styles.bizSection}>
-            <Text style={[styles.bizSectionTitle, { color: colors.foreground }]}>
-              Jewelry Retailers
-            </Text>
-            <Text style={[styles.bizSectionBody, { color: colors.mutedForeground }]}>
-              Automated inspection reminders bring customers back. Digital warranty tracking reduces support calls. Wishlist integration converts browsers into buyers — and your store is featured prominently in customers' insurance reports.
-            </Text>
-            <Pressable
-              onPress={onRetailerInquiry}
-              style={[styles.bizBtn, { borderColor: colors.primary }]}
-            >
-              <Feather name="shopping-bag" size={14} color={colors.primary} />
-              <Text style={[styles.bizBtnText, { color: colors.primary }]}>Retailer Partnership Inquiry</Text>
-            </Pressable>
+      <View style={[styles.bizBody, { borderTopColor: "rgba(255,255,255,0.1)" }]}>
+        {/* Two proposition pills */}
+        <View style={styles.bizPills}>
+          <View style={[styles.bizPill, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+            <Feather name="shopping-bag" size={13} color="rgba(255,255,255,0.75)" />
+            <Text style={styles.bizPillText}>Retailers</Text>
           </View>
-
-          <View style={[styles.bizDivider, { backgroundColor: colors.border }]} />
-
-          {/* Insurance providers */}
-          <View style={styles.bizSection}>
-            <Text style={[styles.bizSectionTitle, { color: colors.foreground }]}>
-              Insurance Providers
-            </Text>
-            <Text style={[styles.bizSectionBody, { color: colors.mutedForeground }]}>
-              DiGe users document their collections with serial numbers, purchase prices, and appraisals — the highest-intent insurance prospects in the market. Quote requests arrive pre-loaded with structured data, dramatically reducing underwriting friction.
-            </Text>
-            <Pressable
-              onPress={onInsuranceInquiry}
-              style={[styles.bizBtn, { borderColor: colors.primary }]}
-            >
-              <Feather name="shield" size={14} color={colors.primary} />
-              <Text style={[styles.bizBtnText, { color: colors.primary }]}>Insurance Provider Inquiry</Text>
-            </Pressable>
+          <View style={[styles.bizPill, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+            <Feather name="shield" size={13} color="rgba(255,255,255,0.75)" />
+            <Text style={styles.bizPillText}>Insurers</Text>
           </View>
         </View>
-      )}
+
+        <Text style={styles.bizBodyText}>
+          Drive repeat foot traffic, receive pre-filled insurance quote requests, and turn wishlists into sales — all without changing your existing workflow.
+        </Text>
+
+        {/* Primary CTA — pricing page */}
+        <Pressable
+          onPress={() => router.push("/partner-pricing")}
+          style={({ pressed }) => [styles.bizPrimaryBtn, { opacity: pressed ? 0.88 : 1 }]}
+        >
+          <Text style={styles.bizPrimaryBtnText}>View Plans & Pricing</Text>
+          <Feather name="arrow-right" size={16} color="#5B21B6" />
+        </Pressable>
+
+        {/* Secondary CTA — straight to inquiry */}
+        <Pressable
+          onPress={onRetailerInquiry}
+          style={({ pressed }) => [styles.bizSecondaryBtn, { opacity: pressed ? 0.75 : 1 }]}
+        >
+          <Feather name="send" size={13} color="rgba(255,255,255,0.55)" />
+          <Text style={styles.bizSecondaryBtnText}>Skip to inquiry form</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -505,4 +497,41 @@ const styles = StyleSheet.create({
   },
   bizBtnText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
   bizDivider: { height: StyleSheet.hairlineWidth },
+  bizPills: { flexDirection: "row", gap: 8 },
+  bizPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  bizPillText: { fontSize: 12, fontFamily: "Inter_600SemiBold", color: "rgba(255,255,255,0.75)" },
+  bizBodyText: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.65)",
+    lineHeight: 19,
+  },
+  bizPrimaryBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: "#fff",
+  },
+  bizPrimaryBtnText: { fontSize: 15, fontFamily: "Inter_700Bold", color: "#5B21B6" },
+  bizSecondaryBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  bizSecondaryBtnText: {
+    fontSize: 12,
+    fontFamily: "Inter_500Medium",
+    color: "rgba(255,255,255,0.45)",
+  },
 });

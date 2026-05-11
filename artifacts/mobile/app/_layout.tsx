@@ -74,6 +74,10 @@ function RootLayoutNav() {
         options={{ headerShown: true }}
       />
       <Stack.Screen
+        name="partner-pricing"
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
         name="catalog-browse"
         options={{ headerShown: true }}
       />
