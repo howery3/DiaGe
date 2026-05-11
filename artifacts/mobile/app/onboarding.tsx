@@ -34,9 +34,9 @@ const SLIDES = [
     icon: "heart" as const,
     iconBg: "#7C3AED",
     accentBg: "#F0EBFF",
-    tag: "Organized by Retailer",
+    tag: "The Look you Love!",
     title: "Build wishlists at\nyour favorite stores",
-    body: "Save pieces you love, organized by jeweler. Share your wishlist with family for birthdays, anniversaries, and holidays.",
+    body: "Save pieces you love. Share your wishlist with family for birthdays, anniversaries, and holidays.",
     features: ["Wishlist per retailer", "Easy sharing with loved ones", "Sync with in-store QR codes"],
   },
   {
