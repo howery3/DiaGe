@@ -5,8 +5,9 @@ import {
   Inter_700Bold,
   useFonts,
 } from "@expo-google-fonts/inter";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -25,10 +26,13 @@ configureNotificationHandler();
 
 const queryClient = new QueryClient();
 
+const ONBOARDING_KEY = "@dige_onboarded";
+
 function RootLayoutNav() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       <Stack.Screen
         name="piece/add"
         options={{ presentation: "modal", headerShown: true }}
@@ -94,9 +98,21 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    async function init() {
       SplashScreen.hideAsync();
       requestNotificationPermissions();
+      try {
+        const value = await AsyncStorage.getItem(ONBOARDING_KEY);
+        if (!value) {
+          router.replace("/onboarding");
+        }
+      } catch {
+        // storage failure — proceed to app normally
+      }
+    }
+
+    if (fontsLoaded || fontError) {
+      init();
     }
   }, [fontsLoaded, fontError]);
 
