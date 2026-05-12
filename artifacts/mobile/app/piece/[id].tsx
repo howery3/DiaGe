@@ -23,6 +23,7 @@ import {
   type DocumentLabel,
   type RepairEntry,
 } from "@/context/DiGeContext";
+
 import { useColors } from "@/hooks/useColors";
 
 const DOCUMENT_LABELS: DocumentLabel[] = [
@@ -136,7 +137,7 @@ export default function PieceDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getPiece, deletePiece, updatePiece, deleteRepair, addDocument, deleteDocument } = useDiGe();
+  const { getPiece, deletePiece, updatePiece, deleteRepair, addDocument, deleteDocument, reminders } = useDiGe();
   const piece = getPiece(id ?? "");
 
   const [viewerDoc, setViewerDoc] = useState<DocumentAttachment | null>(null);
@@ -548,9 +549,91 @@ export default function PieceDetailScreen() {
         </SectionCard>
 
         {/* Inspection */}
-        <SectionCard label="Inspection" colors={colors}>
-          <Row label="Last Inspection" value={formatDate(piece.lastInspection)} colors={colors} />
-        </SectionCard>
+        <View style={styles.section}>
+          <View style={styles.sectionHeaderRow}>
+            <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Inspection</Text>
+            <Pressable
+              onPress={() => router.push(`/reminder/add?pieceId=${piece.id}&pieceName=${encodeURIComponent(piece.name)}`)}
+              style={[styles.addRepairBtn, { backgroundColor: colors.primary + "15", borderColor: colors.primary + "40" }]}
+            >
+              <Feather name="bell" size={13} color={colors.primary} />
+              <Text style={[styles.addRepairText, { color: colors.primary }]}>Schedule</Text>
+            </Pressable>
+          </View>
+          <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {piece.lastInspection ? (
+              <Pressable
+                onPress={() => router.push(`/piece/edit?id=${piece.id}`)}
+                style={styles.inspectionRow}
+              >
+                <View style={styles.inspectionLeft}>
+                  <View style={[styles.inspectionIconWrap, { backgroundColor: "#10B98118" }]}>
+                    <Feather name="check-circle" size={14} color="#10B981" />
+                  </View>
+                  <View>
+                    <Text style={[styles.inspectionRowLabel, { color: colors.mutedForeground }]}>Last Inspection</Text>
+                    <Text style={[styles.inspectionRowValue, { color: colors.foreground }]}>{formatDate(piece.lastInspection)}</Text>
+                  </View>
+                </View>
+                <Feather name="edit-2" size={14} color={colors.mutedForeground} />
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => router.push(`/piece/edit?id=${piece.id}`)}
+                style={styles.inspectionRow}
+              >
+                <View style={styles.inspectionLeft}>
+                  <View style={[styles.inspectionIconWrap, { backgroundColor: colors.secondary }]}>
+                    <Feather name="calendar" size={14} color={colors.mutedForeground} />
+                  </View>
+                  <Text style={[styles.notSetText, { color: colors.mutedForeground }]}>Last inspection not set — tap to add</Text>
+                </View>
+                <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+              </Pressable>
+            )}
+            {(() => {
+              const upcoming = reminders
+                .filter((r) => r.jewelryId === piece.id && !r.isCompleted && new Date(r.scheduledDate) >= new Date())
+                .sort((a, b) => new Date(a.scheduledDate).getTime() - new Date(b.scheduledDate).getTime())[0];
+              return upcoming ? (
+                <>
+                  <View style={[styles.inspectionDivider, { backgroundColor: colors.border }]} />
+                  <Pressable
+                    onPress={() => router.push("/(tabs)/reminders")}
+                    style={styles.inspectionRow}
+                  >
+                    <View style={styles.inspectionLeft}>
+                      <View style={[styles.inspectionIconWrap, { backgroundColor: colors.primary + "18" }]}>
+                        <Feather name="bell" size={14} color={colors.primary} />
+                      </View>
+                      <View>
+                        <Text style={[styles.inspectionRowLabel, { color: colors.mutedForeground }]}>Next Inspection</Text>
+                        <Text style={[styles.inspectionRowValue, { color: colors.primary }]}>{formatDate(upcoming.scheduledDate)}</Text>
+                      </View>
+                    </View>
+                    <Feather name="chevron-right" size={15} color={colors.primary} />
+                  </Pressable>
+                </>
+              ) : (
+                <>
+                  <View style={[styles.inspectionDivider, { backgroundColor: colors.border }]} />
+                  <Pressable
+                    onPress={() => router.push(`/reminder/add?pieceId=${piece.id}&pieceName=${encodeURIComponent(piece.name)}`)}
+                    style={styles.inspectionRow}
+                  >
+                    <View style={styles.inspectionLeft}>
+                      <View style={[styles.inspectionIconWrap, { backgroundColor: colors.primary + "18" }]}>
+                        <Feather name="bell" size={14} color={colors.primary} />
+                      </View>
+                      <Text style={[styles.notSetText, { color: colors.mutedForeground }]}>No upcoming reminder — tap to schedule</Text>
+                    </View>
+                    <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+                  </Pressable>
+                </>
+              );
+            })()}
+          </View>
+        </View>
 
         {piece.description ? (
           <SectionCard label="Notes" colors={colors}>
@@ -660,7 +743,13 @@ const styles = StyleSheet.create({
   warrantyCardIcon: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   warrantyCardTitle: { fontSize: 12, fontFamily: "Inter_600SemiBold", flex: 1 },
   warrantyCardSub: { fontSize: 11, fontFamily: "Inter_400Regular" },
-  notSetText: { fontSize: 12, fontFamily: "Inter_400Regular", fontStyle: "italic" },
+  notSetText: { fontSize: 13, fontFamily: "Inter_400Regular", fontStyle: "italic", flex: 1 },
+  inspectionRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 14, paddingVertical: 12 },
+  inspectionLeft: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1 },
+  inspectionIconWrap: { width: 30, height: 30, borderRadius: 15, alignItems: "center", justifyContent: "center" },
+  inspectionRowLabel: { fontSize: 11, fontFamily: "Inter_500Medium" },
+  inspectionRowValue: { fontSize: 14, fontFamily: "Inter_600SemiBold", marginTop: 1 },
+  inspectionDivider: { height: StyleSheet.hairlineWidth, marginHorizontal: 14 },
   statusPill: { alignSelf: "flex-start", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   statusPillText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
   warrantyNumberChip: { flexDirection: "row", alignItems: "center", gap: 4, alignSelf: "flex-start", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, borderWidth: 1 },

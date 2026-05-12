@@ -1,10 +1,10 @@
+import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { router, Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DatePickerModal } from "@/components/DatePickerModal";
 import { useDiGe, type ReminderRecurrence } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -22,24 +23,27 @@ const RECURRENCES: { value: ReminderRecurrence; label: string; desc: string }[] 
   { value: "2years", label: "2 Years", desc: "Biennial" },
 ];
 
-function toStorage(display: string): string {
-  if (!display.trim()) return "";
-  const m = display.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-  return m ? `${m[3]}-${m[1]}-${m[2]}` : display;
+function formatPickerDate(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso + "T12:00:00");
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
 export default function AddReminderScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { pieces, addReminder } = useDiGe();
+  const { pieceId: prefillPieceId, pieceName: prefillPieceName } = useLocalSearchParams<{ pieceId?: string; pieceName?: string }>();
 
-  const [jewelryName, setJewelryName] = useState("");
+  const [jewelryName, setJewelryName] = useState(prefillPieceName ? decodeURIComponent(prefillPieceName) : "");
   const [retailer, setRetailer] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
   const [recurrence, setRecurrence] = useState<ReminderRecurrence>("1year");
   const [notes, setNotes] = useState("");
-  const [selectedPieceId, setSelectedPieceId] = useState<string | undefined>(undefined);
+  const [selectedPieceId, setSelectedPieceId] = useState<string | undefined>(prefillPieceId ?? undefined);
   const [showPieces, setShowPieces] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   function selectPiece(id: string) {
     const p = pieces.find((x) => x.id === id);
@@ -56,16 +60,11 @@ export default function AddReminderScreen() {
       Alert.alert("Required", "Please enter the jewelry piece name.");
       return;
     }
-    if (!scheduledDate.trim()) {
-      Alert.alert("Required", "Please enter the inspection date.");
+    if (!scheduledDate) {
+      Alert.alert("Required", "Please select the inspection date.");
       return;
     }
-    const stored = toStorage(scheduledDate);
-    const d = new Date(stored);
-    if (isNaN(d.getTime())) {
-      Alert.alert("Invalid Date", "Please use MM-DD-YYYY format.");
-      return;
-    }
+    const d = new Date(scheduledDate + "T12:00:00");
     addReminder({
       jewelryId: selectedPieceId,
       jewelryName: jewelryName.trim(),
@@ -168,13 +167,22 @@ export default function AddReminderScreen() {
         <SectionLabel label="Schedule" colors={colors} />
 
         <Field label="Inspection Date *" colors={colors}>
-          <TextInput
-            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="MM-DD-YYYY"
-            placeholderTextColor={colors.mutedForeground}
-            value={scheduledDate}
-            onChangeText={setScheduledDate}
-          />
+          <Pressable
+            onPress={() => setShowDatePicker(true)}
+            style={[styles.dateRow, { borderColor: colors.border, backgroundColor: colors.background }]}
+          >
+            <Feather name="calendar" size={16} color={scheduledDate ? colors.primary : colors.mutedForeground} />
+            <Text style={[styles.dateRowText, { color: scheduledDate ? colors.foreground : colors.mutedForeground }]} numberOfLines={1}>
+              {scheduledDate ? formatPickerDate(scheduledDate) : "Select date"}
+            </Text>
+            {scheduledDate ? (
+              <Pressable onPress={(e) => { e.stopPropagation(); setScheduledDate(""); }} hitSlop={8}>
+                <Feather name="x" size={15} color={colors.mutedForeground} />
+              </Pressable>
+            ) : (
+              <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+            )}
+          </Pressable>
         </Field>
 
         <SectionLabel label="Recurrence" colors={colors} />
@@ -222,6 +230,14 @@ export default function AddReminderScreen() {
           />
         </Field>
       </KeyboardAwareScrollView>
+
+      <DatePickerModal
+        visible={showDatePicker}
+        value={scheduledDate}
+        label="Inspection Date"
+        onConfirm={(d) => { setScheduledDate(d); setShowDatePicker(false); }}
+        onCancel={() => setShowDatePicker(false)}
+      />
     </>
   );
 }
@@ -268,6 +284,8 @@ const styles = StyleSheet.create({
   },
   field: { marginBottom: 10 },
   fieldLabel: { fontSize: 12, fontFamily: "Inter_500Medium", marginBottom: 6 },
+  dateRow: { flexDirection: "row", alignItems: "center", gap: 10, borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11 },
+  dateRowText: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
   input: {
     borderWidth: 1,
     borderRadius: 10,

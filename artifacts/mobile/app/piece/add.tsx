@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DatePickerModal } from "@/components/DatePickerModal";
 import { useDiGe, type GoldWarrantyType, type JewelryType } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -43,10 +44,11 @@ const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: str
   { value: "none", label: "None", desc: "No coverage" },
 ];
 
-function toStorage(display: string): string {
-  if (!display.trim()) return "";
-  const m = display.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-  return m ? `${m[3]}-${m[1]}-${m[2]}` : display;
+function formatPickerDate(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso + "T12:00:00");
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
 async function pickFromLibrary(): Promise<string | null> {
@@ -62,6 +64,8 @@ async function pickFromCamera(): Promise<string | null> {
   const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, aspect: [4, 3], quality: 0.85 });
   return result.canceled ? null : result.assets[0].uri;
 }
+
+type DateField = "purchaseDate" | "goldExpiry" | "diamondExpiry" | "lastInspection";
 
 export default function AddPieceScreen() {
   const colors = useColors();
@@ -93,6 +97,27 @@ export default function AddPieceScreen() {
   const [lastInspection, setLastInspection] = useState("");
   const [imageUri, setImageUri] = useState<string | undefined>(undefined);
 
+  const [activePicker, setActivePicker] = useState<DateField | null>(null);
+
+  const dateValues: Record<DateField, string> = {
+    purchaseDate,
+    goldExpiry: goldWarrantyExpiry,
+    diamondExpiry: diamondBondExpiry,
+    lastInspection,
+  };
+  const dateLabels: Record<DateField, string> = {
+    purchaseDate: "Purchase Date",
+    goldExpiry: "Warranty Expiry",
+    diamondExpiry: "Bond Expiry",
+    lastInspection: "Last Inspection",
+  };
+  const dateSetters: Record<DateField, (v: string) => void> = {
+    purchaseDate: setPurchaseDate,
+    goldExpiry: setGoldWarrantyExpiry,
+    diamondExpiry: setDiamondBondExpiry,
+    lastInspection: setLastInspection,
+  };
+
   function handleSave() {
     if (!name.trim()) { Alert.alert("Required", "Please enter a name for this piece."); return; }
     const materialSummary = [
@@ -103,14 +128,14 @@ export default function AddPieceScreen() {
     addPiece({
       name: name.trim(), type, brand: brand.trim(),
       material: materialSummary, metals, diamondType, gemstones,
-      purchaseDate: toStorage(purchaseDate), purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
+      purchaseDate, purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
       serialNumber: serialNumber.trim(),
       goldWarrantyType, goldWarrantyNumber: goldWarrantyNumber.trim(),
-      goldWarrantyExpiry: toStorage(goldWarrantyExpiry), goldWarrantyDetails: goldWarrantyDetails.trim(),
+      goldWarrantyExpiry, goldWarrantyDetails: goldWarrantyDetails.trim(),
       diamondBondNumber: diamondBondNumber.trim(),
-      diamondBondExpiry: toStorage(diamondBondExpiry), diamondBondDetails: diamondBondDetails.trim(),
+      diamondBondExpiry, diamondBondDetails: diamondBondDetails.trim(),
       repairHistory: [],
-      description: description.trim(), lastInspection: toStorage(lastInspection), imageUri,
+      description: description.trim(), lastInspection, imageUri,
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
@@ -200,10 +225,7 @@ export default function AddPieceScreen() {
             {METALS.map((m) => {
               const selected = metals.includes(m);
               return (
-                <Pressable key={m} onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setMetals((prev) => selected ? prev.filter((x) => x !== m) : [...prev, m]);
-                }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                <Pressable key={m} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMetals((prev) => selected ? prev.filter((x) => x !== m) : [...prev, m]); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
                   <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{m}</Text>
                 </Pressable>
               );
@@ -216,10 +238,7 @@ export default function AddPieceScreen() {
             {DIAMOND_OPTIONS.map((opt) => {
               const selected = diamondType === opt.value;
               return (
-                <Pressable key={opt.value} onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setDiamondType(opt.value);
-                }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                <Pressable key={opt.value} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDiamondType(opt.value); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
                   <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{opt.label}</Text>
                 </Pressable>
               );
@@ -232,10 +251,7 @@ export default function AddPieceScreen() {
             {GEMSTONES.map((g) => {
               const selected = gemstones.includes(g);
               return (
-                <Pressable key={g} onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setGemstones((prev) => selected ? prev.filter((x) => x !== g) : [...prev, g]);
-                }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                <Pressable key={g} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setGemstones((prev) => selected ? prev.filter((x) => x !== g) : [...prev, g]); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
                   <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{g}</Text>
                 </Pressable>
               );
@@ -249,7 +265,7 @@ export default function AddPieceScreen() {
         </Field>
         <View style={styles.row}>
           <Field label="Purchase Date" colors={colors} style={{ flex: 1 }}>
-            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={purchaseDate} onChangeText={setPurchaseDate} />
+            <DateRow value={purchaseDate} onPress={() => setActivePicker("purchaseDate")} onClear={() => setPurchaseDate("")} colors={colors} />
           </Field>
           <Field label="Price ($)" colors={colors} style={{ flex: 1 }}>
             <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="0.00" placeholderTextColor={colors.mutedForeground} value={purchasePrice} onChangeText={setPurchasePrice} keyboardType="decimal-pad" />
@@ -288,7 +304,7 @@ export default function AddPieceScreen() {
               </Field>
               {goldWarrantyType === "dated" ? (
                 <Field label="Expiry Date" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
-                  <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={goldWarrantyExpiry} onChangeText={setGoldWarrantyExpiry} />
+                  <DateRow value={goldWarrantyExpiry} onPress={() => setActivePicker("goldExpiry")} onClear={() => setGoldWarrantyExpiry("")} colors={colors} />
                 </Field>
               ) : null}
               <Field label="Details (retailer, terms, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
@@ -314,7 +330,7 @@ export default function AddPieceScreen() {
             <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. DB-2024-567890" placeholderTextColor={colors.mutedForeground} value={diamondBondNumber} onChangeText={setDiamondBondNumber} autoCapitalize="characters" />
           </Field>
           <Field label="Bond Expiry Date (leave blank if no bond)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
-            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={diamondBondExpiry} onChangeText={setDiamondBondExpiry} />
+            <DateRow value={diamondBondExpiry} onPress={() => setActivePicker("diamondExpiry")} onClear={() => setDiamondBondExpiry("")} colors={colors} />
           </Field>
           {diamondBondExpiry || diamondBondNumber ? (
             <Field label="Bond Details (terms, coverage, contact)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
@@ -325,13 +341,39 @@ export default function AddPieceScreen() {
 
         <SectionLabel label="Inspection & Notes" colors={colors} />
         <Field label="Last Inspection" colors={colors}>
-          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="MM-DD-YYYY" placeholderTextColor={colors.mutedForeground} value={lastInspection} onChangeText={setLastInspection} />
+          <DateRow value={lastInspection} onPress={() => setActivePicker("lastInspection")} onClear={() => setLastInspection("")} colors={colors} />
         </Field>
         <Field label="Documents & Notes" colors={colors}>
           <TextInput style={[styles.textarea, { color: colors.foreground, borderColor: colors.border }]} placeholder="Receipts, appraisals, care instructions, special notes..." placeholderTextColor={colors.mutedForeground} value={description} onChangeText={setDescription} multiline numberOfLines={4} textAlignVertical="top" />
         </Field>
       </KeyboardAwareScrollView>
+
+      <DatePickerModal
+        visible={activePicker !== null}
+        value={activePicker ? dateValues[activePicker] : ""}
+        label={activePicker ? dateLabels[activePicker] : undefined}
+        onConfirm={(date) => { if (activePicker) dateSetters[activePicker](date); setActivePicker(null); }}
+        onCancel={() => setActivePicker(null)}
+      />
     </>
+  );
+}
+
+function DateRow({ value, onPress, onClear, colors }: { value: string; onPress: () => void; onClear: () => void; colors: ReturnType<typeof useColors> }) {
+  return (
+    <Pressable onPress={onPress} style={[styles.dateRow, { borderColor: colors.border, backgroundColor: colors.background }]}>
+      <Feather name="calendar" size={16} color={value ? colors.primary : colors.mutedForeground} />
+      <Text style={[styles.dateRowText, { color: value ? colors.foreground : colors.mutedForeground }]} numberOfLines={1}>
+        {value ? formatPickerDate(value) : "Select date"}
+      </Text>
+      {value ? (
+        <Pressable onPress={(e) => { e.stopPropagation(); onClear(); }} hitSlop={8}>
+          <Feather name="x" size={15} color={colors.mutedForeground} />
+        </Pressable>
+      ) : (
+        <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+      )}
+    </Pressable>
   );
 }
 
@@ -364,6 +406,8 @@ const styles = StyleSheet.create({
   fieldLabel: { fontSize: 12, fontFamily: "Inter_500Medium", marginBottom: 6 },
   input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11, fontSize: 14, fontFamily: "Inter_400Regular" },
   textarea: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11, fontSize: 14, fontFamily: "Inter_400Regular", minHeight: 72 },
+  dateRow: { flexDirection: "row", alignItems: "center", gap: 10, borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11 },
+  dateRowText: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
   pillRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   pill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1 },
   pillText: { fontSize: 13, fontFamily: "Inter_500Medium" },

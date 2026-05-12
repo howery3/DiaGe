@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DatePickerModal } from "@/components/DatePickerModal";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -28,10 +29,11 @@ const REPAIR_TYPES = [
   "Other",
 ];
 
-function toStorage(display: string): string {
-  if (!display.trim()) return "";
-  const m = display.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-  return m ? `${m[3]}-${m[1]}-${m[2]}` : display;
+function formatPickerDate(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso + "T12:00:00");
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
 export default function AddRepairScreen() {
@@ -48,10 +50,11 @@ export default function AddRepairScreen() {
   const [retailer, setRetailer] = useState("");
   const [cost, setCost] = useState("");
   const [description, setDescription] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   function handleSave() {
-    if (!date.trim()) {
-      Alert.alert("Required", "Please enter the date of the repair.");
+    if (!date) {
+      Alert.alert("Required", "Please select the date of the repair.");
       return;
     }
     if (!description.trim() && !repairType) {
@@ -59,7 +62,7 @@ export default function AddRepairScreen() {
       return;
     }
     addRepair(pieceId, {
-      date: toStorage(date),
+      date,
       repairType,
       retailer: retailer.trim(),
       cost: cost.trim(),
@@ -137,13 +140,22 @@ export default function AddRepairScreen() {
         <SectionLabel label="Details" colors={colors} />
 
         <Field label="Date of Repair *" colors={colors}>
-          <TextInput
-            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="MM-DD-YYYY"
-            placeholderTextColor={colors.mutedForeground}
-            value={date}
-            onChangeText={setDate}
-          />
+          <Pressable
+            onPress={() => setShowDatePicker(true)}
+            style={[styles.dateRow, { borderColor: colors.border, backgroundColor: colors.background }]}
+          >
+            <Feather name="calendar" size={16} color={date ? colors.primary : colors.mutedForeground} />
+            <Text style={[styles.dateRowText, { color: date ? colors.foreground : colors.mutedForeground }]} numberOfLines={1}>
+              {date ? formatPickerDate(date) : "Select date"}
+            </Text>
+            {date ? (
+              <Pressable onPress={(e) => { e.stopPropagation(); setDate(""); }} hitSlop={8}>
+                <Feather name="x" size={15} color={colors.mutedForeground} />
+              </Pressable>
+            ) : (
+              <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+            )}
+          </Pressable>
         </Field>
 
         <Field label="Retailer / Jeweler" colors={colors}>
@@ -180,6 +192,14 @@ export default function AddRepairScreen() {
           />
         </Field>
       </KeyboardAwareScrollView>
+
+      <DatePickerModal
+        visible={showDatePicker}
+        value={date}
+        label="Date of Repair"
+        onConfirm={(d) => { setDate(d); setShowDatePicker(false); }}
+        onCancel={() => setShowDatePicker(false)}
+      />
     </>
   );
 }
@@ -247,6 +267,8 @@ const styles = StyleSheet.create({
   typePillText: { fontSize: 13, fontFamily: "Inter_500Medium" },
   field: { marginBottom: 10 },
   fieldLabel: { fontSize: 12, fontFamily: "Inter_500Medium", marginBottom: 6 },
+  dateRow: { flexDirection: "row", alignItems: "center", gap: 10, borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11 },
+  dateRowText: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
   input: {
     borderWidth: 1,
     borderRadius: 10,
