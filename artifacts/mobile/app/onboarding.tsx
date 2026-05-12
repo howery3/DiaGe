@@ -26,8 +26,8 @@ const SLIDES = [
     accentBg: "#EDE8FA",
     tag: "Your Digital Jewelry Vault",
     title: "Say goodbye to your paperwork,\nand hello to DiaGe!",
-    body: "Store warranties, receipts, certifications, and appraisals for every piece. Pull them up in seconds — from your pocket.",
-    features: ["Gold & diamond warranty tracking", "Receipt & document storage", "Serial number records"],
+    body: "Store warranties, receipts, certifications, and appraisals for every piece. Pull them up in seconds right from your pocket.",
+    features: ["Gold & diamond warranty tracking", "Receipt & document storage", "Certification records"],
   },
   {
     id: "wishlist",
@@ -47,7 +47,7 @@ const SLIDES = [
     tag: "Stay Protected",
     title: "Never miss an\ninspection or renewal",
     body: "Smart reminders keep your warranties valid and your jewelry insured. Book appointments directly from the app.",
-    features: ["Inspection reminders", "One-tap insurance quotes", "Book store appointments"],
+    features: ["Inspection reminders", "One-tap insurance quotes", "Book in-store appointments"],
   },
 ];
 
