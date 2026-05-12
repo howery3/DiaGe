@@ -403,7 +403,17 @@ export default function PieceDetailScreen() {
           </View>
           <Text style={[styles.heroName, { color: colors.foreground }]}>{piece.name}</Text>
           {piece.brand ? <Text style={[styles.heroBrand, { color: colors.mutedForeground }]}>{piece.brand}</Text> : null}
-          {piece.material ? <Text style={[styles.heroMaterial, { color: colors.primary }]}>{piece.material}</Text> : null}
+          {(piece.metals?.length || piece.gemstones?.length || (piece.diamondType && piece.diamondType !== "none") || piece.material) ? (
+            <Text style={[styles.heroMaterial, { color: colors.primary }]}>
+              {piece.metals?.length || piece.gemstones?.length || (piece.diamondType && piece.diamondType !== "none")
+                ? [
+                    ...(piece.metals ?? []),
+                    ...(piece.diamondType && piece.diamondType !== "none" ? [piece.diamondType === "lab" ? "Lab Diamond" : "Natural Diamond"] : []),
+                    ...(piece.gemstones ?? []),
+                  ].join(" · ")
+                : piece.material}
+            </Text>
+          ) : null}
         </View>
 
         {/* Warranties */}

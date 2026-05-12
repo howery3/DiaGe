@@ -57,6 +57,9 @@ export interface JewelryPiece {
   type: JewelryType;
   brand: string;
   material: string;
+  metals?: string[];
+  diamondType?: string;
+  gemstones?: string[];
   purchaseDate: string;
   purchasePrice: string;
   retailer: string;

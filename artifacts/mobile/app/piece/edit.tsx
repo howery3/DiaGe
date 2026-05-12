@@ -29,6 +29,14 @@ const TYPES: { value: JewelryType; label: string }[] = [
   { value: "other", label: "Other" },
 ];
 
+const METALS = ["Silver", "Yellow Gold", "White Gold", "Rose Gold", "Platinum", "10K", "14K", "18K", "24K", "Two-Tone"];
+const DIAMOND_OPTIONS = [
+  { value: "none", label: "None" },
+  { value: "natural", label: "Natural" },
+  { value: "lab", label: "Lab-Grown" },
+];
+const GEMSTONES = ["Ruby", "Sapphire", "Emerald", "Pearl", "Opal", "Amethyst", "Topaz", "Garnet", "Turquoise", "Other"];
+
 const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: string }[] = [
   { value: "lifetime", label: "Lifetime", desc: "No expiry" },
   { value: "dated", label: "Set Date", desc: "Has expiry" },
@@ -71,7 +79,9 @@ export default function EditPieceScreen() {
   const [name, setName] = useState(piece?.name ?? "");
   const [type, setType] = useState<JewelryType>(piece?.type ?? "ring");
   const [brand, setBrand] = useState(piece?.brand ?? "");
-  const [material, setMaterial] = useState(piece?.material ?? "");
+  const [metals, setMetals] = useState<string[]>(piece?.metals ?? []);
+  const [diamondType, setDiamondType] = useState(piece?.diamondType ?? "none");
+  const [gemstones, setGemstones] = useState<string[]>(piece?.gemstones ?? []);
   const [purchaseDate, setPurchaseDate] = useState(toDisplay(piece?.purchaseDate ?? ""));
   const [purchasePrice, setPurchasePrice] = useState(piece?.purchasePrice ?? "");
   const [retailer, setRetailer] = useState(piece?.retailer ?? "");
@@ -103,8 +113,14 @@ export default function EditPieceScreen() {
 
   function handleSave() {
     if (!name.trim()) { Alert.alert("Required", "Please enter a name for this piece."); return; }
+    const materialSummary = [
+      ...metals,
+      ...(diamondType !== "none" ? [diamondType === "lab" ? "Lab Diamond" : "Natural Diamond"] : []),
+      ...gemstones,
+    ].join(", ");
     updatePiece(piece!.id, {
-      name: name.trim(), type, brand: brand.trim(), material: material.trim(),
+      name: name.trim(), type, brand: brand.trim(),
+      material: materialSummary, metals, diamondType, gemstones,
       purchaseDate: toStorage(purchaseDate), purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
       serialNumber: serialNumber.trim(),
       goldWarrantyType, goldWarrantyNumber: goldWarrantyNumber.trim(),
@@ -204,8 +220,53 @@ export default function EditPieceScreen() {
         <Field label="Brand" colors={colors}>
           <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Tiffany & Co." placeholderTextColor={colors.mutedForeground} value={brand} onChangeText={setBrand} />
         </Field>
-        <Field label="Material" colors={colors}>
-          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. 18K Yellow Gold, Diamond" placeholderTextColor={colors.mutedForeground} value={material} onChangeText={setMaterial} />
+
+        <Field label="Metal" colors={colors}>
+          <View style={styles.pillRow}>
+            {METALS.map((m) => {
+              const selected = metals.includes(m);
+              return (
+                <Pressable key={m} onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setMetals((prev) => selected ? prev.filter((x) => x !== m) : [...prev, m]);
+                }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                  <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{m}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </Field>
+
+        <Field label="Diamond" colors={colors}>
+          <View style={styles.pillRow}>
+            {DIAMOND_OPTIONS.map((opt) => {
+              const selected = diamondType === opt.value;
+              return (
+                <Pressable key={opt.value} onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setDiamondType(opt.value);
+                }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                  <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{opt.label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </Field>
+
+        <Field label="Gemstones" colors={colors}>
+          <View style={styles.pillRow}>
+            {GEMSTONES.map((g) => {
+              const selected = gemstones.includes(g);
+              return (
+                <Pressable key={g} onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setGemstones((prev) => selected ? prev.filter((x) => x !== g) : [...prev, g]);
+                }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                  <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{g}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
         </Field>
 
         <SectionLabel label="Purchase Details" colors={colors} />
