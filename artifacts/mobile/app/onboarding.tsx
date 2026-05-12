@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Platform,
@@ -12,6 +12,17 @@ import {
   Text,
   View,
 } from "react-native";
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+  Easing,
+  cancelAnimation,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -51,6 +62,124 @@ const SLIDES = [
   },
 ];
 
+function FloatingIcon({ iconBg, icon }: { iconBg: string; icon: React.ComponentProps<typeof Feather>["name"] }) {
+  const floatY = useSharedValue(0);
+  const scale = useSharedValue(0.7);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    opacity.value = withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) });
+    scale.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.back(1.4)) });
+    floatY.value = withRepeat(
+      withSequence(
+        withTiming(-10, { duration: 1800, easing: Easing.inOut(Easing.sin) }),
+        withTiming(0, { duration: 1800, easing: Easing.inOut(Easing.sin) })
+      ),
+      -1,
+      false
+    );
+    return () => {
+      cancelAnimation(floatY);
+      cancelAnimation(scale);
+      cancelAnimation(opacity);
+    };
+  }, []);
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: floatY.value }, { scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <Animated.View style={[styles.illustrationCircle, { backgroundColor: iconBg }, animStyle]}>
+      <Feather name={icon} size={52} color="#fff" />
+    </Animated.View>
+  );
+}
+
+function DecoCircle({ style, iconBg, delay }: { style: object; iconBg: string; delay: number }) {
+  const scale = useSharedValue(0.8);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    opacity.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.cubic) });
+    scale.value = withRepeat(
+      withSequence(
+        withTiming(1.08, { duration: 2400 + delay, easing: Easing.inOut(Easing.sin) }),
+        withTiming(0.92, { duration: 2400 + delay, easing: Easing.inOut(Easing.sin) })
+      ),
+      -1,
+      false
+    );
+    return () => {
+      cancelAnimation(scale);
+      cancelAnimation(opacity);
+    };
+  }, []);
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
+  return <Animated.View style={[style, { backgroundColor: iconBg }, animStyle]} />;
+}
+
+function SlideContent({
+  slide,
+  active,
+}: {
+  slide: (typeof SLIDES)[0];
+  active: boolean;
+}) {
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    if (active) setKey((k) => k + 1);
+  }, [active]);
+
+  if (!active) return null;
+
+  return (
+    <View key={key} style={styles.content}>
+      <Animated.View entering={FadeInDown.delay(100).duration(400).springify()}>
+        <View style={[styles.tagPill, { backgroundColor: slide.iconBg + "14" }]}>
+          <Text style={[styles.tagText, { color: slide.iconBg }]}>{slide.tag}</Text>
+        </View>
+      </Animated.View>
+
+      <Animated.Text
+        entering={FadeInDown.delay(200).duration(400).springify()}
+        style={styles.title}
+      >
+        {slide.title}
+      </Animated.Text>
+
+      <Animated.Text
+        entering={FadeInDown.delay(300).duration(400).springify()}
+        style={styles.body}
+      >
+        {slide.body}
+      </Animated.Text>
+
+      <View style={styles.featureList}>
+        {slide.features.map((f, i) => (
+          <Animated.View
+            key={f}
+            entering={FadeInDown.delay(380 + i * 80).duration(400).springify()}
+            style={styles.featureRow}
+          >
+            <View style={[styles.featureCheck, { backgroundColor: slide.iconBg }]}>
+              <Feather name="check" size={11} color="#fff" />
+            </View>
+            <Text style={styles.featureText}>{f}</Text>
+          </Animated.View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
@@ -87,18 +216,14 @@ export default function OnboardingScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: topPad }]}>
-      {/* Skip */}
       {activeIndex < SLIDES.length - 1 ? (
-        <Pressable
-          onPress={finish}
-          style={styles.skipBtn}
-          hitSlop={12}
-        >
-          <Text style={styles.skipText}>Skip</Text>
-        </Pressable>
+        <Animated.View entering={FadeInUp.duration(400)} style={styles.skipBtn}>
+          <Pressable onPress={finish} hitSlop={12}>
+            <Text style={styles.skipText}>Skip</Text>
+          </Pressable>
+        </Animated.View>
       ) : null}
 
-      {/* Slides */}
       <ScrollView
         ref={scrollRef}
         horizontal
@@ -107,51 +232,31 @@ export default function OnboardingScreen() {
         scrollEventThrottle={16}
         onMomentumScrollEnd={handleScroll}
         style={styles.scroller}
+        scrollEnabled={false}
       >
-        {SLIDES.map((s) => (
+        {SLIDES.map((s, idx) => (
           <View key={s.id} style={[styles.slide, { width: SCREEN_WIDTH }]}>
-            {/* Illustration area */}
             <View style={[styles.illustrationWrap, { backgroundColor: s.accentBg }]}>
-              <View style={[styles.illustrationCircle, { backgroundColor: s.iconBg }]}>
-                <Feather name={s.icon} size={52} color="#fff" />
-              </View>
-
-              {/* Floating decoration circles */}
-              <View style={[styles.deco1, { backgroundColor: s.iconBg + "20" }]} />
-              <View style={[styles.deco2, { backgroundColor: s.iconBg + "14" }]} />
-              <View style={[styles.deco3, { backgroundColor: s.iconBg + "10" }]} />
+              {activeIndex === idx && <FloatingIcon iconBg={s.iconBg} icon={s.icon} />}
+              {activeIndex !== idx && (
+                <View style={[styles.illustrationCircle, { backgroundColor: s.iconBg }]}>
+                  <Feather name={s.icon} size={52} color="#fff" />
+                </View>
+              )}
+              <DecoCircle style={styles.deco1} iconBg={s.iconBg + "20"} delay={0} />
+              <DecoCircle style={styles.deco2} iconBg={s.iconBg + "14"} delay={300} />
+              <DecoCircle style={styles.deco3} iconBg={s.iconBg + "10"} delay={150} />
             </View>
 
-            {/* Content */}
-            <View style={styles.content}>
-              <View style={[styles.tagPill, { backgroundColor: s.iconBg + "14" }]}>
-                <Text style={[styles.tagText, { color: s.iconBg }]}>{s.tag}</Text>
-              </View>
-
-              <Text style={styles.title}>{s.title}</Text>
-              <Text style={styles.body}>{s.body}</Text>
-
-              <View style={styles.featureList}>
-                {s.features.map((f) => (
-                  <View key={f} style={styles.featureRow}>
-                    <View style={[styles.featureCheck, { backgroundColor: s.iconBg }]}>
-                      <Feather name="check" size={11} color="#fff" />
-                    </View>
-                    <Text style={styles.featureText}>{f}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
+            <SlideContent slide={s} active={activeIndex === idx} />
           </View>
         ))}
       </ScrollView>
 
-      {/* Bottom bar */}
       <View style={[styles.bottomBar, { paddingBottom: bottomPad + 16 }]}>
-        {/* Dots */}
         <View style={styles.dots}>
           {SLIDES.map((s, i) => (
-            <View
+            <Animated.View
               key={s.id}
               style={[
                 styles.dot,
@@ -164,37 +269,37 @@ export default function OnboardingScreen() {
           ))}
         </View>
 
-        {/* T&C acceptance — only on last slide */}
         {isLastSlide ? (
-          <Pressable
-            onPress={() => setTermsAccepted((v) => !v)}
-            style={styles.termsRow}
-          >
-            <View
-              style={[
-                styles.checkbox,
-                {
-                  backgroundColor: termsAccepted ? "#5B21B6" : "transparent",
-                  borderColor: termsAccepted ? "#5B21B6" : "#DDD5F5",
-                },
-              ]}
+          <Animated.View entering={FadeInDown.duration(350).springify()}>
+            <Pressable
+              onPress={() => setTermsAccepted((v) => !v)}
+              style={styles.termsRow}
             >
-              {termsAccepted ? <Feather name="check" size={13} color="#fff" /> : null}
-            </View>
-            <Text style={styles.termsText}>
-              I agree to the{" "}
-              <Text
-                style={styles.termsLink}
-                onPress={() => router.push("/terms")}
+              <View
+                style={[
+                  styles.checkbox,
+                  {
+                    backgroundColor: termsAccepted ? "#5B21B6" : "transparent",
+                    borderColor: termsAccepted ? "#5B21B6" : "#DDD5F5",
+                  },
+                ]}
               >
-                Terms &amp; Conditions
+                {termsAccepted ? <Feather name="check" size={13} color="#fff" /> : null}
+              </View>
+              <Text style={styles.termsText}>
+                I agree to the{" "}
+                <Text
+                  style={styles.termsLink}
+                  onPress={() => router.push("/terms")}
+                >
+                  Terms &amp; Conditions
+                </Text>
+                , including data sharing with business partners.
               </Text>
-              , including data sharing with business partners.
-            </Text>
-          </Pressable>
+            </Pressable>
+          </Animated.View>
         ) : null}
 
-        {/* CTA */}
         <Pressable
           onPress={isLastSlide && !termsAccepted ? undefined : goNext}
           style={({ pressed }) => [
