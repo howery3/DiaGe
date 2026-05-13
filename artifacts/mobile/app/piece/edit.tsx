@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BarcodeScannerModal } from "@/components/BarcodeScannerModal";
 import { DatePickerModal } from "@/components/DatePickerModal";
 import { useDiGe, type GoldWarrantyType, type JewelryType } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
@@ -99,6 +100,7 @@ export default function EditPieceScreen() {
   const [imageUri, setImageUri] = useState<string | undefined>(piece?.imageUri);
 
   const [activePicker, setActivePicker] = useState<DateField | null>(null);
+  const [barcodeTarget, setBarcodeTarget] = useState<"goldWarrantyNumber" | "diamondBondNumber" | null>(null);
 
   const dateValues: Record<DateField, string> = {
     purchaseDate,
@@ -320,7 +322,12 @@ export default function EditPieceScreen() {
           {goldWarrantyType !== "none" ? (
             <>
               <Field label="Warranty Number" colors={colors} style={{ marginTop: 12, marginBottom: 0 }}>
-                <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. LW-2024-001234" placeholderTextColor={colors.mutedForeground} value={goldWarrantyNumber} onChangeText={setGoldWarrantyNumber} autoCapitalize="characters" />
+                <View style={styles.scanInputRow}>
+                  <TextInput style={[styles.input, styles.scanInputFlex, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. LW-2024-001234" placeholderTextColor={colors.mutedForeground} value={goldWarrantyNumber} onChangeText={setGoldWarrantyNumber} autoCapitalize="characters" />
+                  <Pressable onPress={() => setBarcodeTarget("goldWarrantyNumber")} style={[styles.scanIconBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]} hitSlop={6}>
+                    <Feather name="camera" size={18} color={colors.primary} />
+                  </Pressable>
+                </View>
               </Field>
               {goldWarrantyType === "dated" ? (
                 <Field label="Expiry Date" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
@@ -347,7 +354,12 @@ export default function EditPieceScreen() {
           </View>
 
           <Field label="Bond Number" colors={colors} style={{ marginTop: 12, marginBottom: 0 }}>
-            <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. DB-2024-567890" placeholderTextColor={colors.mutedForeground} value={diamondBondNumber} onChangeText={setDiamondBondNumber} autoCapitalize="characters" />
+            <View style={styles.scanInputRow}>
+              <TextInput style={[styles.input, styles.scanInputFlex, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. DB-2024-567890" placeholderTextColor={colors.mutedForeground} value={diamondBondNumber} onChangeText={setDiamondBondNumber} autoCapitalize="characters" />
+              <Pressable onPress={() => setBarcodeTarget("diamondBondNumber")} style={[styles.scanIconBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]} hitSlop={6}>
+                <Feather name="camera" size={18} color={colors.primary} />
+              </Pressable>
+            </View>
           </Field>
           <Field label="Bond Expiry Date (leave blank if no bond)" colors={colors} style={{ marginTop: 10, marginBottom: 0 }}>
             <DateRow value={diamondBondExpiry} onPress={() => setActivePicker("diamondExpiry")} onClear={() => setDiamondBondExpiry("")} colors={colors} />
@@ -374,6 +386,16 @@ export default function EditPieceScreen() {
         label={activePicker ? dateLabels[activePicker] : undefined}
         onConfirm={(date) => { if (activePicker) dateSetters[activePicker](date); setActivePicker(null); }}
         onCancel={() => setActivePicker(null)}
+      />
+      <BarcodeScannerModal
+        visible={barcodeTarget !== null}
+        hint={barcodeTarget === "goldWarrantyNumber" ? "Scan your warranty card barcode" : "Scan your diamond bond barcode"}
+        onScanned={(code) => {
+          if (barcodeTarget === "goldWarrantyNumber") setGoldWarrantyNumber(code);
+          else if (barcodeTarget === "diamondBondNumber") setDiamondBondNumber(code);
+          setBarcodeTarget(null);
+        }}
+        onCancel={() => setBarcodeTarget(null)}
       />
     </>
   );
@@ -443,4 +465,7 @@ const styles = StyleSheet.create({
   optionPill: { flex: 1, paddingVertical: 10, paddingHorizontal: 8, borderRadius: 12, alignItems: "center", gap: 2 },
   optionPillLabel: { fontSize: 12, fontFamily: "Inter_600SemiBold", textAlign: "center" },
   optionPillDesc: { fontSize: 10, fontFamily: "Inter_400Regular" },
+  scanInputRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  scanInputFlex: { flex: 1 },
+  scanIconBtn: { width: 44, height: 44, borderRadius: 10, borderWidth: 1, alignItems: "center", justifyContent: "center" },
 });
