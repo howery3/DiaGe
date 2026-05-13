@@ -39,6 +39,11 @@ const DIAMOND_OPTIONS = [
 ];
 const GEMSTONES = ["Ruby", "Sapphire", "Emerald", "Pearl", "Opal", "Amethyst", "Topaz", "Garnet", "Turquoise", "Other"];
 
+const WATCH_CASE_MATERIALS = ["Stainless Steel", "Gold", "Rose Gold", "Two-Tone", "Titanium", "Ceramic", "Aluminum", "Plastic"];
+const WATCH_BANDS = ["Steel Bracelet", "Gold Bracelet", "Rubber", "Silicone", "Leather", "NATO", "Mesh", "Ceramic", "Titanium"];
+const WATCH_MOVEMENTS = ["Automatic", "Manual", "Quartz", "Swiss Automatic", "Swiss Quartz", "Japanese Automatic", "Japanese Quartz", "Solar", "Kinetic"];
+const WATCH_CRYSTALS = ["Sapphire", "Mineral", "Acrylic", "Hardlex"];
+
 const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: string }[] = [
   { value: "lifetime", label: "Lifetime", desc: "No expiry" },
   { value: "dated", label: "Set Date", desc: "Has expiry" },
@@ -81,6 +86,10 @@ export default function EditPieceScreen() {
   const [metals, setMetals] = useState<string[]>(piece?.metals ?? []);
   const [diamondType, setDiamondType] = useState(piece?.diamondType ?? "none");
   const [gemstones, setGemstones] = useState<string[]>(piece?.gemstones ?? []);
+  const [watchBand, setWatchBand] = useState(piece?.watchBand ?? "");
+  const [watchMovement, setWatchMovement] = useState(piece?.watchMovement ?? "");
+  const [watchCrystal, setWatchCrystal] = useState(piece?.watchCrystal ?? "");
+  const [watchCase, setWatchCase] = useState(piece?.watchCase ?? "");
   const [purchaseDate, setPurchaseDate] = useState(piece?.purchaseDate ?? "");
   const [purchasePrice, setPurchasePrice] = useState(piece?.purchasePrice ?? "");
   const [retailer, setRetailer] = useState(piece?.retailer ?? "");
@@ -134,14 +143,13 @@ export default function EditPieceScreen() {
 
   function handleSave() {
     if (!name.trim()) { Alert.alert("Required", "Please enter a name for this piece."); return; }
-    const materialSummary = [
-      ...metals,
-      ...(diamondType !== "none" ? [diamondType === "lab" ? "Lab Diamond" : "Natural Diamond"] : []),
-      ...gemstones,
-    ].join(", ");
+    const materialSummary = type === "watch"
+      ? [watchCase, watchBand, watchMovement, watchCrystal].filter(Boolean).join(", ")
+      : [...metals, ...(diamondType !== "none" ? [diamondType === "lab" ? "Lab Diamond" : "Natural Diamond"] : []), ...gemstones].join(", ");
     updatePiece(piece!.id, {
       name: name.trim(), type, brand: brand.trim(),
       material: materialSummary, metals, diamondType, gemstones,
+      watchBand, watchMovement, watchCrystal, watchCase,
       purchaseDate, purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
       serialNumber: serialNumber.trim(),
       goldWarrantyType, goldWarrantyNumber: goldWarrantyNumber.trim(),
@@ -242,44 +250,90 @@ export default function EditPieceScreen() {
           <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Tiffany & Co." placeholderTextColor={colors.mutedForeground} value={brand} onChangeText={setBrand} />
         </Field>
 
-        <Field label="Metal" colors={colors}>
-          <View style={styles.pillRow}>
-            {METALS.map((m) => {
-              const selected = metals.includes(m);
-              return (
-                <Pressable key={m} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMetals((prev) => selected ? prev.filter((x) => x !== m) : [...prev, m]); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
-                  <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{m}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </Field>
+        {type === "watch" ? (
+          <>
+            <Field label="Case Material" colors={colors}>
+              <View style={styles.pillRow}>
+                {WATCH_CASE_MATERIALS.map((m) => (
+                  <Pressable key={m} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setWatchCase((prev) => prev === m ? "" : m); }} style={[styles.pill, { backgroundColor: watchCase === m ? colors.primary : colors.secondary, borderColor: watchCase === m ? colors.primary : colors.border }]}>
+                    <Text style={[styles.pillText, { color: watchCase === m ? colors.primaryForeground : colors.foreground }]}>{m}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </Field>
 
-        <Field label="Diamond" colors={colors}>
-          <View style={styles.pillRow}>
-            {DIAMOND_OPTIONS.map((opt) => {
-              const selected = diamondType === opt.value;
-              return (
-                <Pressable key={opt.value} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDiamondType(opt.value); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
-                  <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{opt.label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </Field>
+            <Field label="Band / Strap" colors={colors}>
+              <View style={styles.pillRow}>
+                {WATCH_BANDS.map((b) => (
+                  <Pressable key={b} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setWatchBand((prev) => prev === b ? "" : b); }} style={[styles.pill, { backgroundColor: watchBand === b ? colors.primary : colors.secondary, borderColor: watchBand === b ? colors.primary : colors.border }]}>
+                    <Text style={[styles.pillText, { color: watchBand === b ? colors.primaryForeground : colors.foreground }]}>{b}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </Field>
 
-        <Field label="Gemstones" colors={colors}>
-          <View style={styles.pillRow}>
-            {GEMSTONES.map((g) => {
-              const selected = gemstones.includes(g);
-              return (
-                <Pressable key={g} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setGemstones((prev) => selected ? prev.filter((x) => x !== g) : [...prev, g]); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
-                  <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{g}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </Field>
+            <Field label="Movement" colors={colors}>
+              <View style={styles.pillRow}>
+                {WATCH_MOVEMENTS.map((mv) => (
+                  <Pressable key={mv} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setWatchMovement((prev) => prev === mv ? "" : mv); }} style={[styles.pill, { backgroundColor: watchMovement === mv ? colors.primary : colors.secondary, borderColor: watchMovement === mv ? colors.primary : colors.border }]}>
+                    <Text style={[styles.pillText, { color: watchMovement === mv ? colors.primaryForeground : colors.foreground }]}>{mv}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </Field>
+
+            <Field label="Crystal" colors={colors}>
+              <View style={styles.pillRow}>
+                {WATCH_CRYSTALS.map((c) => (
+                  <Pressable key={c} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setWatchCrystal((prev) => prev === c ? "" : c); }} style={[styles.pill, { backgroundColor: watchCrystal === c ? colors.primary : colors.secondary, borderColor: watchCrystal === c ? colors.primary : colors.border }]}>
+                    <Text style={[styles.pillText, { color: watchCrystal === c ? colors.primaryForeground : colors.foreground }]}>{c}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </Field>
+          </>
+        ) : (
+          <>
+            <Field label="Metal" colors={colors}>
+              <View style={styles.pillRow}>
+                {METALS.map((m) => {
+                  const selected = metals.includes(m);
+                  return (
+                    <Pressable key={m} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMetals((prev) => selected ? prev.filter((x) => x !== m) : [...prev, m]); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                      <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{m}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </Field>
+
+            <Field label="Diamond" colors={colors}>
+              <View style={styles.pillRow}>
+                {DIAMOND_OPTIONS.map((opt) => {
+                  const selected = diamondType === opt.value;
+                  return (
+                    <Pressable key={opt.value} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDiamondType(opt.value); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                      <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{opt.label}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </Field>
+
+            <Field label="Gemstones" colors={colors}>
+              <View style={styles.pillRow}>
+                {GEMSTONES.map((g) => {
+                  const selected = gemstones.includes(g);
+                  return (
+                    <Pressable key={g} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setGemstones((prev) => selected ? prev.filter((x) => x !== g) : [...prev, g]); }} style={[styles.pill, { backgroundColor: selected ? colors.primary : colors.secondary, borderColor: selected ? colors.primary : colors.border }]}>
+                      <Text style={[styles.pillText, { color: selected ? colors.primaryForeground : colors.foreground }]}>{g}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </Field>
+          </>
+        )}
 
         <SectionLabel label="Purchase Details" colors={colors} />
         <Field label="Retailer" colors={colors}>

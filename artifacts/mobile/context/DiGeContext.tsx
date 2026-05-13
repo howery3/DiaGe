@@ -60,6 +60,10 @@ export interface JewelryPiece {
   metals?: string[];
   diamondType?: string;
   gemstones?: string[];
+  watchBand?: string;
+  watchMovement?: string;
+  watchCrystal?: string;
+  watchCase?: string;
   purchaseDate: string;
   purchasePrice: string;
   retailer: string;
