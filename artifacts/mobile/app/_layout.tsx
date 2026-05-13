@@ -82,6 +82,10 @@ function RootLayoutNav() {
         options={{ headerShown: true }}
       />
       <Stack.Screen
+        name="retailer-browser"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="catalog-scan"
         options={{ headerShown: false }}
       />

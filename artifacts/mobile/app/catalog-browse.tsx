@@ -111,6 +111,25 @@ function CatalogSection({
 
       {expanded && (
         <View style={[styles.itemsList, { borderTopColor: colors.border }]}>
+          {/* Live website browse button */}
+          <Pressable
+            onPress={() =>
+              router.push(
+                `/retailer-browser?url=${encodeURIComponent(catalog.catalogUrl)}&retailer=${encodeURIComponent(catalog.retailerName)}`
+              )
+            }
+            style={[styles.browseWebBtn, { backgroundColor: catalog.accentLight, borderColor: catalog.accentColor + "40" }]}
+          >
+            <View style={[styles.browseWebIcon, { backgroundColor: catalog.accentColor }]}>
+              <Feather name="globe" size={14} color="#fff" />
+            </View>
+            <View style={styles.browseWebText}>
+              <Text style={[styles.browseWebTitle, { color: catalog.accentColor }]}>Browse {catalog.retailerName} Website</Text>
+              <Text style={[styles.browseWebSub, { color: catalog.accentColor + "99" }]}>Shop live and save any item to your DiaGe wishlist</Text>
+            </View>
+            <Feather name="arrow-right" size={15} color={catalog.accentColor} />
+          </Pressable>
+
           {catalog.items.map((item, idx) => (
             <CatalogItemRow
               key={item.id}
@@ -251,6 +270,11 @@ const styles = StyleSheet.create({
   catalogCount: { fontSize: 11, fontFamily: "Inter_400Regular" },
 
   itemsList: { borderTopWidth: StyleSheet.hairlineWidth },
+  browseWebBtn: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14, margin: 10, marginBottom: 4, borderRadius: 12, borderWidth: 1 },
+  browseWebIcon: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  browseWebText: { flex: 1, gap: 2 },
+  browseWebTitle: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  browseWebSub: { fontSize: 11, fontFamily: "Inter_400Regular" },
   itemRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 14, paddingVertical: 12 },
   itemTypeIcon: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center", flexShrink: 0 },
   itemInfo: { flex: 1, gap: 3 },
