@@ -19,13 +19,13 @@ import { useColors } from "@/hooks/useColors";
 export default function RetailerDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { name: encodedName } = useLocalSearchParams<{ name: string }>();
+  const { name: encodedName, tab } = useLocalSearchParams<{ name: string; tab?: string }>();
   const retailerName = decodeURIComponent(encodedName ?? "");
   const isUncategorized = retailerName === "Uncategorized";
 
   const { pieces, wishlistItems, deleteWishlistItem } = useDiGe();
   const [fabOpen, setFabOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"vault" | "wishlist">("vault");
+  const [activeTab, setActiveTab] = useState<"vault" | "wishlist">(tab === "wishlist" ? "wishlist" : "vault");
 
   const retailerPieces = useMemo(
     () =>

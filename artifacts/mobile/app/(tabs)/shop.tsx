@@ -11,11 +11,13 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PARTNER_CATALOGS } from "@/data/partnerCatalogs";
+import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
 export default function ShopScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { wishlistItems } = useDiGe();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   return (
@@ -33,59 +35,66 @@ export default function ShopScreen() {
 
       <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>PARTNER RETAILERS</Text>
 
-      {PARTNER_CATALOGS.map((catalog) => (
-        <Pressable
-          key={catalog.id}
-          onPress={() =>
-            router.push(
-              `/retailer-browser?url=${encodeURIComponent(catalog.catalogUrl)}&retailer=${encodeURIComponent(catalog.retailerName)}`
-            )
-          }
-          style={({ pressed }) => [
-            styles.retailerCard,
-            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.88 : 1 },
-          ]}
-        >
-          {/* Accent stripe */}
-          <View style={[styles.accentStripe, { backgroundColor: catalog.accentColor }]} />
+      {PARTNER_CATALOGS.map((catalog) => {
+        const savedCount = wishlistItems.filter(
+          (w) => w.retailer.trim().toLowerCase() === catalog.retailerName.toLowerCase()
+        ).length;
+        return (
+          <Pressable
+            key={catalog.id}
+            onPress={() =>
+              router.push(
+                `/retailer-browser?url=${encodeURIComponent(catalog.catalogUrl)}&retailer=${encodeURIComponent(catalog.retailerName)}`
+              )
+            }
+            style={({ pressed }) => [
+              styles.retailerCard,
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.88 : 1 },
+            ]}
+          >
+            <View style={[styles.accentStripe, { backgroundColor: catalog.accentColor }]} />
 
-          <View style={styles.cardBody}>
-            <View style={styles.cardTop}>
-              <View style={[styles.retailerIcon, { backgroundColor: catalog.accentLight }]}>
-                <Feather name="shopping-bag" size={22} color={catalog.accentColor} />
+            <View style={styles.cardBody}>
+              <View style={styles.cardTop}>
+                <View style={[styles.retailerIcon, { backgroundColor: catalog.accentLight }]}>
+                  <Feather name="shopping-bag" size={22} color={catalog.accentColor} />
+                </View>
+                <View style={styles.retailerInfo}>
+                  <Text style={[styles.retailerName, { color: colors.foreground }]}>{catalog.retailerName}</Text>
+                  <Text style={[styles.retailerTagline, { color: colors.mutedForeground }]}>{catalog.tagline}</Text>
+                </View>
+                {savedCount > 0 ? (
+                  <View style={[styles.itemCountBadge, { backgroundColor: colors.primary + "15" }]}>
+                    <Feather name="heart" size={11} color={colors.primary} />
+                    <Text style={[styles.itemCountText, { color: colors.primary }]}>
+                      {savedCount} saved
+                    </Text>
+                  </View>
+                ) : null}
               </View>
-              <View style={styles.retailerInfo}>
-                <Text style={[styles.retailerName, { color: colors.foreground }]}>{catalog.retailerName}</Text>
-                <Text style={[styles.retailerTagline, { color: colors.mutedForeground }]}>{catalog.tagline}</Text>
-              </View>
-              <View style={[styles.itemCountBadge, { backgroundColor: catalog.accentLight }]}>
-                <Text style={[styles.itemCountText, { color: catalog.accentColor }]}>
-                  {catalog.items.length} items
-                </Text>
+
+              <View style={[styles.cardDivider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.cardActions}>
+                <View style={[styles.browseBtn, { backgroundColor: catalog.accentColor }]}>
+                  <Feather name="globe" size={14} color="#fff" />
+                  <Text style={styles.browseBtnText}>Browse Website</Text>
+                </View>
+                <Pressable
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    router.push(`/retailer/${encodeURIComponent(catalog.retailerName)}?tab=wishlist`);
+                  }}
+                  style={[styles.catalogBtn, { borderColor: colors.border }]}
+                >
+                  <Feather name="heart" size={14} color={colors.mutedForeground} />
+                  <Text style={[styles.catalogBtnText, { color: colors.mutedForeground }]}>View Wishlist</Text>
+                </Pressable>
               </View>
             </View>
-
-            <View style={[styles.cardDivider, { backgroundColor: colors.border }]} />
-
-            <View style={styles.cardActions}>
-              <View style={[styles.browseBtn, { backgroundColor: catalog.accentColor }]}>
-                <Feather name="globe" size={14} color="#fff" />
-                <Text style={styles.browseBtnText}>Browse Website</Text>
-              </View>
-              <Pressable
-                onPress={(e) => {
-                  e.stopPropagation();
-                  router.push("/catalog-browse");
-                }}
-                style={[styles.catalogBtn, { borderColor: colors.border }]}
-              >
-                <Feather name="grid" size={14} color={colors.mutedForeground} />
-                <Text style={[styles.catalogBtnText, { color: colors.mutedForeground }]}>View Catalog</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Pressable>
-      ))}
+          </Pressable>
+        );
+      })}
 
       {/* Partner CTA */}
       <Pressable
@@ -143,7 +152,7 @@ const styles = StyleSheet.create({
   retailerInfo: { flex: 1, gap: 3 },
   retailerName: { fontSize: 17, fontFamily: "Inter_700Bold" },
   retailerTagline: { fontSize: 12, fontFamily: "Inter_400Regular" },
-  itemCountBadge: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20 },
+  itemCountBadge: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20 },
   itemCountText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
   cardDivider: { height: StyleSheet.hairlineWidth },
   cardActions: { flexDirection: "row", gap: 10 },
