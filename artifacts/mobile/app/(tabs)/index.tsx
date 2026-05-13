@@ -203,83 +203,15 @@ export default function VaultScreen() {
           />
         )}
         ListEmptyComponent={
-          <View style={styles.emptyWrap}>
-            <EmptyState
-              icon="archive"
-              title={query ? "No retailers found" : "Your vault is empty"}
-              subtitle={
-                query
-                  ? "Try a different search."
-                  : "Tap \"Add Jewelry Piece\" above to store your first piece with its receipts, warranties, and paperwork."
-              }
-            />
-            <View style={[styles.shopSyncSection, { borderTopColor: colors.border }]}>
-              <Text style={[styles.sectionLabel, { color: colors.mutedForeground, marginBottom: 10 }]}>SHOP &amp; SYNC</Text>
-              <View style={styles.shopSyncRow}>
-                <Pressable
-                  onPress={() => router.push("/catalog-scan")}
-                  style={[styles.shopSyncCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                >
-                  <View style={[styles.shopSyncIcon, { backgroundColor: "#5B21B6" }]}>
-                    <Feather name="maximize" size={18} color="#fff" />
-                  </View>
-                  <View style={styles.shopSyncText}>
-                    <Text style={[styles.shopSyncTitle, { color: colors.foreground }]}>Scan In-Store</Text>
-                    <Text style={[styles.shopSyncSub, { color: colors.mutedForeground }]}>Load catalog via QR</Text>
-                  </View>
-                  <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
-                </Pressable>
-                <Pressable
-                  onPress={() => router.push("/catalog-browse")}
-                  style={[styles.shopSyncCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                >
-                  <View style={[styles.shopSyncIcon, { backgroundColor: "#0E6655" }]}>
-                    <Feather name="grid" size={18} color="#fff" />
-                  </View>
-                  <View style={styles.shopSyncText}>
-                    <Text style={[styles.shopSyncTitle, { color: colors.foreground }]}>Browse Online</Text>
-                    <Text style={[styles.shopSyncSub, { color: colors.mutedForeground }]}>Shop partner catalogs</Text>
-                  </View>
-                  <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        }
-        ListFooterComponent={
-          filtered.length > 0 ? (
-            <View style={[styles.shopSyncSection, { borderTopColor: colors.border }]}>
-              <Text style={[styles.sectionLabel, { color: colors.mutedForeground, marginBottom: 10 }]}>SHOP &amp; SYNC</Text>
-              <View style={styles.shopSyncRow}>
-                <Pressable
-                  onPress={() => router.push("/catalog-scan")}
-                  style={[styles.shopSyncCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                >
-                  <View style={[styles.shopSyncIcon, { backgroundColor: "#5B21B6" }]}>
-                    <Feather name="maximize" size={18} color="#fff" />
-                  </View>
-                  <View style={styles.shopSyncText}>
-                    <Text style={[styles.shopSyncTitle, { color: colors.foreground }]}>Scan In-Store</Text>
-                    <Text style={[styles.shopSyncSub, { color: colors.mutedForeground }]}>Load catalog via QR</Text>
-                  </View>
-                  <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
-                </Pressable>
-                <Pressable
-                  onPress={() => router.push("/catalog-browse")}
-                  style={[styles.shopSyncCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                >
-                  <View style={[styles.shopSyncIcon, { backgroundColor: "#0E6655" }]}>
-                    <Feather name="grid" size={18} color="#fff" />
-                  </View>
-                  <View style={styles.shopSyncText}>
-                    <Text style={[styles.shopSyncTitle, { color: colors.foreground }]}>Browse Online</Text>
-                    <Text style={[styles.shopSyncSub, { color: colors.mutedForeground }]}>Shop partner catalogs</Text>
-                  </View>
-                  <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
-                </Pressable>
-              </View>
-            </View>
-          ) : null
+          <EmptyState
+            icon="archive"
+            title={query ? "No retailers found" : "Your vault is empty"}
+            subtitle={
+              query
+                ? "Try a different search."
+                : "Tap \"Add Jewelry Piece\" above to store your first piece with its receipts, warranties, and paperwork."
+            }
+          />
         }
         showsVerticalScrollIndicator={false}
       />
@@ -396,12 +328,4 @@ const styles = StyleSheet.create({
   metaChip: { flexDirection: "row", alignItems: "center", gap: 4 },
   metaText: { fontSize: 12, fontFamily: "Inter_400Regular" },
 
-  emptyWrap: { flex: 1 },
-  shopSyncSection: { marginTop: 28, paddingTop: 24, borderTopWidth: StyleSheet.hairlineWidth },
-  shopSyncRow: { gap: 8 },
-  shopSyncCard: { flexDirection: "row", alignItems: "center", gap: 12, padding: 13, borderRadius: 14, borderWidth: 1 },
-  shopSyncIcon: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
-  shopSyncText: { flex: 1, gap: 2 },
-  shopSyncTitle: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
-  shopSyncSub: { fontSize: 11, fontFamily: "Inter_400Regular" },
 });

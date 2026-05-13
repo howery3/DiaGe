@@ -27,11 +27,7 @@ export default function CatalogBrowseScreen() {
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.foreground,
           headerTitleStyle: { fontFamily: "Inter_600SemiBold" },
-          headerRight: () => (
-            <Pressable onPress={() => router.push("/catalog-scan")} hitSlop={8}>
-              <Feather name="maximize" size={20} color={colors.primary} />
-            </Pressable>
-          ),
+          headerRight: undefined,
         }}
       />
       <ScrollView

@@ -16,6 +16,10 @@ function NativeTabLayout() {
         <Icon sf={{ default: "archivebox", selected: "archivebox.fill" }} />
         <Label>My Vault</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="shop">
+        <Icon sf={{ default: "bag", selected: "bag.fill" }} />
+        <Label>Shop</Label>
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="reminders">
         <Icon sf={{ default: "bell", selected: "bell.fill" }} />
         <Label>Reminders</Label>
@@ -73,6 +77,18 @@ function ClassicTabLayout() {
               <SymbolView name="archivebox" tintColor={color} size={24} />
             ) : (
               <Feather name="archive" size={22} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="shop"
+        options={{
+          title: "Shop",
+          tabBarIcon: ({ color }) =>
+            isIOS ? (
+              <SymbolView name="bag" tintColor={color} size={24} />
+            ) : (
+              <Feather name="shopping-bag" size={22} color={color} />
             ),
         }}
       />
