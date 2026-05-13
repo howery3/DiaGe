@@ -16,9 +16,10 @@ interface WishlistCardProps {
   item: WishlistItem;
   onPress: () => void;
   onDelete: () => void;
+  onEdit?: () => void;
 }
 
-export function WishlistCard({ item, onPress, onDelete }: WishlistCardProps) {
+export function WishlistCard({ item, onPress, onDelete, onEdit }: WishlistCardProps) {
   const colors = useColors();
   const { profile, hasProfile } = useProfile();
   const priorityColor = PRIORITY_COLORS[item.priority];
@@ -85,6 +86,11 @@ export function WishlistCard({ item, onPress, onDelete }: WishlistCardProps) {
             <Pressable onPress={handleShare} hitSlop={8} style={styles.actionBtn}>
               <Feather name="share-2" size={16} color={colors.gold} />
             </Pressable>
+            {onEdit ? (
+              <Pressable onPress={onEdit} hitSlop={8} style={styles.actionBtn}>
+                <Feather name="edit-2" size={16} color={colors.mutedForeground} />
+              </Pressable>
+            ) : null}
             <Pressable onPress={onDelete} hitSlop={8} style={styles.actionBtn}>
               <Feather name="trash-2" size={16} color={colors.mutedForeground} />
             </Pressable>

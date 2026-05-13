@@ -215,6 +215,7 @@ export default function RetailerDetailScreen() {
                 key={item.id}
                 item={item}
                 onPress={() => {}}
+                onEdit={() => router.push(`/wishlist-item/edit?id=${item.id}`)}
                 onDelete={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                   deleteWishlistItem(item.id);
