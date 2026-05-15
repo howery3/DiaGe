@@ -7,6 +7,7 @@ import * as WebBrowser from "expo-web-browser";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Platform,
   Pressable,
   StyleSheet,
@@ -52,8 +53,17 @@ export default function SignInScreen() {
           await setActive!({ session: createdSessionId });
           router.replace("/(tabs)");
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error(JSON.stringify(err, null, 2));
+        const message =
+          err && typeof err === "object" && "errors" in err
+            ? (err as { errors: { message: string }[] }).errors
+                .map((e) => e.message)
+                .join("\n")
+            : err && typeof err === "object" && "message" in err
+            ? String((err as { message: string }).message)
+            : "Sign-in failed. Please try again.";
+        Alert.alert("Sign-in failed", message);
       } finally {
         setLoading(null);
       }
