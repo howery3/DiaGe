@@ -1,16 +1,18 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Sharing from "expo-sharing";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useRef } from "react";
+import { captureRef } from "react-native-view-shot";
 import {
   Alert,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   useDiGe,
@@ -22,8 +24,9 @@ import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
 
 const PRIMARY = "#5B21B6";
-
+const PRIMARY_DARK = "#4C1D95";
 const PRIORITY_COLORS = { low: "#15803D", medium: "#B45309", high: "#DC2626" };
+const CARD_WIDTH = 360;
 
 export default function RetailerStatsScreen() {
   const { name: encodedName } = useLocalSearchParams<{ name: string }>();
@@ -32,12 +35,13 @@ export default function RetailerStatsScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { pieces, wishlistItems, reminders } = useDiGe();
-  const { profile, hasProfile } = useProfile();
+  const { profile } = useProfile();
 
   const scrollRef = useRef<ScrollView>(null);
   const wishlistSectionRef = useRef<View>(null);
   const warrantySectionRef = useRef<View>(null);
   const reminderSectionRef = useRef<View>(null);
+  const snapshotCardRef = useRef<View>(null);
 
   const retailerPieces = pieces.filter(
     (p) => p.retailer.trim() === retailerName
@@ -60,6 +64,12 @@ export default function RetailerStatsScreen() {
     0
   );
 
+  const snapshotDate = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   function scrollTo(ref: React.RefObject<View | null>) {
     ref.current?.measureLayout(
       scrollRef.current as never,
@@ -68,80 +78,26 @@ export default function RetailerStatsScreen() {
     );
   }
 
-  async function shareItem(item: WishlistItem) {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const buildLines = (includeContact: boolean) => {
-      const lines = [
-        `✨ ${item.name}`,
-        item.sku ? `SKU: ${item.sku}` : "",
-        item.brand ? `by ${item.brand}` : "",
-        item.retailer ? `Available at ${item.retailer}` : "",
-        item.retailerUrl || "",
-        item.estimatedPrice ? `Est. $${item.estimatedPrice}` : "",
-        item.notes ? `\n${item.notes}` : "",
-      ].filter(Boolean);
-      if (includeContact) {
-        lines.push("─────────────");
-        if (profile.name) lines.push(`From: ${profile.name}`);
-        if (profile.phone) lines.push(`📞 ${profile.phone}`);
-        if (profile.email) lines.push(`📧 ${profile.email}`);
-      }
-      lines.push("\nShared via DiaGe");
-      return lines.join("\n");
-    };
-    const doShare = async (inc: boolean) => {
-      await Share.share({ message: buildLines(inc), title: item.name });
-    };
-    if (hasProfile) {
-      Alert.alert("Share Item", "Include your contact info?", [
-        { text: "Share anonymously", onPress: () => doShare(false) },
-        { text: "Include my details", onPress: () => doShare(true) },
-        { text: "Cancel", style: "cancel" },
-      ]);
-    } else {
-      doShare(false);
-    }
-  }
-
-  async function shareAllWishlist() {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const header = `💍 ${retailerName} Wishlist — ${retailerWishlist.length} item${retailerWishlist.length !== 1 ? "s" : ""}`;
-    const itemLines = retailerWishlist.map((w, i) =>
-      `${i + 1}. ${w.name}${w.sku ? ` [SKU: ${w.sku}]` : ""}${w.estimatedPrice ? ` ($${w.estimatedPrice})` : ""}${w.priority === "high" ? " ⭐" : ""}`
-    );
-    await Share.share({
-      message: [header, "", ...itemLines, "", "Shared via DiaGe 💎"].join("\n"),
-      title: `${retailerName} Wishlist`,
-    });
-  }
-
   async function handleShareSnapshot() {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const date = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-    const lines: string[] = [
-      `📊 DiaGe Customer Snapshot — ${retailerName}`,
-      `Generated: ${date}`,
-      "─".repeat(30),
-      "",
-      "VAULT ACTIVITY",
-      `• ${retailerPieces.length} piece${retailerPieces.length !== 1 ? "s" : ""} purchased from ${retailerName}`,
-      ...(totalValue > 0 ? [`• Total documented value: $${totalValue.toLocaleString()}`] : []),
-      `• ${warrantyPieces.length} active warranty/bond${warrantyPieces.length !== 1 ? "s" : ""} tracked`,
-      `• ${docsCount} document${docsCount !== 1 ? "s" : ""} stored`,
-      "",
-      "WISHLIST",
-      `• ${retailerWishlist.length} item${retailerWishlist.length !== 1 ? "s" : ""} saved`,
-      ...retailerWishlist.slice(0, 6).map(
-        (w) => `  – ${w.name}${w.sku ? ` [SKU: ${w.sku}]` : ""}${w.estimatedPrice ? ` ($${w.estimatedPrice})` : ""}${w.priority === "high" ? " ⭐ High priority" : ""}`
-      ),
-      "",
-      "REMINDERS",
-      `• ${retailerReminders.length} upcoming inspection/service reminder${retailerReminders.length !== 1 ? "s" : ""}`,
-      "",
-      "─".repeat(30),
-      "Powered by DiaGe — Jewelry Vault & Clienteling App",
-    ];
-    await Share.share({ message: lines.join("\n"), title: `DiaGe Snapshot — ${retailerName}` });
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    try {
+      const uri = await captureRef(snapshotCardRef, {
+        format: "png",
+        quality: 1,
+        result: "tmpfile",
+      });
+      const available = await Sharing.isAvailableAsync();
+      if (available) {
+        await Sharing.shareAsync(uri, {
+          mimeType: "image/png",
+          dialogTitle: `${retailerName} Snapshot`,
+        });
+      } else {
+        Alert.alert("Sharing not available", "Your device doesn't support image sharing.");
+      }
+    } catch {
+      Alert.alert("Couldn't capture snapshot", "Please try again.");
+    }
   }
 
   const stats: {
@@ -206,6 +162,8 @@ export default function RetailerStatsScreen() {
       : []),
   ];
 
+  const previewWishlist = retailerWishlist.slice(0, 4);
+
   return (
     <>
       <Stack.Screen
@@ -216,6 +174,87 @@ export default function RetailerStatsScreen() {
           headerTitleStyle: { fontFamily: "Inter_600SemiBold" },
         }}
       />
+
+      {/* Off-screen snapshot card — captured as an image when shared */}
+      <View
+        ref={snapshotCardRef}
+        collapsable={false}
+        style={snap.card}
+        pointerEvents="none"
+      >
+        {/* Header */}
+        <View style={snap.header}>
+          <View style={snap.headerTop}>
+            <View style={snap.diamondBadge}>
+              <Text style={snap.diamondText}>💎</Text>
+            </View>
+            <View style={snap.headerTextBlock}>
+              <Text style={snap.brandName}>DiaGe</Text>
+              <Text style={snap.snapshotLabel}>Customer Snapshot</Text>
+            </View>
+          </View>
+          <Text style={snap.retailerName}>{retailerName}</Text>
+          {profile.name ? (
+            <Text style={snap.customerName}>{profile.name}</Text>
+          ) : null}
+          <Text style={snap.dateText}>{snapshotDate}</Text>
+        </View>
+
+        {/* Stats row */}
+        <View style={snap.statsRow}>
+          <View style={snap.statItem}>
+            <Text style={snap.statValue}>{retailerPieces.length}</Text>
+            <Text style={snap.statLabel}>Pieces{"\n"}Owned</Text>
+          </View>
+          <View style={snap.statDivider} />
+          <View style={snap.statItem}>
+            <Text style={snap.statValue}>{retailerWishlist.length}</Text>
+            <Text style={snap.statLabel}>Wishlist{"\n"}Items</Text>
+          </View>
+          <View style={snap.statDivider} />
+          <View style={snap.statItem}>
+            <Text style={snap.statValue}>{warrantyPieces.length}</Text>
+            <Text style={snap.statLabel}>Active{"\n"}Warranties</Text>
+          </View>
+          {totalValue > 0 && (
+            <>
+              <View style={snap.statDivider} />
+              <View style={snap.statItem}>
+                <Text style={[snap.statValue, { fontSize: 15 }]}>${totalValue.toLocaleString()}</Text>
+                <Text style={snap.statLabel}>Value{"\n"}Tracked</Text>
+              </View>
+            </>
+          )}
+        </View>
+
+        {/* Wishlist preview */}
+        {previewWishlist.length > 0 && (
+          <View style={snap.wishlistSection}>
+            <Text style={snap.wishlistTitle}>💍 Wishlist</Text>
+            {previewWishlist.map((item) => (
+              <View key={item.id} style={snap.wishlistRow}>
+                <View style={[snap.priorityDot, { backgroundColor: PRIORITY_COLORS[item.priority] }]} />
+                <View style={snap.wishlistInfo}>
+                  <Text style={snap.wishlistName} numberOfLines={1}>{item.name}</Text>
+                  {item.sku ? <Text style={snap.wishlistSku}>SKU {item.sku}</Text> : null}
+                </View>
+                {item.estimatedPrice ? (
+                  <Text style={snap.wishlistPrice}>${item.estimatedPrice}</Text>
+                ) : null}
+              </View>
+            ))}
+            {retailerWishlist.length > 4 && (
+              <Text style={snap.moreItems}>+{retailerWishlist.length - 4} more items</Text>
+            )}
+          </View>
+        )}
+
+        {/* Footer */}
+        <View style={snap.footer}>
+          <Text style={snap.footerText}>Powered by DiaGe · diageapp.com</Text>
+        </View>
+      </View>
+
       <ScrollView
         ref={scrollRef}
         style={{ backgroundColor: colors.background }}
@@ -293,31 +332,10 @@ export default function RetailerStatsScreen() {
                     {item.estimatedPrice ? (
                       <Text style={[styles.wishlistPrice, { color: PRIMARY }]}>${item.estimatedPrice}</Text>
                     ) : null}
-                    <Pressable
-                      onPress={() => shareItem(item)}
-                      hitSlop={8}
-                      style={[styles.shareItemBtn, { backgroundColor: PRIMARY + "12" }]}
-                    >
-                      <Feather name="share-2" size={14} color={PRIMARY} />
-                    </Pressable>
                   </View>
                 </View>
               ))}
             </View>
-            {retailerWishlist.length > 1 && (
-              <Pressable
-                onPress={shareAllWishlist}
-                style={({ pressed }) => [
-                  styles.shareAllBtn,
-                  { borderColor: PRIMARY + "40", backgroundColor: PRIMARY + "0A", opacity: pressed ? 0.8 : 1 },
-                ]}
-              >
-                <Feather name="share-2" size={14} color={PRIMARY} />
-                <Text style={[styles.shareAllText, { color: PRIMARY }]}>
-                  Share full wishlist ({retailerWishlist.length} items)
-                </Text>
-              </Pressable>
-            )}
           </View>
         )}
 
@@ -411,7 +429,7 @@ export default function RetailerStatsScreen() {
           </View>
         )}
 
-        {/* Share snapshot */}
+        {/* Share snapshot button */}
         <Pressable
           onPress={handleShareSnapshot}
           style={({ pressed }) => [
@@ -419,8 +437,8 @@ export default function RetailerStatsScreen() {
             { backgroundColor: PRIMARY, opacity: pressed ? 0.85 : 1 },
           ]}
         >
-          <Feather name="share-2" size={18} color="#fff" />
-          <Text style={styles.shareBtnText}>Share Snapshot with Store</Text>
+          <Feather name="image" size={18} color="#fff" />
+          <Text style={styles.shareBtnText}>Share Snapshot</Text>
         </Pressable>
       </ScrollView>
     </>
@@ -494,25 +512,6 @@ const styles = StyleSheet.create({
   wishlistMeta: { fontSize: 12, fontFamily: "Inter_400Regular" },
   wishlistRight: { alignItems: "flex-end", gap: 6 },
   wishlistPrice: { fontSize: 13, fontFamily: "Inter_700Bold" },
-  shareItemBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  shareAllBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    marginTop: 8,
-    paddingVertical: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  shareAllText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
 
   warrantyRow: {
     flexDirection: "row",
@@ -562,4 +561,161 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   shareBtnText: { fontSize: 16, fontFamily: "Inter_600SemiBold", color: "#fff" },
+});
+
+const snap = StyleSheet.create({
+  card: {
+    position: "absolute",
+    left: -2000,
+    top: 0,
+    width: CARD_WIDTH,
+    backgroundColor: "#fff",
+    borderRadius: 0,
+    overflow: "hidden",
+  },
+  header: {
+    backgroundColor: PRIMARY_DARK,
+    padding: 24,
+    gap: 6,
+  },
+  headerTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 10,
+  },
+  diamondBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  diamondText: { fontSize: 20 },
+  headerTextBlock: { gap: 2 },
+  brandName: {
+    fontSize: 18,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: -0.3,
+  },
+  snapshotLabel: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.65)",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  retailerName: {
+    fontSize: 26,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: -0.5,
+    lineHeight: 30,
+  },
+  customerName: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.75)",
+  },
+  dateText: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.5)",
+    marginTop: 2,
+  },
+
+  statsRow: {
+    flexDirection: "row",
+    backgroundColor: "#F8F7FF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8E3F5",
+  },
+  statItem: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 18,
+    gap: 4,
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: "#E8E3F5",
+    marginVertical: 14,
+  },
+  statValue: {
+    fontSize: 22,
+    fontFamily: "Inter_700Bold",
+    color: PRIMARY_DARK,
+  },
+  statLabel: {
+    fontSize: 10,
+    fontFamily: "Inter_500Medium",
+    color: "#7C6FA0",
+    textAlign: "center",
+    lineHeight: 14,
+  },
+
+  wishlistSection: {
+    padding: 20,
+    gap: 10,
+    backgroundColor: "#fff",
+  },
+  wishlistTitle: {
+    fontSize: 14,
+    fontFamily: "Inter_700Bold",
+    color: "#1A1A2E",
+    marginBottom: 4,
+  },
+  wishlistRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingVertical: 6,
+    borderTopWidth: 1,
+    borderTopColor: "#F0ECF8",
+  },
+  priorityDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    flexShrink: 0,
+  },
+  wishlistInfo: { flex: 1, gap: 1 },
+  wishlistName: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+    color: "#1A1A2E",
+  },
+  wishlistSku: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    color: "#9989BF",
+    letterSpacing: 0.3,
+  },
+  wishlistPrice: {
+    fontSize: 13,
+    fontFamily: "Inter_700Bold",
+    color: PRIMARY,
+  },
+  moreItems: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#9989BF",
+    textAlign: "center",
+    marginTop: 4,
+  },
+
+  footer: {
+    backgroundColor: PRIMARY_DARK,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  footerText: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.5)",
+    letterSpacing: 0.3,
+  },
 });
