@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 
-const LAST_UPDATED = "May 2025";
+const LAST_UPDATED = "May 2026";
 
 export default function PrivacyScreen() {
   const colors = useColors();
@@ -47,7 +47,7 @@ export default function PrivacyScreen() {
         </Text>
 
         <InfoBox colors={colors}>
-          This Privacy Policy explains what information DiaGe collects, how it is used, and the choices you have. DiaGe is designed with privacy first — your jewelry data stays on your device.
+          This Privacy Policy explains what information DiaGe collects, how it is used, and the choices you have. DiaGe syncs your jewelry data to secure servers tied to your account so it is available across all your devices.
         </InfoBox>
 
         <Section title="Who We Are">
@@ -66,11 +66,11 @@ export default function PrivacyScreen() {
           <BulletList
             colors={colors}
             items={[
-              "Profile information — your name, email address, and phone number (optional, stored only on your device)",
+              "Account information — your name and email address, provided when you sign in via your chosen authentication provider",
               "Jewelry vault data — piece descriptions, purchase prices, retailer names, warranty dates, and document photos you upload",
               "Wishlist items — jewelry items you save per retailer, including descriptions and price ranges",
               "Inspection reminders — dates and notes you set for jewelry maintenance",
-              "Photos and documents — images you attach to vault entries (stored locally on your device)",
+              "Photos and documents — images you attach to vault entries (stored locally on your device; not uploaded to our servers)",
             ]}
           />
           <Body colors={colors}>
@@ -80,10 +80,13 @@ export default function PrivacyScreen() {
 
         <Section title="Where Your Data Is Stored">
           <InfoBox colors={colors} icon="lock">
-            All personal jewelry data, profile information, and photos are stored exclusively on your device using local storage. DiaGe does not operate a cloud server that holds your personal records.
+            When you are signed in, your jewelry vault data — pieces, wishlist items, and inspection reminders — is synced to DiaGe's secure servers and linked to your account. This lets your data be restored when you sign in on a new or replacement device.
           </InfoBox>
           <Body colors={colors}>
-            Because data lives on your device, if you uninstall the app, lose your device, or clear app data, your vault contents cannot be recovered by us. We strongly recommend keeping original physical copies of all important documents.
+            Your device also maintains a local cache for fast access and offline use. Photos and document images are stored on your device only and are not uploaded to our servers.
+          </Body>
+          <Body colors={colors}>
+            DiaGe is not a substitute for keeping original physical copies of important documents. We strongly recommend retaining originals in a secure location independent of this App.
           </Body>
         </Section>
 
@@ -131,11 +134,11 @@ export default function PrivacyScreen() {
           <BulletList
             colors={colors}
             items={[
-              "Right to access — request a summary of what data the app holds about you",
-              "Right to deletion — delete all your data at any time from Settings → Clear All Vault Data",
-              "Right to correction — update your profile information at any time in Settings → My Profile",
+              "Right to access — request a summary of what data we hold about you",
+              "Right to deletion — delete all your data at any time from Settings → Clear All Vault Data (removes data from your device and our servers)",
+              "Right to correction — update your profile information at any time through your account settings",
               "Right to opt out — contact us to opt out of anonymized analytics sharing",
-              "Right to portability — your data is stored locally; you can export it by contacting us",
+              "Right to portability — contact us to request an export of your account data",
             ]}
           />
           <Body colors={colors}>
@@ -159,10 +162,10 @@ export default function PrivacyScreen() {
             ]}
           />
           <Body colors={colors}>
-            This will permanently erase all pieces, wishlists, reminders, and profile information from your device. This action cannot be undone.
+            This will permanently erase all pieces, wishlists, and reminders from <Strong colors={colors}>both your device and our servers</Strong>. This action cannot be undone.
           </Body>
           <Body colors={colors}>
-            To request deletion of any analytics data we may hold, email us at <Strong colors={colors}>privacy@digeapp.com</Strong> and we will respond within 30 days.
+            To request deletion of your account or any analytics data we may hold, email us at <Strong colors={colors}>privacy@digeapp.com</Strong> and we will respond within 30 days.
           </Body>
         </Section>
 
@@ -197,6 +200,7 @@ export default function PrivacyScreen() {
           <BulletList
             colors={colors}
             items={[
+              "Clerk (authentication) — manages your sign-in and account identity; subject to Clerk's Privacy Policy at clerk.com/privacy",
               "Camera — used only to photograph jewelry and scan retailer QR codes",
               "Photo Library — used only to attach images you choose to vault entries",
               "Push Notifications — used only to deliver inspection reminders you set",
@@ -212,7 +216,10 @@ export default function PrivacyScreen() {
 
         <Section title="Data Security">
           <Body colors={colors}>
-            Since your data is stored locally on your device, its security depends on your device's security settings. We recommend enabling a passcode or biometric lock on your device. DiaGe does not transmit your personal jewelry records over the internet.
+            Your jewelry data is transmitted to and stored on our servers using encrypted connections (HTTPS/TLS). Access to your account data requires authentication via your signed-in account — no other user can access your records.
+          </Body>
+          <Body colors={colors}>
+            We recommend enabling a passcode or biometric lock on your device to protect the local cache. Photos and document images are stored only on your device and are never transmitted to our servers.
           </Body>
         </Section>
 

@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 
-const LAST_UPDATED = "May 2025";
+const LAST_UPDATED = "May 2026";
 
 export default function TermsScreen() {
   const colors = useColors();
@@ -51,9 +51,12 @@ export default function TermsScreen() {
           </Body>
         </Section>
 
-        <Section title="Data Storage — No Backup Guarantee">
+        <Section title="Data Storage & Account Sync">
           <Body colors={colors}>
-            All information you enter into DiaGe is stored locally on your device. <Strong colors={colors}>We do not maintain server-side backups of your personal jewelry records.</Strong>
+            When you are signed in, your jewelry vault data (pieces, wishlist items, and inspection reminders) is synced to DiaGe's secure servers and associated with your account. This allows your data to be restored when you sign in on a new or replacement device.
+          </Body>
+          <Body colors={colors}>
+            A local cache is also maintained on your device for fast access and offline use. The server copy is the authoritative record.
           </Body>
           <Body colors={colors}>
             You acknowledge and agree that DiaGe is not a substitute for keeping original hard copies of your jewelry paperwork, including but not limited to:
@@ -72,14 +75,14 @@ export default function TermsScreen() {
 
         <Section title="No Liability for Data Loss">
           <Body colors={colors}>
-            To the fullest extent permitted by law, DiaGe and its owners, developers, officers, and affiliates shall not be liable for any loss, corruption, or unavailability of data stored in the App, including losses arising from:
+            While DiaGe syncs your vault data to secure servers, we do not guarantee uninterrupted availability or permanent retention of your data. To the fullest extent permitted by law, DiaGe and its owners, developers, officers, and affiliates shall not be liable for any loss, corruption, or unavailability of data, including losses arising from:
           </Body>
           <BulletList colors={colors} items={[
             "App crashes, bugs, or technical failures",
-            "Device loss, theft, damage, or replacement",
+            "Server outages or infrastructure failures beyond our reasonable control",
+            "Accidental deletion by you (including use of the Clear All Vault Data feature)",
+            "Account deletion or termination",
             "Operating system updates that affect App functionality",
-            "Accidental deletion by you or another user of your device",
-            "App uninstallation or data clearing",
             "Any other cause beyond our reasonable control",
           ]} />
           <Body colors={colors}>
