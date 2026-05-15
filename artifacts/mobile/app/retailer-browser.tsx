@@ -18,6 +18,24 @@ import WebView, { type WebViewMessageEvent } from "react-native-webview";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
+const URL_TRACK_SCRIPT = `
+(function() {
+  if (window.__rnUrlTracking) return;
+  window.__rnUrlTracking = true;
+  function notifyUrl() {
+    try {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'URL_CHANGE', url: window.location.href }));
+    } catch(e) {}
+  }
+  var origPush = history.pushState.bind(history);
+  var origReplace = history.replaceState.bind(history);
+  history.pushState = function() { origPush.apply(this, arguments); notifyUrl(); };
+  history.replaceState = function() { origReplace.apply(this, arguments); notifyUrl(); };
+  window.addEventListener('popstate', notifyUrl);
+  true;
+})();
+`;
+
 const EXTRACT_SCRIPT = `
 (function() {
   function getMeta(name) {
@@ -159,9 +177,12 @@ export default function RetailerBrowserScreen() {
   function handleMessage(e: WebViewMessageEvent) {
     try {
       const msg = JSON.parse(e.nativeEvent.data);
-      if (msg.type === "PAGE_META") {
+      if (msg.type === "URL_CHANGE") {
+        if (msg.url) setCurrentUrl(msg.url);
+      } else if (msg.type === "PAGE_META") {
         const meta: PageMeta = msg.data;
         setPageMeta(meta);
+        if (meta.url) setCurrentUrl(meta.url);
         setWishlistName(meta.title?.slice(0, 80) ?? "");
         setWishlistSku(meta.sku ?? "");
         const rawPrice = meta.price?.replace(/[^0-9.]/g, "") ?? "";
@@ -188,13 +209,14 @@ export default function RetailerBrowserScreen() {
       Alert.alert("Already saved", "This item looks like it's already in your wishlist.");
       return;
     }
+    const liveUrl = pageMeta?.url || currentUrl;
     addWishlistItem({
       name: wishlistName.trim(),
       sku: wishlistSku.trim(),
       type: "other",
       brand: retailerName,
       retailer: retailerName,
-      retailerUrl: currentUrl,
+      retailerUrl: liveUrl,
       estimatedPrice: wishlistPrice.trim(),
       notes: wishlistNotes.trim(),
       priority: "medium",
@@ -270,13 +292,17 @@ export default function RetailerBrowserScreen() {
         source={{ uri: startUrl }}
         style={{ flex: 1, backgroundColor: colors.background }}
         onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
+        onLoadEnd={() => {
+          setLoading(false);
+          webViewRef.current?.injectJavaScript(URL_TRACK_SCRIPT);
+        }}
         onNavigationStateChange={(state) => {
           setCurrentUrl(state.url);
           setPageTitle(state.title || "");
           setCanGoBack(state.canGoBack);
           setCanGoForward(state.canGoForward);
         }}
+        injectedJavaScript={URL_TRACK_SCRIPT}
         onMessage={handleMessage}
         sharedCookiesEnabled
         allowsBackForwardNavigationGestures={Platform.OS === "ios"}
