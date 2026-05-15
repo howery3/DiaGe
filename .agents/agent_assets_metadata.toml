@@ -35,3 +35,21 @@ id = "DicmueOHXpw3KEII_Ong5"
 uri = "file://artifacts/mobile/assets/expo-qr.png"
 type = "image"
 title = "Scan with Expo Go"
+
+[[outputs]]
+id = "OWMi2CnPocNSIJA351HBf"
+uri = "file://attached_assets/screenshots/106bca69-6442-4cbc-8beb-cf814c8cdb44-00-3w5b9irfrdrmk_worf_replit_dev_mockup_preview_vault-redesign_VariantA.png"
+type = "image"
+title = "A — Stats + Recent Pieces"
+
+[[outputs]]
+id = "etQIRd02TXGeVkAd26RvT"
+uri = "file://attached_assets/screenshots/106bca69-6442-4cbc-8beb-cf814c8cdb44-00-3w5b9irfrdrmk_worf_replit_dev_mockup_preview_vault-redesign_VariantB.png"
+type = "image"
+title = "B — Card Grid + Filters"
+
+[[outputs]]
+id = "l5dVapS6con1jRkTespqJ"
+uri = "file://attached_assets/screenshots/106bca69-6442-4cbc-8beb-cf814c8cdb44-00-3w5b9irfrdrmk_worf_replit_dev_mockup_preview_vault-redesign_VariantC.png"
+type = "image"
+title = "C — Rich Gradient Header"
