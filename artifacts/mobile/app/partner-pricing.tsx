@@ -153,6 +153,26 @@ export default function PartnerPricingScreen() {
           </Text>
         </View>
 
+        {/* Clienteling features callout */}
+        <View style={[styles.featureCallout, { backgroundColor: "#EDE8FA", borderColor: "#C4B5FD" }]}>
+          <View style={styles.featureCalloutHeader}>
+            <View style={styles.featureCalloutIcon}>
+              <Feather name="zap" size={16} color="#5B21B6" />
+            </View>
+            <Text style={styles.featureCalloutTitle}>New: Built-in Clienteling Tools</Text>
+          </View>
+          {[
+            { icon: "grid" as const, text: "In-store QR codes — customers scan to open their wishlist instantly" },
+            { icon: "map-pin" as const, text: "Nearest store finder — customers send wishlists to the closest location" },
+            { icon: "bar-chart-2" as const, text: "Partner snapshots — shareable reports showing customer engagement" },
+          ].map((f) => (
+            <View key={f.text} style={styles.featureCalloutRow}>
+              <Feather name={f.icon} size={14} color="#5B21B6" />
+              <Text style={styles.featureCalloutText}>{f.text}</Text>
+            </View>
+          ))}
+        </View>
+
         {/* Tab toggle */}
         <View style={[styles.tabBar, { backgroundColor: colors.muted }]}>
           <Pressable
@@ -642,4 +662,24 @@ const styles = StyleSheet.create({
   },
   ctaBtnText: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff" },
   ctaNote: { fontSize: 11, fontFamily: "Inter_400Regular" },
+
+  featureCallout: {
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 16,
+    gap: 10,
+    marginTop: 8,
+  },
+  featureCalloutHeader: { flexDirection: "row", alignItems: "center", gap: 8 },
+  featureCalloutIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: "#C4B5FD",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  featureCalloutTitle: { fontSize: 13, fontFamily: "Inter_700Bold", color: "#3B0764" },
+  featureCalloutRow: { flexDirection: "row", alignItems: "flex-start", gap: 8 },
+  featureCalloutText: { flex: 1, fontSize: 12, fontFamily: "Inter_400Regular", color: "#4C1D95", lineHeight: 17 },
 });

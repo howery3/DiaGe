@@ -92,6 +92,18 @@ function RootLayoutNav() {
           options={{ headerShown: true }}
         />
         <Stack.Screen
+          name="retailer/qr"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="retailer/stats"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="retailer/nearest-store"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="insurance-report"
           options={{ headerShown: true }}
         />

@@ -26,11 +26,12 @@ const INSURANCE_BENEFITS = [
 ];
 
 const RETAIL_BENEFITS = [
-  "Automated inspection reminders bring customers back",
-  "Digital warranty tracking tied to your store",
-  "Wishlist integration converts shoppers to buyers",
-  "Featured in customer insurance reports",
-  "Co-branded customer retention — zero lift required",
+  "In-store QR codes let customers save wishlists on the spot",
+  "Customers can send their wishlist to your nearest location automatically",
+  "Partner snapshot reports show exactly what your customers own and love",
+  "Automated inspection reminders bring customers back to your store",
+  "Digital warranty tracking tied to your store builds long-term loyalty",
+  "Wishlist integration converts browsers into buyers",
 ];
 
 export default function PartnerInquiryScreen() {

@@ -4,7 +4,9 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { capture } from "@/utils/posthog";
 import {
+  ActionSheetIOS,
   Alert,
+  Platform,
   Pressable,
   ScrollView,
   Share,
@@ -99,14 +101,13 @@ export default function RetailerDetailScreen() {
     capture("wishlist_shared", {
       retailer: retailerName,
       item_count: retailerWishlist.length,
-      with_contact: withContact,
+      with_contact: includeContact,
     });
   }
 
   async function handleShareList() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (!retailerWishlist.length) return;
-
     if (hasProfile) {
       Alert.alert(
         "Share Wishlist",
@@ -122,6 +123,41 @@ export default function RetailerDetailScreen() {
     }
   }
 
+  async function handleMoreMenu() {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const hasWishlist = retailerWishlist.length > 0;
+
+    const options = [
+      "Cancel",
+      ...(hasWishlist ? ["Share Wishlist"] : []),
+      "QR Code for In-Store",
+      "Partner Stats Snapshot",
+      ...(hasWishlist ? ["Find Nearest Store"] : []),
+    ];
+
+    const run = (label: string) => {
+      if (label === "Share Wishlist") handleShareList();
+      if (label === "QR Code for In-Store") router.push(`/retailer/qr?name=${encoded}` as never);
+      if (label === "Partner Stats Snapshot") router.push(`/retailer/stats?name=${encoded}` as never);
+      if (label === "Find Nearest Store") router.push(`/retailer/nearest-store?name=${encoded}` as never);
+    };
+
+    if (Platform.OS === "ios") {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options, cancelButtonIndex: 0 },
+        (i) => { if (i > 0) run(options[i]); }
+      );
+    } else {
+      Alert.alert(retailerName, "Choose an action", [
+        ...(hasWishlist ? [{ text: "Share Wishlist", onPress: () => handleShareList() }] : []),
+        { text: "QR Code for In-Store", onPress: () => router.push(`/retailer/qr?name=${encoded}` as never) },
+        { text: "Partner Stats Snapshot", onPress: () => router.push(`/retailer/stats?name=${encoded}` as never) },
+        ...(hasWishlist ? [{ text: "Find Nearest Store", onPress: () => router.push(`/retailer/nearest-store?name=${encoded}` as never) }] : []),
+        { text: "Cancel", style: "cancel" as const },
+      ]);
+    }
+  }
+
   const encoded = encodeURIComponent(retailerName);
 
   return (
@@ -133,18 +169,15 @@ export default function RetailerDetailScreen() {
           headerTintColor: colors.foreground,
           headerTitleStyle: { fontFamily: "Inter_600SemiBold" },
           headerRight: () =>
-            activeTab === "wishlist" && retailerWishlist.length > 0 ? (
+            isUncategorized ? null : (
               <Pressable
-                onPress={handleShareList}
+                onPress={handleMoreMenu}
                 hitSlop={10}
                 style={styles.headerShareBtn}
               >
-                <Feather name="share-2" size={20} color={colors.primary} />
-                <Text style={[styles.headerShareText, { color: colors.primary }]}>
-                  Share List
-                </Text>
+                <Feather name="more-horizontal" size={24} color={colors.primary} />
               </Pressable>
-            ) : null,
+            ),
         }}
       />
 
