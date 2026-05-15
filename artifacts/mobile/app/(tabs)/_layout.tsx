@@ -38,7 +38,7 @@ const STEPS = [
     icon: "archive" as const,
     tag: "My Vault",
     title: "Store every piece you own",
-    body: "Add your jewelry with photos, warranty documents, and purchase receipts — all organized in one place.",
+    body: "Add your jewelry with photos, warranty documents, and purchase receipts, all organized in one place.",
     accentColor: "#5B21B6",
   },
   {
