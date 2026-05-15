@@ -1,5 +1,4 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSSO } from "@clerk/expo";
 import * as AuthSession from "expo-auth-session";
 import * as Haptics from "expo-haptics";
@@ -23,7 +22,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const TOUR_KEY = "@dige_tour_seen";
 const PRIMARY = "#5B21B6";
 const PRIMARY_LIGHT = "#8B5CF6";
 const BG = "#FAFAFF";
@@ -52,13 +50,7 @@ export default function SignInScreen() {
 
         if (createdSessionId) {
           await setActive!({ session: createdSessionId });
-          const tourSeen = await AsyncStorage.getItem(TOUR_KEY);
-          if (!tourSeen) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            router.replace("/tour" as any);
-          } else {
-            router.replace("/(tabs)");
-          }
+          router.replace("/(tabs)");
         }
       } catch (err) {
         console.error(JSON.stringify(err, null, 2));
