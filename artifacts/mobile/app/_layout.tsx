@@ -92,10 +92,6 @@ function RootLayoutNav() {
           options={{ headerShown: true }}
         />
         <Stack.Screen
-          name="retailer/qr"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="retailer/stats"
           options={{ headerShown: false }}
         />
@@ -125,10 +121,6 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="retailer-browser"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="catalog-scan"
           options={{ headerShown: false }}
         />
         <Stack.Screen

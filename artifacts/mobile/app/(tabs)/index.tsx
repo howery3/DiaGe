@@ -1,11 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
-  ActionSheetIOS,
-  Alert,
   FlatList,
   Platform,
   Pressable,
@@ -23,53 +20,6 @@ interface RetailerSummary {
   name: string;
   pieceCount: number;
   wishlistCount: number;
-}
-
-async function captureReceiptPhoto(): Promise<string | null> {
-  if (Platform.OS === "ios") {
-    return new Promise((resolve) => {
-      ActionSheetIOS.showActionSheetWithOptions(
-        { options: ["Cancel", "Take Photo", "Choose from Library"], cancelButtonIndex: 0 },
-        async (idx) => {
-          if (idx === 1) {
-            const { status } = await ImagePicker.requestCameraPermissionsAsync();
-            if (status !== "granted") { Alert.alert("Permission needed", "Allow camera access to scan receipts."); resolve(null); return; }
-            const r = await ImagePicker.launchCameraAsync({ allowsEditing: false, quality: 0.9 });
-            resolve(r.canceled ? null : r.assets[0].uri);
-          } else if (idx === 2) {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== "granted") { Alert.alert("Permission needed", "Allow photo library access."); resolve(null); return; }
-            const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.9 });
-            resolve(r.canceled ? null : r.assets[0].uri);
-          } else {
-            resolve(null);
-          }
-        }
-      );
-    });
-  } else {
-    return new Promise((resolve) => {
-      Alert.alert("Scan Receipt", "Choose a source", [
-        { text: "Cancel", style: "cancel", onPress: () => resolve(null) },
-        {
-          text: "Camera", onPress: async () => {
-            const { status } = await ImagePicker.requestCameraPermissionsAsync();
-            if (status !== "granted") { resolve(null); return; }
-            const r = await ImagePicker.launchCameraAsync({ allowsEditing: false, quality: 0.9 });
-            resolve(r.canceled ? null : r.assets[0].uri);
-          }
-        },
-        {
-          text: "Photo Library", onPress: async () => {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== "granted") { resolve(null); return; }
-            const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.9 });
-            resolve(r.canceled ? null : r.assets[0].uri);
-          }
-        },
-      ]);
-    });
-  }
 }
 
 export default function VaultScreen() {
@@ -104,14 +54,6 @@ export default function VaultScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const totalDocs = pieces.reduce((acc, p) => acc + (p.documents?.length ?? 0), 0);
-
-  async function handleScanReceipt() {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const uri = await captureReceiptPhoto();
-    if (uri) {
-      router.push(`/piece/add?receiptUri=${encodeURIComponent(uri)}`);
-    }
-  }
 
   function handleAddPiece() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -158,13 +100,6 @@ export default function VaultScreen() {
         >
           <Feather name="plus" size={18} color="#fff" />
           <Text style={styles.addPieceBtnText}>Add Jewelry Piece</Text>
-        </Pressable>
-        <Pressable
-          onPress={handleScanReceipt}
-          style={[styles.scanBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <Feather name="camera" size={18} color={colors.primary} />
-          <Text style={[styles.scanBtnText, { color: colors.primary }]}>Scan Receipt</Text>
         </Pressable>
       </View>
 
@@ -288,7 +223,7 @@ const styles = StyleSheet.create({
 
   actionStrip: { flexDirection: "row", gap: 10, paddingHorizontal: 20, marginBottom: 14 },
   addPieceBtn: {
-    flex: 2,
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -302,17 +237,6 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   addPieceBtnText: { color: "#fff", fontSize: 15, fontFamily: "Inter_700Bold" },
-  scanBtn: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 14,
-    borderRadius: 14,
-    borderWidth: 1.5,
-  },
-  scanBtnText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
 
   searchWrap: { flexDirection: "row", alignItems: "center", marginHorizontal: 20, marginBottom: 12, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, borderWidth: 1, gap: 10 },
   search: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
