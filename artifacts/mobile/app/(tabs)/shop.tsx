@@ -83,12 +83,12 @@ export default function ShopScreen() {
                 <Pressable
                   onPress={(e) => {
                     e.stopPropagation();
-                    router.push(`/retailer/${encodeURIComponent(catalog.retailerName)}?tab=wishlist`);
+                    router.push(`/retailer/stats?name=${encodeURIComponent(catalog.retailerName)}`);
                   }}
                   style={[styles.catalogBtn, { borderColor: colors.border }]}
                 >
-                  <Feather name="heart" size={14} color={colors.mutedForeground} />
-                  <Text style={[styles.catalogBtnText, { color: colors.mutedForeground }]}>View Wishlist</Text>
+                  <Feather name="bar-chart-2" size={14} color={colors.mutedForeground} />
+                  <Text style={[styles.catalogBtnText, { color: colors.mutedForeground }]}>My Snapshot</Text>
                 </Pressable>
               </View>
             </View>
