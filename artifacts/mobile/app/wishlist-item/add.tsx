@@ -32,6 +32,7 @@ export default function AddWishlistItemScreen() {
   const { retailer: prefillRetailer } = useLocalSearchParams<{ retailer?: string }>();
 
   const [name, setName] = useState("");
+  const [sku, setSku] = useState("");
   const [brand, setBrand] = useState("");
   const [type, setType] = useState("");
   const [retailer, setRetailer] = useState(
@@ -60,6 +61,7 @@ export default function AddWishlistItemScreen() {
     }
     addWishlistItem({
       name: name.trim(),
+      sku: sku.trim(),
       brand: brand.trim(),
       type: type.trim(),
       retailer: retailer.trim(),
@@ -110,6 +112,17 @@ export default function AddWishlistItemScreen() {
             placeholderTextColor={colors.mutedForeground}
             value={name}
             onChangeText={setName}
+          />
+        </Field>
+
+        <Field label="SKU / Item #" colors={colors}>
+          <TextInput
+            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
+            placeholder="e.g. BE-LDR-001"
+            placeholderTextColor={colors.mutedForeground}
+            value={sku}
+            onChangeText={setSku}
+            autoCapitalize="characters"
           />
         </Field>
 

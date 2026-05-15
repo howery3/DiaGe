@@ -117,6 +117,7 @@ export default function RetailerBrowserScreen() {
     }
     addWishlistItem({
       name: wishlistName.trim(),
+      sku: "",
       type: "other",
       brand: retailerName,
       retailer: retailerName,

@@ -64,6 +64,7 @@ export default function RetailerDetailScreen() {
 
     const itemLines = items.map((item: WishlistItem, i: number) => {
       const parts: string[] = [`${i + 1}. ${item.name}`];
+      if (item.sku) parts.push(`   SKU: ${item.sku}`);
       const meta: string[] = [];
       if (item.brand) meta.push(item.brand);
       if (item.type) meta.push(item.type);

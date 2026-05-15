@@ -33,6 +33,7 @@ export default function EditWishlistItemScreen() {
   const item = wishlistItems.find((w) => w.id === id);
 
   const [name, setName] = useState(item?.name ?? "");
+  const [sku, setSku] = useState(item?.sku ?? "");
   const [brand, setBrand] = useState(item?.brand ?? "");
   const [type, setType] = useState(item?.type ?? "");
   const [retailer, setRetailer] = useState(item?.retailer ?? "");
@@ -72,6 +73,7 @@ export default function EditWishlistItemScreen() {
     }
     updateWishlistItem(id!, {
       name: name.trim(),
+      sku: sku.trim(),
       brand: brand.trim(),
       type: type.trim(),
       retailer: retailer.trim(),
@@ -116,6 +118,17 @@ export default function EditWishlistItemScreen() {
             placeholderTextColor={colors.mutedForeground}
             value={name}
             onChangeText={setName}
+          />
+        </Field>
+
+        <Field label="SKU / Item #" colors={colors}>
+          <TextInput
+            style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
+            placeholder="e.g. BE-LDR-001"
+            placeholderTextColor={colors.mutedForeground}
+            value={sku}
+            onChangeText={setSku}
+            autoCapitalize="characters"
           />
         </Field>
 

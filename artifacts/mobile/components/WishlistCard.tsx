@@ -31,6 +31,7 @@ export function WishlistCard({ item, onPress, onDelete, onEdit }: WishlistCardPr
     async function doShare(includeContact: boolean) {
       const lines = [
         `✨ ${item.name}`,
+        item.sku ? `SKU: ${item.sku}` : "",
         item.brand ? `by ${item.brand}` : "",
         item.retailer ? `Available at ${item.retailer}` : "",
         item.retailerUrl ? item.retailerUrl : "",
@@ -93,6 +94,9 @@ export function WishlistCard({ item, onPress, onDelete, onEdit }: WishlistCardPr
                 </Pressable>
               </View>
             </View>
+            {item.sku ? (
+              <Text style={[styles.sku, { color: colors.mutedForeground }]}>SKU {item.sku}</Text>
+            ) : null}
             {item.brand ? (
               <Text style={[styles.meta, { color: colors.mutedForeground }]}>{item.brand}</Text>
             ) : null}
@@ -139,6 +143,7 @@ const styles = StyleSheet.create({
   name: { fontSize: 15, fontFamily: "Inter_600SemiBold", flex: 1 },
   actions: { flexDirection: "row", gap: 8 },
   actionBtn: { padding: 4 },
+  sku: { fontSize: 11, fontFamily: "Inter_500Medium", letterSpacing: 0.5 },
   meta: { fontSize: 13, fontFamily: "Inter_400Regular" },
   retailerRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   retailerText: { fontSize: 12, fontFamily: "Inter_400Regular" },

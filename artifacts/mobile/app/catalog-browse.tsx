@@ -164,12 +164,13 @@ function CatalogItemRow({
     }
     addWishlistItem({
       name: item.name,
+      sku: item.sku,
       type: item.type,
       brand: catalog.retailerName,
       retailer: catalog.retailerName,
       retailerUrl: catalog.catalogUrl,
       estimatedPrice: item.price,
-      notes: `SKU: ${item.sku} — ${item.description}`,
+      notes: item.description,
       priority: "medium",
     });
     Alert.alert("Added to Wishlist!", `${item.name} has been saved to your wishlist.`);

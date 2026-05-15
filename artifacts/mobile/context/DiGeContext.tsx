@@ -88,6 +88,7 @@ export type WishlistPriority = "low" | "medium" | "high";
 export interface WishlistItem {
   id: string;
   name: string;
+  sku: string;
   type: string;
   brand: string;
   retailer: string;
