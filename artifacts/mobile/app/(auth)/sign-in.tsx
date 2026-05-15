@@ -1,4 +1,5 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { useSSO } from "@clerk/expo";
 import * as AuthSession from "expo-auth-session";
 import * as Haptics from "expo-haptics";
@@ -92,9 +93,11 @@ export default function SignInScreen() {
 
       {/* Logo / branding */}
       <Animated.View entering={FadeInUp.delay(80).duration(500).springify()} style={styles.logoWrap}>
-        <View style={styles.logoIcon}>
-          <Feather name="hexagon" size={36} color="#fff" />
-        </View>
+        <Image
+          source={require("../../assets/images/icon.png")}
+          style={styles.logoIcon}
+          contentFit="cover"
+        />
         <Text style={styles.logoName}>DiaGe</Text>
         <Text style={styles.logoTagline}>Your Digital Jewelry Vault</Text>
       </Animated.View>
@@ -209,14 +212,11 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   logoIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 24,
-    backgroundColor: PRIMARY,
-    alignItems: "center",
-    justifyContent: "center",
+    width: 88,
+    height: 88,
+    borderRadius: 22,
     shadowColor: PRIMARY,
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.45,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 8 },
     elevation: 10,
