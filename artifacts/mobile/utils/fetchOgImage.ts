@@ -7,7 +7,7 @@ export async function fetchOgImage(url: string): Promise<string | null> {
   if (!url || !url.startsWith("http")) return null;
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
+  const timeout = setTimeout(() => controller.abort(), 12000);
 
   try {
     const response = await fetch(url, {
@@ -15,9 +15,10 @@ export async function fetchOgImage(url: string): Promise<string | null> {
       headers: {
         "User-Agent":
           "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
+        // No Accept-Encoding — we want plain text so we can parse it directly
         Connection: "keep-alive",
         "Upgrade-Insecure-Requests": "1",
       },
@@ -25,11 +26,12 @@ export async function fetchOgImage(url: string): Promise<string | null> {
 
     if (!response.ok) return null;
 
-    // Only read the first 100 KB — the <head> section is always near the top
-    const buffer = await response.arrayBuffer();
-    const chunk = new TextDecoder().decode(buffer.slice(0, 100_000));
+    // Read as text (React Native handles decompression automatically)
+    // Truncate in JS after reading so we don't parse the full page body
+    const html = await response.text();
+    const head = html.slice(0, 120_000);
 
-    return extractImage(chunk, url);
+    return extractImage(head, url);
   } catch {
     return null;
   } finally {
@@ -39,23 +41,17 @@ export async function fetchOgImage(url: string): Promise<string | null> {
 
 function extractImage(html: string, pageUrl: string): string | null {
   // Normalise whitespace inside meta tags to simplify matching
-  const normalised = html.replace(/<meta([^>]+)>/gi, (_, attrs: string) =>
+  const normalised = html.replace(/<meta([^>]+)>/gi, (_: string, attrs: string) =>
     `<meta ${attrs.replace(/\s+/g, " ").trim()}>`
   );
 
-  // Patterns to try in priority order
   const patterns = [
-    // og:image — property before content
     /property=["']og:image["'][^>]*content=["']([^"']+)["']/i,
-    // og:image — content before property
     /content=["']([^"']+)["'][^>]*property=["']og:image["']/i,
-    // og:image:secure_url
     /property=["']og:image:secure_url["'][^>]*content=["']([^"']+)["']/i,
     /content=["']([^"']+)["'][^>]*property=["']og:image:secure_url["']/i,
-    // twitter:image
     /name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i,
     /content=["']([^"']+)["'][^>]*name=["']twitter:image["']/i,
-    // twitter:image:src
     /name=["']twitter:image:src["'][^>]*content=["']([^"']+)["']/i,
     /content=["']([^"']+)["'][^>]*name=["']twitter:image:src["']/i,
   ];
@@ -73,15 +69,12 @@ function extractImage(html: string, pageUrl: string): string | null {
 
 function resolveUrl(imageUrl: string, pageUrl: string): string | null {
   if (!imageUrl) return null;
-  // Already absolute
   if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
     return imageUrl;
   }
-  // Protocol-relative
   if (imageUrl.startsWith("//")) {
     return `https:${imageUrl}`;
   }
-  // Relative path
   try {
     const base = new URL(pageUrl);
     return new URL(imageUrl, base.origin).href;

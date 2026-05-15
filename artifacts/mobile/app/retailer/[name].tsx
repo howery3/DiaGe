@@ -62,11 +62,18 @@ export default function RetailerDetailScreen() {
     const itemLines = items.map((item: WishlistItem, i: number) => {
       const parts: string[] = [`${i + 1}. ${item.name}`];
       const meta: string[] = [];
-      if (item.brand) meta.push(`by ${item.brand}`);
+      if (item.brand) meta.push(item.brand);
       if (item.type) meta.push(item.type);
       if (meta.length) parts.push(`   ${meta.join(" · ")}`);
-      if (item.estimatedPrice) parts.push(`   Est. $${item.estimatedPrice}`);
-      if (item.retailerUrl) parts.push(`   ${item.retailerUrl}`);
+      if (item.estimatedPrice) parts.push(`   $${item.estimatedPrice}`);
+      if (item.retailerUrl) {
+        try {
+          const domain = new URL(item.retailerUrl).hostname.replace(/^www\./, "");
+          parts.push(`   ${domain}`);
+        } catch {
+          // skip malformed URL
+        }
+      }
       if (item.notes) parts.push(`   ${item.notes}`);
       return parts.join("\n");
     });
