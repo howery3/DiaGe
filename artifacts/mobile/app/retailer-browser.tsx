@@ -25,6 +25,13 @@ const EXTRACT_SCRIPT = `
     return el ? (el.getAttribute('content') || '') : '';
   }
 
+  function looksLikeSku(val) {
+    if (!val) return false;
+    val = String(val).trim();
+    // 3-25 chars, alphanumeric + hyphens/underscores/periods, must have at least one digit, not a plain year
+    return /^[A-Za-z0-9][A-Za-z0-9\\-_.]{2,24}$/.test(val) && /\\d/.test(val) && !/^\\d{4}$/.test(val) && !/^\\d{1,2}$/.test(val);
+  }
+
   function extractSku() {
     // 1. JSON-LD structured data (most reliable)
     try {
@@ -38,7 +45,7 @@ const EXTRACT_SCRIPT = `
             var candidates = [item.sku, item.mpn, item.gtin8, item.productID];
             for (var k = 0; k < candidates.length; k++) {
               var v = String(candidates[k] || '').replace(/\\s/g, '');
-              if (/^\\d{8}$/.test(v)) return v;
+              if (looksLikeSku(v)) return v.toUpperCase();
             }
           }
         }
@@ -49,7 +56,7 @@ const EXTRACT_SCRIPT = `
     var metaNames = ['sku', 'product:sku', 'product_id', 'item_number', 'og:product:item_group_id'];
     for (var m = 0; m < metaNames.length; m++) {
       var val = getMeta(metaNames[m]).replace(/\\s/g, '');
-      if (/^\\d{8}$/.test(val)) return val;
+      if (looksLikeSku(val)) return val.toUpperCase();
     }
 
     // 3. DOM attributes — itemprop, data-sku, data-product-id
@@ -58,17 +65,29 @@ const EXTRACT_SCRIPT = `
       var el = document.querySelector(domSelectors[d]);
       if (el) {
         var text = (el.getAttribute('content') || el.getAttribute('data-sku') || el.getAttribute('data-product-id') || el.getAttribute('data-item-id') || el.textContent || '').replace(/\\s/g, '');
-        if (/^\\d{8}$/.test(text)) return text;
+        if (looksLikeSku(text)) return text.toUpperCase();
       }
     }
 
-    // 4. URL — path segments and query params
-    var url = window.location.href;
-    var urlMatch = url.match(/[?\\/&=](\\d{8})([?\\/&#]|$)/);
-    if (urlMatch) return urlMatch[1];
-    // also try standalone 8-digit segment in path
-    var pathMatch = url.match(/\\/(\\d{8})(?:\\/|\\.|$|\\?)/);
-    if (pathMatch) return pathMatch[1];
+    // 4. URL — named query params first, then path segments
+    var SKU_PARAMS = ['sku', 'item', 'itemid', 'productid', 'pid', 'item_number', 'style', 'modelnumber', 'partnumber'];
+    var SKIP_SEGS = ['products','product','item','items','shop','store','jewelry','ring','rings','necklace','necklaces','bracelet','bracelets','earring','earrings','watch','watches','collection','collections','category','categories','p','en','us','www','com','html','aspx'];
+    try {
+      var search = window.location.search.slice(1);
+      var pairs = search.split('&');
+      for (var pi = 0; pi < pairs.length; pi++) {
+        var kv = pairs[pi].split('=');
+        if (kv.length === 2 && SKU_PARAMS.indexOf(kv[0].toLowerCase()) !== -1) {
+          var qv = decodeURIComponent(kv[1] || '').replace(/\\s/g, '');
+          if (looksLikeSku(qv)) return qv.toUpperCase();
+        }
+      }
+    } catch(e) {}
+    var segs = window.location.pathname.split('/').filter(Boolean).reverse();
+    for (var si = 0; si < segs.length; si++) {
+      var seg = segs[si].replace(/\\.[^.]+$/, '');
+      if (SKIP_SEGS.indexOf(seg.toLowerCase()) === -1 && looksLikeSku(seg)) return seg.toUpperCase();
+    }
 
     return '';
   }

@@ -58,8 +58,25 @@ export default function EditWishlistItemScreen() {
   }
 
   function extractSkuFromUrl(url: string): string {
-    const match = url.match(/[?\/&=](\d{8})([?\/&#]|$)/) ?? url.match(/\/(\d{8})(?:\/|\.|$|\?)/);
-    return match ? match[1] : "";
+    const SKU_PARAMS = ["sku", "item", "itemid", "productid", "pid", "item_number", "style", "modelnumber", "partnumber"];
+    const SKIP_SEGS = ["products","product","item","items","shop","store","jewelry","ring","rings","necklace","necklaces","bracelet","bracelets","earring","earrings","watch","watches","collection","collections","category","categories","p","en","us"];
+    const ok = (v: string) => /^[A-Za-z0-9][A-Za-z0-9\-_.]{2,24}$/.test(v) && /\d/.test(v) && !/^\d{4}$/.test(v) && !/^\d{1,2}$/.test(v);
+    try {
+      const search = url.split("?")[1] ?? "";
+      for (const pair of search.split("&")) {
+        const [k, v] = pair.split("=");
+        if (SKU_PARAMS.includes((k ?? "").toLowerCase())) {
+          const decoded = decodeURIComponent(v ?? "").replace(/\s/g, "");
+          if (ok(decoded)) return decoded.toUpperCase();
+        }
+      }
+    } catch {}
+    const segs = (url.split("?")[0]).split("/").filter(Boolean).reverse();
+    for (const seg of segs) {
+      const clean = seg.replace(/\.[^.]+$/, "");
+      if (!SKIP_SEGS.includes(clean.toLowerCase()) && ok(clean)) return clean.toUpperCase();
+    }
+    return "";
   }
 
   async function handleUrlBlur() {
