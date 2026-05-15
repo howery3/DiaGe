@@ -4,6 +4,7 @@ import * as Sharing from "expo-sharing";
 import React, { useRef } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { captureRef } from "react-native-view-shot";
+import QRCode from "react-native-qrcode-svg";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
@@ -114,6 +115,19 @@ export function WishlistCard({ item, onPress, onDelete, onEdit }: WishlistCardPr
               />
             ) : null}
           </View>
+
+          {/* QR code to buy */}
+          {item.retailerUrl ? (
+            <View style={snap.qrSection}>
+              <View style={snap.qrBox}>
+                <QRCode value={item.retailerUrl} size={80} color="#1A1A2E" backgroundColor="#fff" />
+              </View>
+              <View style={snap.qrLabels}>
+                <Text style={snap.qrTitle}>Scan to buy</Text>
+                <Text style={snap.qrUrl} numberOfLines={2}>{urlDomain || item.retailerUrl}</Text>
+              </View>
+            </View>
+          ) : null}
         </View>
 
         {/* Contact section */}
@@ -381,5 +395,34 @@ const snap = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     color: "rgba(255,255,255,0.5)",
     letterSpacing: 0.3,
+  },
+
+  qrSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginTop: 14,
+    paddingTop: 14,
+    borderTopWidth: 1,
+    borderTopColor: "#F0ECF8",
+  },
+  qrBox: {
+    padding: 6,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#E8E3F5",
+  },
+  qrLabels: { flex: 1, gap: 4 },
+  qrTitle: {
+    fontSize: 13,
+    fontFamily: "Inter_700Bold",
+    color: PRIMARY,
+  },
+  qrUrl: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "#9989BF",
+    lineHeight: 16,
   },
 });

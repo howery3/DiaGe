@@ -4,6 +4,7 @@ import * as Sharing from "expo-sharing";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import { captureRef } from "react-native-view-shot";
+import QRCode from "react-native-qrcode-svg";
 import { capture } from "@/utils/posthog";
 import {
   ActionSheetIOS,
@@ -136,28 +137,42 @@ export default function RetailerDetailScreen() {
 
         {/* Items */}
         <View style={snap.itemsSection}>
-          {retailerWishlist.map((item: WishlistItem, i: number) => (
-            <View
-              key={item.id}
-              style={[snap.itemRow, i > 0 && snap.itemRowBorder]}
-            >
-              <View style={snap.itemLeft}>
-                <Text style={snap.itemNum}>{i + 1}</Text>
-                <View style={[snap.dot, { backgroundColor: PRIORITY_COLORS[item.priority] }]} />
+          {retailerWishlist.map((item: WishlistItem, i: number) => {
+            let itemDomain = "";
+            if (item.retailerUrl) {
+              try { itemDomain = new URL(item.retailerUrl).hostname.replace(/^www\./, ""); } catch {}
+            }
+            return (
+              <View
+                key={item.id}
+                style={[snap.itemRow, i > 0 && snap.itemRowBorder]}
+              >
+                <View style={snap.itemLeft}>
+                  <Text style={snap.itemNum}>{i + 1}</Text>
+                  <View style={[snap.dot, { backgroundColor: PRIORITY_COLORS[item.priority] }]} />
+                </View>
+                <View style={snap.itemInfo}>
+                  <Text style={snap.itemName} numberOfLines={2}>{item.name}</Text>
+                  {item.sku ? <Text style={snap.itemSku}>SKU {item.sku}</Text> : null}
+                  {(item.brand || item.type) ? (
+                    <Text style={snap.itemMeta}>{[item.brand, item.type].filter(Boolean).join(" · ")}</Text>
+                  ) : null}
+                  {item.notes ? <Text style={snap.itemNotes} numberOfLines={2}>{item.notes}</Text> : null}
+                </View>
+                <View style={snap.itemRight}>
+                  {item.estimatedPrice ? (
+                    <Text style={snap.itemPrice}>${item.estimatedPrice}</Text>
+                  ) : null}
+                  {item.retailerUrl ? (
+                    <View style={snap.itemQrWrap}>
+                      <QRCode value={item.retailerUrl} size={52} color="#1A1A2E" backgroundColor="#fff" />
+                      <Text style={snap.itemQrLabel}>{itemDomain || "Scan to buy"}</Text>
+                    </View>
+                  ) : null}
+                </View>
               </View>
-              <View style={snap.itemInfo}>
-                <Text style={snap.itemName} numberOfLines={2}>{item.name}</Text>
-                {item.sku ? <Text style={snap.itemSku}>SKU {item.sku}</Text> : null}
-                {(item.brand || item.type) ? (
-                  <Text style={snap.itemMeta}>{[item.brand, item.type].filter(Boolean).join(" · ")}</Text>
-                ) : null}
-                {item.notes ? <Text style={snap.itemNotes} numberOfLines={2}>{item.notes}</Text> : null}
-              </View>
-              {item.estimatedPrice ? (
-                <Text style={snap.itemPrice}>${item.estimatedPrice}</Text>
-              ) : null}
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         {/* Contact */}
@@ -555,12 +570,31 @@ const snap = StyleSheet.create({
   itemSku: { fontSize: 10, fontFamily: "Inter_500Medium", color: "#9989BF", letterSpacing: 0.3 },
   itemMeta: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#777" },
   itemNotes: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#888", lineHeight: 16, fontStyle: "italic" },
+  itemRight: {
+    alignItems: "flex-end",
+    gap: 6,
+    flexShrink: 0,
+  },
   itemPrice: {
     fontSize: 14,
     fontFamily: "Inter_700Bold",
     color: PRIMARY,
-    paddingTop: 2,
-    flexShrink: 0,
+  },
+  itemQrWrap: {
+    alignItems: "center",
+    gap: 3,
+    padding: 4,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E8E3F5",
+  },
+  itemQrLabel: {
+    fontSize: 8,
+    fontFamily: "Inter_400Regular",
+    color: "#9989BF",
+    maxWidth: 60,
+    textAlign: "center",
   },
 
   contact: {
