@@ -176,16 +176,18 @@ export function DatePickerModal({ visible, value, onConfirm, onCancel, label }: 
                       style={[
                         styles.dayCell,
                         sel && { backgroundColor: colors.primary, borderRadius: 20 },
-                        !sel && tod && { borderRadius: 20, borderWidth: 1.5, borderColor: colors.primary },
                       ]}
                     >
                       <Text style={[
                         styles.dayText,
-                        { color: sel ? "#fff" : tod ? colors.primary : colors.foreground },
+                        { color: sel ? "#fff" : colors.foreground },
                         sel && styles.dayTextSelected,
                       ]}>
                         {day}
                       </Text>
+                      {tod && !sel ? (
+                        <View style={[styles.todayDot, { backgroundColor: colors.primary }]} />
+                      ) : null}
                     </Pressable>
                   );
                 })}
@@ -279,6 +281,7 @@ const styles = StyleSheet.create({
   },
   dayText: { fontSize: 14, fontFamily: "Inter_400Regular" },
   dayTextSelected: { fontFamily: "Inter_700Bold" },
+  todayDot: { width: 4, height: 4, borderRadius: 2, marginTop: 2 },
   yearList: { maxHeight: 260 },
   yearItem: {
     height: 48,
