@@ -95,6 +95,7 @@ export interface WishlistItem {
   estimatedPrice: string;
   notes: string;
   priority: WishlistPriority;
+  imageUrl?: string;
   createdAt: string;
 }
 

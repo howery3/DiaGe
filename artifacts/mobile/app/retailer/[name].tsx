@@ -3,8 +3,10 @@ import * as Haptics from "expo-haptics";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
+  Alert,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
@@ -13,8 +15,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { JewelryCard } from "@/components/JewelryCard";
 import { WishlistCard } from "@/components/WishlistCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useDiGe } from "@/context/DiGeContext";
+import { useDiGe, type WishlistItem } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { useProfile } from "@/hooks/useProfile";
 
 export default function RetailerDetailScreen() {
   const colors = useColors();
@@ -22,6 +25,7 @@ export default function RetailerDetailScreen() {
   const { name: encodedName, tab } = useLocalSearchParams<{ name: string; tab?: string }>();
   const retailerName = decodeURIComponent(encodedName ?? "");
   const isUncategorized = retailerName === "Uncategorized";
+  const { profile, hasProfile } = useProfile();
 
   const { pieces, wishlistItems, deleteWishlistItem } = useDiGe();
   const [fabOpen, setFabOpen] = useState(false);
@@ -30,9 +34,7 @@ export default function RetailerDetailScreen() {
   const retailerPieces = useMemo(
     () =>
       pieces.filter((p) =>
-        isUncategorized
-          ? !p.retailer.trim()
-          : p.retailer.trim() === retailerName
+        isUncategorized ? !p.retailer.trim() : p.retailer.trim() === retailerName
       ),
     [pieces, retailerName, isUncategorized]
   );
@@ -40,9 +42,7 @@ export default function RetailerDetailScreen() {
   const retailerWishlist = useMemo(
     () =>
       wishlistItems.filter((w) =>
-        isUncategorized
-          ? !w.retailer.trim()
-          : w.retailer.trim() === retailerName
+        isUncategorized ? !w.retailer.trim() : w.retailer.trim() === retailerName
       ),
     [wishlistItems, retailerName, isUncategorized]
   );
@@ -50,6 +50,63 @@ export default function RetailerDetailScreen() {
   async function handleFab() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setFabOpen((v) => !v);
+  }
+
+  async function shareWishlist(includeContact: boolean) {
+    const items = retailerWishlist;
+    if (!items.length) return;
+
+    const header = `💍 ${retailerName} Wishlist — ${items.length} item${items.length > 1 ? "s" : ""}`;
+    const divider = "─────────────────────";
+
+    const itemLines = items.map((item: WishlistItem, i: number) => {
+      const parts: string[] = [`${i + 1}. ${item.name}`];
+      const meta: string[] = [];
+      if (item.brand) meta.push(`by ${item.brand}`);
+      if (item.type) meta.push(item.type);
+      if (meta.length) parts.push(`   ${meta.join(" · ")}`);
+      if (item.estimatedPrice) parts.push(`   Est. $${item.estimatedPrice}`);
+      if (item.retailerUrl) parts.push(`   ${item.retailerUrl}`);
+      if (item.notes) parts.push(`   ${item.notes}`);
+      return parts.join("\n");
+    });
+
+    const lines = [header, "", ...itemLines];
+
+    if (includeContact) {
+      lines.push("");
+      lines.push(divider);
+      if (profile.name) lines.push(`From: ${profile.name}`);
+      if (profile.phone) lines.push(`📞 ${profile.phone}`);
+      if (profile.email) lines.push(`📧 ${profile.email}`);
+    }
+
+    lines.push("");
+    lines.push("Shared via DiaGe 💎");
+
+    await Share.share({
+      message: lines.join("\n"),
+      title: `${retailerName} Wishlist`,
+    });
+  }
+
+  async function handleShareList() {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (!retailerWishlist.length) return;
+
+    if (hasProfile) {
+      Alert.alert(
+        "Share Wishlist",
+        `Share your ${retailerName} wishlist (${retailerWishlist.length} item${retailerWishlist.length > 1 ? "s" : ""})?`,
+        [
+          { text: "Share anonymously", onPress: () => shareWishlist(false) },
+          { text: "Include my contact info", onPress: () => shareWishlist(true) },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+    } else {
+      await shareWishlist(false);
+    }
   }
 
   const encoded = encodeURIComponent(retailerName);
@@ -62,6 +119,19 @@ export default function RetailerDetailScreen() {
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.foreground,
           headerTitleStyle: { fontFamily: "Inter_600SemiBold" },
+          headerRight: () =>
+            activeTab === "wishlist" && retailerWishlist.length > 0 ? (
+              <Pressable
+                onPress={handleShareList}
+                hitSlop={10}
+                style={styles.headerShareBtn}
+              >
+                <Feather name="share-2" size={20} color={colors.primary} />
+                <Text style={[styles.headerShareText, { color: colors.primary }]}>
+                  Share List
+                </Text>
+              </Pressable>
+            ) : null,
         }}
       />
 
@@ -91,19 +161,12 @@ export default function RetailerDetailScreen() {
             <Feather
               name="box"
               size={14}
-              color={
-                activeTab === "vault" ? colors.primary : colors.mutedForeground
-              }
+              color={activeTab === "vault" ? colors.primary : colors.mutedForeground}
             />
             <Text
               style={[
                 styles.segmentText,
-                {
-                  color:
-                    activeTab === "vault"
-                      ? colors.primary
-                      : colors.mutedForeground,
-                },
+                { color: activeTab === "vault" ? colors.primary : colors.mutedForeground },
               ]}
             >
               Vault
@@ -114,9 +177,7 @@ export default function RetailerDetailScreen() {
                   styles.segBadge,
                   {
                     backgroundColor:
-                      activeTab === "vault"
-                        ? colors.primary
-                        : colors.mutedForeground,
+                      activeTab === "vault" ? colors.primary : colors.mutedForeground,
                   },
                 ]}
               >
@@ -141,21 +202,12 @@ export default function RetailerDetailScreen() {
             <Feather
               name="heart"
               size={14}
-              color={
-                activeTab === "wishlist"
-                  ? colors.primary
-                  : colors.mutedForeground
-              }
+              color={activeTab === "wishlist" ? colors.primary : colors.mutedForeground}
             />
             <Text
               style={[
                 styles.segmentText,
-                {
-                  color:
-                    activeTab === "wishlist"
-                      ? colors.primary
-                      : colors.mutedForeground,
-                },
+                { color: activeTab === "wishlist" ? colors.primary : colors.mutedForeground },
               ]}
             >
               Wishlist
@@ -166,25 +218,18 @@ export default function RetailerDetailScreen() {
                   styles.segBadge,
                   {
                     backgroundColor:
-                      activeTab === "wishlist"
-                        ? colors.primary
-                        : colors.mutedForeground,
+                      activeTab === "wishlist" ? colors.primary : colors.mutedForeground,
                   },
                 ]}
               >
-                <Text style={styles.segBadgeText}>
-                  {retailerWishlist.length}
-                </Text>
+                <Text style={styles.segBadgeText}>{retailerWishlist.length}</Text>
               </View>
             ) : null}
           </Pressable>
         </View>
 
         <ScrollView
-          contentContainerStyle={[
-            styles.list,
-            { paddingBottom: insets.bottom + 120 },
-          ]}
+          contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 120 }]}
           showsVerticalScrollIndicator={false}
         >
           {activeTab === "vault" ? (
@@ -252,11 +297,7 @@ export default function RetailerDetailScreen() {
               }}
               style={[
                 styles.fabMenuItem,
-                {
-                  backgroundColor: colors.card,
-                  borderColor: colors.primary,
-                  borderWidth: 1.5,
-                },
+                { backgroundColor: colors.card, borderColor: colors.primary, borderWidth: 1.5 },
               ]}
             >
               <Feather name="heart" size={16} color={colors.primary} />
@@ -268,20 +309,13 @@ export default function RetailerDetailScreen() {
               onPress={() => {
                 setFabOpen(false);
                 router.push(
-                  isUncategorized
-                    ? "/piece/add"
-                    : `/piece/add?retailer=${encoded}`
+                  isUncategorized ? "/piece/add" : `/piece/add?retailer=${encoded}`
                 );
               }}
-              style={[
-                styles.fabMenuItem,
-                { backgroundColor: colors.primary },
-              ]}
+              style={[styles.fabMenuItem, { backgroundColor: colors.primary }]}
             >
               <Feather name="box" size={16} color={colors.primaryForeground} />
-              <Text
-                style={[styles.fabMenuLabel, { color: colors.primaryForeground }]}
-              >
+              <Text style={[styles.fabMenuLabel, { color: colors.primaryForeground }]}>
                 Add Jewelry Piece
               </Text>
             </Pressable>
@@ -292,11 +326,7 @@ export default function RetailerDetailScreen() {
           onPress={handleFab}
           style={[styles.fab, { backgroundColor: colors.primary }]}
         >
-          <Feather
-            name={fabOpen ? "x" : "plus"}
-            size={24}
-            color={colors.primaryForeground}
-          />
+          <Feather name={fabOpen ? "x" : "plus"} size={24} color={colors.primaryForeground} />
         </Pressable>
       </View>
     </>
@@ -305,6 +335,16 @@ export default function RetailerDetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  headerShareBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingRight: 4,
+  },
+  headerShareText: {
+    fontSize: 14,
+    fontFamily: "Inter_600SemiBold",
+  },
   segmentWrap: {
     flexDirection: "row",
     marginHorizontal: 20,
@@ -330,11 +370,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 4,
   },
-  segBadgeText: {
-    fontSize: 10,
-    fontFamily: "Inter_700Bold",
-    color: "#fff",
-  },
+  segBadgeText: { fontSize: 10, fontFamily: "Inter_700Bold", color: "#fff" },
   list: { paddingHorizontal: 20, flexGrow: 1 },
   emptyWrap: { flex: 1, minHeight: 300 },
   fabArea: {

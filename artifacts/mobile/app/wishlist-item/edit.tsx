@@ -1,7 +1,10 @@
+import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Pressable,
   StyleSheet,
@@ -13,6 +16,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDiGe, type WishlistPriority } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { fetchOgImage } from "@/utils/fetchOgImage";
 
 const PRIORITIES: { value: WishlistPriority; label: string; color: string }[] = [
   { value: "low", label: "Low", color: "#15803D" },
@@ -36,6 +40,8 @@ export default function EditWishlistItemScreen() {
   const [estimatedPrice, setEstimatedPrice] = useState(item?.estimatedPrice ?? "");
   const [priority, setPriority] = useState<WishlistPriority>(item?.priority ?? "medium");
   const [notes, setNotes] = useState(item?.notes ?? "");
+  const [imageUrl, setImageUrl] = useState<string | null>(item?.imageUrl ?? null);
+  const [fetchingImage, setFetchingImage] = useState(false);
 
   if (!item) {
     return (
@@ -48,6 +54,15 @@ export default function EditWishlistItemScreen() {
         </View>
       </>
     );
+  }
+
+  async function handleUrlBlur() {
+    const url = retailerUrl.trim();
+    if (!url || !url.startsWith("http") || imageUrl) return;
+    setFetchingImage(true);
+    const found = await fetchOgImage(url);
+    setImageUrl(found);
+    setFetchingImage(false);
   }
 
   function handleSave() {
@@ -64,6 +79,7 @@ export default function EditWishlistItemScreen() {
       estimatedPrice: estimatedPrice.trim(),
       priority,
       notes: notes.trim(),
+      imageUrl: imageUrl ?? undefined,
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
@@ -135,17 +151,56 @@ export default function EditWishlistItemScreen() {
           />
         </Field>
 
-        <Field label="Retailer URL" colors={colors}>
+        <Field label="Product URL" colors={colors}>
           <TextInput
             style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
             placeholder="https://..."
             placeholderTextColor={colors.mutedForeground}
             value={retailerUrl}
-            onChangeText={setRetailerUrl}
+            onChangeText={(v) => {
+              setRetailerUrl(v);
+              if (!v) setImageUrl(null);
+            }}
+            onBlur={handleUrlBlur}
             keyboardType="url"
             autoCapitalize="none"
           />
         </Field>
+
+        {/* Thumbnail preview */}
+        {(fetchingImage || imageUrl) ? (
+          <View style={[styles.thumbWrap, { borderColor: colors.border, backgroundColor: colors.muted }]}>
+            {fetchingImage ? (
+              <View style={styles.thumbLoading}>
+                <ActivityIndicator size="small" color={colors.primary} />
+                <Text style={[styles.thumbHint, { color: colors.mutedForeground }]}>
+                  Fetching product image…
+                </Text>
+              </View>
+            ) : imageUrl ? (
+              <>
+                <Image
+                  source={{ uri: imageUrl }}
+                  style={styles.thumbImage}
+                  contentFit="cover"
+                />
+                <View style={styles.thumbMeta}>
+                  <Feather name="image" size={13} color={colors.primary} />
+                  <Text style={[styles.thumbHint, { color: colors.mutedForeground }]} numberOfLines={1}>
+                    Product thumbnail saved
+                  </Text>
+                  <Pressable
+                    onPress={() => setImageUrl(null)}
+                    hitSlop={8}
+                    style={styles.thumbRemove}
+                  >
+                    <Feather name="x" size={14} color={colors.mutedForeground} />
+                  </Pressable>
+                </View>
+              </>
+            ) : null}
+          </View>
+        ) : null}
 
         <Field label="Estimated Price ($)" colors={colors}>
           <TextInput
@@ -168,8 +223,7 @@ export default function EditWishlistItemScreen() {
               style={[
                 styles.priorityPill,
                 {
-                  backgroundColor:
-                    priority === p.value ? p.color + "20" : colors.secondary,
+                  backgroundColor: priority === p.value ? p.color + "20" : colors.secondary,
                   borderColor: priority === p.value ? p.color : colors.border,
                   borderWidth: 1.5,
                 },
@@ -267,4 +321,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   priorityText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
+  thumbWrap: {
+    borderWidth: 1,
+    borderRadius: 10,
+    overflow: "hidden",
+    marginBottom: 10,
+  },
+  thumbLoading: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 14,
+  },
+  thumbImage: {
+    width: "100%",
+    height: 160,
+  },
+  thumbMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  thumbHint: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    flex: 1,
+  },
+  thumbRemove: { padding: 2 },
 });
