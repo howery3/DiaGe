@@ -212,11 +212,15 @@ export default function RootLayout() {
   );
 
   if (posthogClient) {
-    return (
-      <PostHogProvider client={posthogClient} autocapture>
-        {inner}
-      </PostHogProvider>
-    );
+    try {
+      return (
+        <PostHogProvider client={posthogClient}>
+          {inner}
+        </PostHogProvider>
+      );
+    } catch {
+      // if PostHog provider fails, render the app without it
+    }
   }
 
   return inner;
