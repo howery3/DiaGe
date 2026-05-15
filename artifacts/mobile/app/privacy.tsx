@@ -166,6 +166,27 @@ export default function PrivacyScreen() {
           </Body>
         </Section>
 
+        <Section title="Important: DiaGe Is Not an Insurance Agency">
+          <InfoBox colors={colors} icon="alert-triangle">
+            DiaGe is a jewelry organization and document management app. We are <Strong colors={colors}>not</Strong> an insurance agency, insurance broker, or licensed insurance provider. DiaGe does not sell, underwrite, or issue insurance policies of any kind.
+          </InfoBox>
+          <Body colors={colors}>
+            Any insurance-related content, quotes, or partner links displayed within the app are provided for informational convenience only. They connect you with <Strong colors={colors}>independent, licensed third-party insurance companies</Strong> that operate separately from DiaGe.
+          </Body>
+          <BulletList
+            colors={colors}
+            items={[
+              "DiaGe does not give insurance advice, and nothing in the app constitutes a recommendation to purchase any insurance product.",
+              "All insurance quotes, policy terms, coverage details, and pricing are determined solely by the third-party insurer — not DiaGe.",
+              "DiaGe is not responsible for any coverage decisions, claim outcomes, or disputes with insurance providers.",
+              "You should review the terms, conditions, and licensing of any insurance provider before purchasing a policy.",
+            ]}
+          />
+          <Body colors={colors}>
+            If you have questions about a specific policy or quote, contact the insurer directly. For general questions about the DiaGe app, contact us at <Strong colors={colors}>support@digeapp.com</Strong>.
+          </Body>
+        </Section>
+
         <Section title="Third-Party Services">
           <Body colors={colors}>
             DiaGe may display information from or link to third-party retailers and insurance providers. These third parties have their own privacy policies, and we are not responsible for their data practices.

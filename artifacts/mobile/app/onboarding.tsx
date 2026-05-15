@@ -193,7 +193,8 @@ export default function OnboardingScreen() {
   async function finish() {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     await AsyncStorage.setItem(ONBOARDING_KEY, "true");
-    router.replace("/(tabs)");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    router.replace("/(auth)/sign-in" as any);
   }
 
   async function goNext() {

@@ -6,6 +6,8 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -28,80 +30,114 @@ const queryClient = new QueryClient();
 
 const ONBOARDING_KEY = "@dige_onboarded";
 
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
+const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
+
+function AuthGuard() {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (!isSignedIn) {
+      AsyncStorage.getItem(ONBOARDING_KEY).then((v) => {
+        if (v) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.replace("/(auth)/sign-in" as any);
+        }
+      });
+    }
+  }, [isSignedIn, isLoaded]);
+
+  return null;
+}
+
 function RootLayoutNav() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="piece/add"
-        options={{ presentation: "modal", headerShown: true }}
-      />
-      <Stack.Screen
-        name="piece/[id]"
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="piece/add-repair"
-        options={{ presentation: "modal", headerShown: true }}
-      />
-      <Stack.Screen
-        name="piece/share"
-        options={{ presentation: "modal", headerShown: true }}
-      />
-      <Stack.Screen
-        name="wishlist-item/add"
-        options={{ presentation: "modal", headerShown: true }}
-      />
-      <Stack.Screen
-        name="reminder/add"
-        options={{ presentation: "modal", headerShown: true }}
-      />
-      <Stack.Screen
-        name="retailer/[name]"
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="insurance-report"
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="insurance-quote"
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="partner-inquiry"
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="partner-pricing"
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="catalog-browse"
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="retailer-browser"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="catalog-scan"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="reminder/book-appointment"
-        options={{ presentation: "modal", headerShown: true }}
-      />
-      <Stack.Screen
-        name="terms"
-        options={{ presentation: "modal", headerShown: true }}
-      />
-      <Stack.Screen
-        name="settings"
-        options={{ presentation: "modal", headerShown: false }}
-      />
-    </Stack>
+    <>
+      <AuthGuard />
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="tour" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="piece/add"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="piece/[id]"
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="piece/add-repair"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="piece/share"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="wishlist-item/add"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="reminder/add"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="retailer/[name]"
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="insurance-report"
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="insurance-quote"
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="partner-inquiry"
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="partner-pricing"
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="catalog-browse"
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="retailer-browser"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="catalog-scan"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="reminder/book-appointment"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="terms"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{ presentation: "modal", headerShown: false }}
+        />
+        <Stack.Screen
+          name="wishlist-item/edit"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
+          name="privacy"
+          options={{ headerShown: true }}
+        />
+      </Stack>
+    </>
   );
 }
 
@@ -135,18 +171,26 @@ export default function RootLayout() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <SafeAreaProvider>
-      <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <DiGeProvider>
-            <GestureHandlerRootView>
-              <KeyboardProvider>
-                <RootLayoutNav />
-              </KeyboardProvider>
-            </GestureHandlerRootView>
-          </DiGeProvider>
-        </QueryClientProvider>
-      </ErrorBoundary>
-    </SafeAreaProvider>
+    <ClerkProvider
+      publishableKey={publishableKey}
+      tokenCache={tokenCache}
+      proxyUrl={proxyUrl}
+    >
+      <ClerkLoaded>
+        <SafeAreaProvider>
+          <ErrorBoundary>
+            <QueryClientProvider client={queryClient}>
+              <DiGeProvider>
+                <GestureHandlerRootView>
+                  <KeyboardProvider>
+                    <RootLayoutNav />
+                  </KeyboardProvider>
+                </GestureHandlerRootView>
+              </DiGeProvider>
+            </QueryClientProvider>
+          </ErrorBoundary>
+        </SafeAreaProvider>
+      </ClerkLoaded>
+    </ClerkProvider>
   );
 }
