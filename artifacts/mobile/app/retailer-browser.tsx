@@ -169,6 +169,7 @@ export default function RetailerBrowserScreen() {
   const [wishlistName, setWishlistName] = useState("");
   const [wishlistSku, setWishlistSku] = useState("");
   const [wishlistPrice, setWishlistPrice] = useState("");
+  const [wishlistSize, setWishlistSize] = useState("");
   const [wishlistNotes, setWishlistNotes] = useState("");
 
   const retailerName = retailer ? decodeURIComponent(retailer) : "Retailer";
@@ -187,6 +188,7 @@ export default function RetailerBrowserScreen() {
         setWishlistSku(meta.sku ?? "");
         const rawPrice = meta.price?.replace(/[^0-9.]/g, "") ?? "";
         setWishlistPrice(rawPrice);
+        setWishlistSize("");
         setWishlistNotes(meta.url ? `Source: ${meta.url}` : "");
         setSaving(true);
       }
@@ -210,6 +212,9 @@ export default function RetailerBrowserScreen() {
       return;
     }
     const liveUrl = pageMeta?.url || currentUrl;
+    const sizeNote = wishlistSize.trim() ? `Ring Size: ${wishlistSize.trim()}` : "";
+    const baseNotes = wishlistNotes.trim();
+    const combinedNotes = [sizeNote, baseNotes].filter(Boolean).join("\n");
     addWishlistItem({
       name: wishlistName.trim(),
       sku: wishlistSku.trim(),
@@ -218,7 +223,7 @@ export default function RetailerBrowserScreen() {
       retailer: retailerName,
       retailerUrl: liveUrl,
       estimatedPrice: wishlistPrice.trim(),
-      notes: wishlistNotes.trim(),
+      notes: combinedNotes,
       priority: "medium",
     });
     setSaving(false);
@@ -375,17 +380,31 @@ export default function RetailerBrowserScreen() {
                 returnKeyType="next"
               />
             </View>
-            <View style={styles.sheetField}>
-              <Text style={[styles.sheetLabel, { color: colors.mutedForeground }]}>Price (optional)</Text>
-              <TextInput
-                style={[styles.sheetInput, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.muted }]}
-                value={wishlistPrice}
-                onChangeText={setWishlistPrice}
-                placeholder="e.g. 2890"
-                placeholderTextColor={colors.mutedForeground}
-                keyboardType="decimal-pad"
-                returnKeyType="next"
-              />
+            <View style={styles.sheetFieldRow}>
+              <View style={[styles.sheetField, { flex: 1 }]}>
+                <Text style={[styles.sheetLabel, { color: colors.mutedForeground }]}>Ring Size</Text>
+                <TextInput
+                  style={[styles.sheetInput, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.muted }]}
+                  value={wishlistSize}
+                  onChangeText={setWishlistSize}
+                  placeholder="e.g. 6.5"
+                  placeholderTextColor={colors.mutedForeground}
+                  keyboardType="decimal-pad"
+                  returnKeyType="next"
+                />
+              </View>
+              <View style={[styles.sheetField, { flex: 1 }]}>
+                <Text style={[styles.sheetLabel, { color: colors.mutedForeground }]}>Price (optional)</Text>
+                <TextInput
+                  style={[styles.sheetInput, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.muted }]}
+                  value={wishlistPrice}
+                  onChangeText={setWishlistPrice}
+                  placeholder="e.g. 2890"
+                  placeholderTextColor={colors.mutedForeground}
+                  keyboardType="decimal-pad"
+                  returnKeyType="next"
+                />
+              </View>
             </View>
             <View style={styles.sheetField}>
               <Text style={[styles.sheetLabel, { color: colors.mutedForeground }]}>Notes (optional)</Text>
@@ -492,6 +511,7 @@ const styles = StyleSheet.create({
   previewUrl: { flex: 1, fontSize: 11, fontFamily: "Inter_400Regular" },
   sheetFields: { gap: 14 },
   sheetField: { gap: 6 },
+  sheetFieldRow: { flexDirection: "row", gap: 10 },
   sheetLabel: { fontSize: 12, fontFamily: "Inter_500Medium" },
   sheetInput: {
     borderWidth: 1,
