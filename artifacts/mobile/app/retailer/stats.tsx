@@ -71,7 +71,7 @@ export default function RetailerStatsScreen() {
       `• ${retailerWishlist.length} item${retailerWishlist.length !== 1 ? "s" : ""} saved`,
       ...retailerWishlist.slice(0, 6).map(
         (w: WishlistItem) =>
-          `  – ${w.name}${w.estimatedPrice ? ` ($${w.estimatedPrice})` : ""}${w.priority === "high" ? " ⭐ High priority" : ""}`
+          `  – ${w.name}${w.sku ? ` [SKU: ${w.sku}]` : ""}${w.estimatedPrice ? ` ($${w.estimatedPrice})` : ""}${w.priority === "high" ? " ⭐ High priority" : ""}`
       ),
       "",
       "REMINDERS",
@@ -213,6 +213,13 @@ export default function RetailerStatsScreen() {
                   >
                     {item.name}
                   </Text>
+                  {item.sku ? (
+                    <Text
+                      style={[styles.wishlistSku, { color: colors.mutedForeground }]}
+                    >
+                      SKU {item.sku}
+                    </Text>
+                  ) : null}
                   {(item.brand || item.type) ? (
                     <Text
                       style={[
@@ -357,6 +364,11 @@ const styles = StyleSheet.create({
   wishlistName: {
     fontSize: 14,
     fontFamily: "Inter_600SemiBold",
+  },
+  wishlistSku: {
+    fontSize: 11,
+    fontFamily: "Inter_500Medium",
+    letterSpacing: 0.5,
   },
   wishlistMeta: {
     fontSize: 12,
