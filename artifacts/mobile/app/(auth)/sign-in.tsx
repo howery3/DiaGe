@@ -55,11 +55,22 @@ export default function SignInScreen() {
         }
       } catch (err: unknown) {
         console.error(JSON.stringify(err, null, 2));
-        const message =
+        const clerkErrors =
           err && typeof err === "object" && "errors" in err
-            ? (err as { errors: { message: string }[] }).errors
-                .map((e) => e.message)
-                .join("\n")
+            ? (err as { errors: { code?: string; message: string }[] }).errors
+            : [];
+        const isSessionExists = clerkErrors.some(
+          (e) =>
+            e.code === "session_exists" ||
+            e.message?.toLowerCase().includes("session already exists")
+        );
+        if (isSessionExists) {
+          router.replace("/(tabs)");
+          return;
+        }
+        const message =
+          clerkErrors.length > 0
+            ? clerkErrors.map((e) => e.message).join("\n")
             : err && typeof err === "object" && "message" in err
             ? String((err as { message: string }).message)
             : "Sign-in failed. Please try again.";
