@@ -24,13 +24,64 @@ const EXTRACT_SCRIPT = `
     var el = document.querySelector('meta[property="' + name + '"], meta[name="' + name + '"]');
     return el ? (el.getAttribute('content') || '') : '';
   }
+
+  function extractSku() {
+    // 1. JSON-LD structured data (most reliable)
+    try {
+      var scripts = document.querySelectorAll('script[type="application/ld+json"]');
+      for (var i = 0; i < scripts.length; i++) {
+        var json = JSON.parse(scripts[i].textContent || '{}');
+        var items = Array.isArray(json) ? json : [json];
+        for (var j = 0; j < items.length; j++) {
+          var item = items[j];
+          if (item['@type'] === 'Product') {
+            var candidates = [item.sku, item.mpn, item.gtin8, item.productID];
+            for (var k = 0; k < candidates.length; k++) {
+              var v = String(candidates[k] || '').replace(/\\s/g, '');
+              if (/^\\d{8}$/.test(v)) return v;
+            }
+          }
+        }
+      }
+    } catch(e) {}
+
+    // 2. Meta tags
+    var metaNames = ['sku', 'product:sku', 'product_id', 'item_number', 'og:product:item_group_id'];
+    for (var m = 0; m < metaNames.length; m++) {
+      var val = getMeta(metaNames[m]).replace(/\\s/g, '');
+      if (/^\\d{8}$/.test(val)) return val;
+    }
+
+    // 3. DOM attributes — itemprop, data-sku, data-product-id
+    var domSelectors = ['[itemprop="sku"]', '[data-sku]', '[data-product-id]', '[data-item-id]'];
+    for (var d = 0; d < domSelectors.length; d++) {
+      var el = document.querySelector(domSelectors[d]);
+      if (el) {
+        var text = (el.getAttribute('content') || el.getAttribute('data-sku') || el.getAttribute('data-product-id') || el.getAttribute('data-item-id') || el.textContent || '').replace(/\\s/g, '');
+        if (/^\\d{8}$/.test(text)) return text;
+      }
+    }
+
+    // 4. URL — path segments and query params
+    var url = window.location.href;
+    var urlMatch = url.match(/[?\\/&=](\\d{8})([?\\/&#]|$)/);
+    if (urlMatch) return urlMatch[1];
+    // also try standalone 8-digit segment in path
+    var pathMatch = url.match(/\\/(\\d{8})(?:\\/|\\.|$|\\?)/);
+    if (pathMatch) return pathMatch[1];
+
+    return '';
+  }
+
   var data = {
     title: getMeta('og:title') || document.title || '',
     description: getMeta('og:description') || getMeta('description') || '',
     image: getMeta('og:image') || '',
     price: getMeta('og:price:amount') || getMeta('product:price:amount') || getMeta('price') || '',
     url: window.location.href,
+    sku: extractSku(),
   };
+
   if (!data.price) {
     try {
       var scripts = document.querySelectorAll('script[type="application/ld+json"]');
@@ -60,6 +111,7 @@ interface PageMeta {
   image: string;
   price: string;
   url: string;
+  sku: string;
 }
 
 export default function RetailerBrowserScreen() {
@@ -78,6 +130,7 @@ export default function RetailerBrowserScreen() {
   const [saving, setSaving] = useState(false);
   const [pageMeta, setPageMeta] = useState<PageMeta | null>(null);
   const [wishlistName, setWishlistName] = useState("");
+  const [wishlistSku, setWishlistSku] = useState("");
   const [wishlistPrice, setWishlistPrice] = useState("");
   const [wishlistNotes, setWishlistNotes] = useState("");
 
@@ -91,6 +144,7 @@ export default function RetailerBrowserScreen() {
         const meta: PageMeta = msg.data;
         setPageMeta(meta);
         setWishlistName(meta.title?.slice(0, 80) ?? "");
+        setWishlistSku(meta.sku ?? "");
         const rawPrice = meta.price?.replace(/[^0-9.]/g, "") ?? "";
         setWishlistPrice(rawPrice);
         setWishlistNotes(meta.url ? `Source: ${meta.url}` : "");
@@ -117,7 +171,7 @@ export default function RetailerBrowserScreen() {
     }
     addWishlistItem({
       name: wishlistName.trim(),
-      sku: "",
+      sku: wishlistSku.trim(),
       type: "other",
       brand: retailerName,
       retailer: retailerName,
@@ -259,6 +313,20 @@ export default function RetailerBrowserScreen() {
                 onChangeText={setWishlistName}
                 placeholder="e.g. Diamond Solitaire Ring"
                 placeholderTextColor={colors.mutedForeground}
+                returnKeyType="next"
+              />
+            </View>
+            <View style={styles.sheetField}>
+              <Text style={[styles.sheetLabel, { color: colors.mutedForeground }]}>
+                SKU / Item #{wishlistSku ? " · auto-filled" : ""}
+              </Text>
+              <TextInput
+                style={[styles.sheetInput, { color: colors.foreground, borderColor: wishlistSku ? colors.primary + "60" : colors.border, backgroundColor: colors.muted }]}
+                value={wishlistSku}
+                onChangeText={setWishlistSku}
+                placeholder="8-digit item number"
+                placeholderTextColor={colors.mutedForeground}
+                keyboardType="number-pad"
                 returnKeyType="next"
               />
             </View>

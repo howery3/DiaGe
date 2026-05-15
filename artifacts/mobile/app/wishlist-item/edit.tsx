@@ -57,13 +57,24 @@ export default function EditWishlistItemScreen() {
     );
   }
 
+  function extractSkuFromUrl(url: string): string {
+    const match = url.match(/[?\/&=](\d{8})([?\/&#]|$)/) ?? url.match(/\/(\d{8})(?:\/|\.|$|\?)/);
+    return match ? match[1] : "";
+  }
+
   async function handleUrlBlur() {
     const url = retailerUrl.trim();
-    if (!url || !url.startsWith("http") || imageUrl) return;
-    setFetchingImage(true);
-    const found = await fetchOgImage(url);
-    setImageUrl(found);
-    setFetchingImage(false);
+    if (!url || !url.startsWith("http")) return;
+    if (!sku) {
+      const found = extractSkuFromUrl(url);
+      if (found) setSku(found);
+    }
+    if (!imageUrl) {
+      setFetchingImage(true);
+      const found = await fetchOgImage(url);
+      setImageUrl(found);
+      setFetchingImage(false);
+    }
   }
 
   function handleSave() {
