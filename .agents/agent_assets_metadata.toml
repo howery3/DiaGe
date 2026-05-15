@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "Ni5esFnqHthJ21K2bUeaV"
@@ -30,3 +29,9 @@ id = "AEEMEzeUBmifhC0OWnckI"
 uri = "file://artifacts/mobile/assets/images/icon_v3.png"
 type = "image"
 title = "DiGe text breaking through diamond outline"
+
+[[outputs]]
+id = "DicmueOHXpw3KEII_Ong5"
+uri = "file://artifacts/mobile/assets/expo-qr.png"
+type = "image"
+title = "Scan with Expo Go"
