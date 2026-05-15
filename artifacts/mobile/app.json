@@ -16,13 +16,17 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.diage.app",
+      "buildNumber": "1",
+      "usesAppleSignIn": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "DiaGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
-        "NSCameraUsageDescription": "DiaGe uses your camera to photograph jewelry pieces and paperwork for your vault."
+        "NSCameraUsageDescription": "DiaGe uses your camera to photograph jewelry pieces and paperwork for your vault.",
+        "NSUserNotificationUsageDescription": "DiaGe sends reminders for jewelry inspections and warranty renewals."
       }
     },
     "android": {
       "package": "com.diage.app",
+      "versionCode": 1,
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
@@ -44,6 +48,7 @@
       ],
       "expo-font",
       "expo-web-browser",
+      "expo-apple-authentication",
       [
         "expo-image-picker",
         {
