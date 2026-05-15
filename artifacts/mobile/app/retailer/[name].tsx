@@ -1,7 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Sharing from "expo-sharing";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import { captureRef } from "react-native-view-shot";
 import { capture } from "@/utils/posthog";
 import {
   ActionSheetIOS,
@@ -9,7 +11,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   View,
@@ -22,18 +23,23 @@ import { useDiGe, type WishlistItem } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
 
+const PRIMARY = "#5B21B6";
+const PRIMARY_DARK = "#4C1D95";
+const PRIORITY_COLORS = { low: "#15803D", medium: "#B45309", high: "#DC2626" };
+const CARD_WIDTH = 360;
+
 export default function RetailerDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { name: encodedName, tab } = useLocalSearchParams<{ name: string; tab?: string }>();
   const retailerName = decodeURIComponent(encodedName ?? "");
   const isUncategorized = retailerName === "Uncategorized";
-  const { profile, hasProfile } = useProfile();
+  const { profile } = useProfile();
 
   const { pieces, wishlistItems, deleteWishlistItem } = useDiGe();
   const [fabOpen, setFabOpen] = useState(false);
-
   const [activeTab, setActiveTab] = useState<"vault" | "wishlist">(tab === "wishlist" ? "wishlist" : "vault");
+  const wishlistShareRef = useRef<View>(null);
 
   const retailerPieces = useMemo(
     () =>
@@ -51,77 +57,28 @@ export default function RetailerDetailScreen() {
     [wishlistItems, retailerName, isUncategorized]
   );
 
+  const hasContact = !!(profile.name || profile.phone || profile.email);
+  const shareDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
   async function handleFab() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setFabOpen((v) => !v);
   }
 
-  async function shareWishlist(includeContact: boolean) {
-    const items = retailerWishlist;
-    if (!items.length) return;
-
-    const header = `💍 ${retailerName} Wishlist — ${items.length} item${items.length > 1 ? "s" : ""}`;
-    const divider = "─────────────────────";
-
-    const itemLines = items.map((item: WishlistItem, i: number) => {
-      const parts: string[] = [`${i + 1}. ${item.name}`];
-      if (item.sku) parts.push(`   SKU: ${item.sku}`);
-      const meta: string[] = [];
-      if (item.brand) meta.push(item.brand);
-      if (item.type) meta.push(item.type);
-      if (meta.length) parts.push(`   ${meta.join(" · ")}`);
-      if (item.estimatedPrice) parts.push(`   $${item.estimatedPrice}`);
-      if (item.retailerUrl) {
-        try {
-          const domain = new URL(item.retailerUrl).hostname.replace(/^www\./, "");
-          parts.push(`   ${domain}`);
-        } catch {
-          // skip malformed URL
-        }
-      }
-      if (item.notes) parts.push(`   ${item.notes}`);
-      return parts.join("\n");
-    });
-
-    const lines = [header, "", ...itemLines];
-
-    if (includeContact) {
-      lines.push("");
-      lines.push(divider);
-      if (profile.name) lines.push(`From: ${profile.name}`);
-      if (profile.phone) lines.push(`📞 ${profile.phone}`);
-      if (profile.email) lines.push(`📧 ${profile.email}`);
-    }
-
-    lines.push("");
-    lines.push("Shared via DiaGe 💎");
-
-    await Share.share({
-      message: lines.join("\n"),
-      title: `${retailerName} Wishlist`,
-    });
-    capture("wishlist_shared", {
-      retailer: retailerName,
-      item_count: retailerWishlist.length,
-      with_contact: includeContact,
-    });
-  }
-
   async function handleShareList() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (!retailerWishlist.length) return;
-    if (hasProfile) {
-      Alert.alert(
-        "Share Wishlist",
-        `Share your ${retailerName} wishlist (${retailerWishlist.length} item${retailerWishlist.length > 1 ? "s" : ""})?`,
-        [
-          { text: "Share anonymously", onPress: () => shareWishlist(false) },
-          { text: "Include my contact info", onPress: () => shareWishlist(true) },
-          { text: "Cancel", style: "cancel" },
-        ]
-      );
-    } else {
-      await shareWishlist(false);
+    try {
+      const uri = await captureRef(wishlistShareRef, { format: "png", quality: 1, result: "tmpfile" });
+      const available = await Sharing.isAvailableAsync();
+      if (available) {
+        await Sharing.shareAsync(uri, { mimeType: "image/png", dialogTitle: `${retailerName} Wishlist` });
+        capture("wishlist_shared", { retailer: retailerName, item_count: retailerWishlist.length });
+      } else {
+        Alert.alert("Sharing not available", "Your device doesn't support image sharing.");
+      }
+    } catch {
+      Alert.alert("Couldn't capture wishlist", "Please try again.");
     }
   }
 
@@ -158,6 +115,68 @@ export default function RetailerDetailScreen() {
 
   return (
     <>
+      {/* Off-screen full wishlist share card */}
+      <View ref={wishlistShareRef} collapsable={false} style={snap.card} pointerEvents="none">
+        {/* Header */}
+        <View style={snap.header}>
+          <View style={snap.headerRow}>
+            <View style={snap.logoBadge}>
+              <Text style={snap.logoEmoji}>💎</Text>
+            </View>
+            <View style={snap.headerText}>
+              <Text style={snap.brandName}>DiaGe</Text>
+              <Text style={snap.headerSub}>Wishlist</Text>
+            </View>
+          </View>
+          <Text style={snap.retailerName}>{retailerName}</Text>
+          <Text style={snap.metaLine}>
+            {retailerWishlist.length} item{retailerWishlist.length !== 1 ? "s" : ""} · {shareDate}
+          </Text>
+        </View>
+
+        {/* Items */}
+        <View style={snap.itemsSection}>
+          {retailerWishlist.map((item: WishlistItem, i: number) => (
+            <View
+              key={item.id}
+              style={[snap.itemRow, i > 0 && snap.itemRowBorder]}
+            >
+              <View style={snap.itemLeft}>
+                <Text style={snap.itemNum}>{i + 1}</Text>
+                <View style={[snap.dot, { backgroundColor: PRIORITY_COLORS[item.priority] }]} />
+              </View>
+              <View style={snap.itemInfo}>
+                <Text style={snap.itemName} numberOfLines={2}>{item.name}</Text>
+                {item.sku ? <Text style={snap.itemSku}>SKU {item.sku}</Text> : null}
+                {(item.brand || item.type) ? (
+                  <Text style={snap.itemMeta}>{[item.brand, item.type].filter(Boolean).join(" · ")}</Text>
+                ) : null}
+                {item.notes ? <Text style={snap.itemNotes} numberOfLines={2}>{item.notes}</Text> : null}
+              </View>
+              {item.estimatedPrice ? (
+                <Text style={snap.itemPrice}>${item.estimatedPrice}</Text>
+              ) : null}
+            </View>
+          ))}
+        </View>
+
+        {/* Contact */}
+        {hasContact ? (
+          <View style={snap.contact}>
+            {profile.name ? <Text style={snap.contactName}>{profile.name}</Text> : null}
+            <View style={snap.contactRow}>
+              {profile.phone ? <Text style={snap.contactDetail}>📞 {profile.phone}</Text> : null}
+              {profile.email ? <Text style={snap.contactDetail}>📧 {profile.email}</Text> : null}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Footer */}
+        <View style={snap.footer}>
+          <Text style={snap.footerText}>Powered by DiaGe · diageapp.com</Text>
+        </View>
+      </View>
+
       <Stack.Screen
         options={{
           title: retailerName,
@@ -448,5 +467,124 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
+  },
+});
+
+const snap = StyleSheet.create({
+  card: {
+    position: "absolute",
+    left: -2000,
+    top: 0,
+    width: CARD_WIDTH,
+    backgroundColor: "#fff",
+    overflow: "hidden",
+  },
+  header: {
+    backgroundColor: PRIMARY_DARK,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 18,
+    gap: 8,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 6,
+  },
+  logoBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoEmoji: { fontSize: 18 },
+  headerText: { gap: 1 },
+  brandName: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff" },
+  headerSub: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.6)",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  retailerName: {
+    fontSize: 24,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: -0.4,
+  },
+  metaLine: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.55)",
+  },
+
+  itemsSection: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingVertical: 12,
+    gap: 10,
+  },
+  itemRowBorder: {
+    borderTopWidth: 1,
+    borderTopColor: "#F0ECF8",
+  },
+  itemLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingTop: 2,
+    width: 30,
+  },
+  itemNum: {
+    fontSize: 13,
+    fontFamily: "Inter_700Bold",
+    color: PRIMARY,
+  },
+  dot: { width: 6, height: 6, borderRadius: 3 },
+  itemInfo: { flex: 1, gap: 2 },
+  itemName: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#1A1A2E", lineHeight: 20 },
+  itemSku: { fontSize: 10, fontFamily: "Inter_500Medium", color: "#9989BF", letterSpacing: 0.3 },
+  itemMeta: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#777" },
+  itemNotes: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#888", lineHeight: 16, fontStyle: "italic" },
+  itemPrice: {
+    fontSize: 14,
+    fontFamily: "Inter_700Bold",
+    color: PRIMARY,
+    paddingTop: 2,
+    flexShrink: 0,
+  },
+
+  contact: {
+    backgroundColor: "#F8F7FF",
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderTopWidth: 1,
+    borderTopColor: "#E8E3F5",
+    gap: 4,
+  },
+  contactName: { fontSize: 13, fontFamily: "Inter_700Bold", color: "#1A1A2E" },
+  contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+  contactDetail: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#555" },
+
+  footer: {
+    backgroundColor: PRIMARY_DARK,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  footerText: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.5)",
+    letterSpacing: 0.3,
   },
 });
