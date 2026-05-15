@@ -13,7 +13,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { EmptyState } from "@/components/EmptyState";
 import { useDiGe, type JewelryType } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -237,6 +236,17 @@ export default function VaultScreen() {
     </>
   );
 
+  if (pieces.length === 0) {
+    return (
+      <VaultEmptyState
+        colors={colors}
+        topPad={topPad}
+        bottomPad={insets.bottom}
+        onAdd={handleAddPiece}
+      />
+    );
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
@@ -245,22 +255,18 @@ export default function VaultScreen() {
           <View>
             <Text style={[styles.logo, { color: colors.primary }]}>DiaGe</Text>
             <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-              {pieces.length === 0
-                ? "Your jewelry vault"
-                : `${pieces.length} ${pieces.length === 1 ? "piece" : "pieces"} · ${retailers.length} ${retailers.length === 1 ? "retailer" : "retailers"}`}
+              {`${pieces.length} ${pieces.length === 1 ? "piece" : "pieces"} · ${retailers.length} ${retailers.length === 1 ? "retailer" : "retailers"}`}
             </Text>
           </View>
           <View style={styles.headerActions}>
-            {pieces.length > 0 ? (
-              <Pressable
-                onPress={() => router.push("/insurance-report")}
-                style={[styles.headerBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]}
-                hitSlop={8}
-              >
-                <Feather name="file-text" size={14} color={colors.primary} />
-                <Text style={[styles.headerBtnText, { color: colors.primary }]}>Report</Text>
-              </Pressable>
-            ) : null}
+            <Pressable
+              onPress={() => router.push("/insurance-report")}
+              style={[styles.headerBtn, { backgroundColor: colors.primary + "12", borderColor: colors.primary + "30" }]}
+              hitSlop={8}
+            >
+              <Feather name="file-text" size={14} color={colors.primary} />
+              <Text style={[styles.headerBtnText, { color: colors.primary }]}>Report</Text>
+            </Pressable>
             <Pressable
               onPress={() => router.push("/settings")}
               style={[styles.settingsBtn, { backgroundColor: colors.muted }]}
@@ -286,18 +292,123 @@ export default function VaultScreen() {
         )}
         ListEmptyComponent={
           query.trim() ? (
-            <EmptyState icon="search" title="No retailers found" subtitle="Try a different search." />
-          ) : pieces.length > 0 ? null : (
-            <EmptyState
-              icon="archive"
-              title="Your vault is empty"
-              subtitle={'Tap "Add Jewelry Piece" above to store your first piece with its receipts, warranties, and paperwork.'}
-            />
-          )
+            <View style={styles.searchEmptyWrap}>
+              <Feather name="search" size={28} color={colors.mutedForeground} />
+              <Text style={[styles.searchEmptyTitle, { color: colors.foreground }]}>No retailers found</Text>
+              <Text style={[styles.searchEmptySubtitle, { color: colors.mutedForeground }]}>Try a different search.</Text>
+            </View>
+          ) : null
         }
         showsVerticalScrollIndicator={false}
       />
     </View>
+  );
+}
+
+function VaultEmptyState({
+  colors,
+  topPad,
+  bottomPad,
+  onAdd,
+}: {
+  colors: ReturnType<typeof useColors>;
+  topPad: number;
+  bottomPad: number;
+  onAdd: () => void;
+}) {
+  const features = [
+    { icon: "image" as const, label: "Photos & docs" },
+    { icon: "shield" as const, label: "Warranties tracked" },
+    { icon: "file-text" as const, label: "Insurance ready" },
+  ];
+
+  const ghostPieces = [
+    { icon: "circle" as const, name: "Engagement Ring", brand: "Tiffany & Co." },
+    { icon: "clock" as const, name: "Gold Watch", brand: "Rolex" },
+    { icon: "link" as const, name: "Diamond Necklace", brand: "Kay Jewelers" },
+  ];
+
+  return (
+    <ScrollView
+      style={[es.root, { backgroundColor: colors.background }]}
+      contentContainerStyle={[es.scroll, { paddingBottom: bottomPad + 40 }]}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Hero */}
+      <View style={[es.hero, { paddingTop: topPad + 24, backgroundColor: colors.primary }]}>
+        <View style={es.heroTop}>
+          <Text style={es.heroLogo}>DiaGe</Text>
+          <Pressable
+            onPress={() => router.push("/settings")}
+            style={es.heroSettings}
+            hitSlop={8}
+          >
+            <Feather name="settings" size={18} color="rgba(255,255,255,0.7)" />
+          </Pressable>
+        </View>
+
+        {/* Gem icon */}
+        <View style={es.gemOuter}>
+          <View style={es.gemMiddle}>
+            <View style={es.gemInner}>
+              <Feather name="box" size={36} color={colors.primary} />
+            </View>
+          </View>
+        </View>
+
+        <Text style={es.heroTitle}>Your vault awaits</Text>
+        <Text style={es.heroSubtitle}>
+          Store every piece of jewelry you own — photos, warranties, receipts, and appraisals — all in one place.
+        </Text>
+
+        {/* Feature pills */}
+        <View style={es.featureRow}>
+          {features.map((f) => (
+            <View key={f.label} style={es.featurePill}>
+              <Feather name={f.icon} size={12} color="rgba(255,255,255,0.9)" />
+              <Text style={es.featurePillText}>{f.label}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={es.heroBottom} />
+      </View>
+
+      {/* CTA */}
+      <View style={es.ctaWrap}>
+        <Pressable onPress={onAdd} style={[es.ctaBtn, { backgroundColor: colors.primary }]}>
+          <Feather name="plus" size={20} color="#fff" />
+          <Text style={es.ctaBtnText}>Add Your First Piece</Text>
+        </Pressable>
+      </View>
+
+      {/* Ghost preview cards */}
+      <Text style={[es.previewLabel, { color: colors.mutedForeground }]}>WHAT IT LOOKS LIKE</Text>
+      <View style={es.ghostList}>
+        {ghostPieces.map((g, i) => (
+          <View
+            key={g.name}
+            style={[
+              es.ghostCard,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                opacity: 1 - i * 0.2,
+              },
+            ]}
+          >
+            <View style={[es.ghostIcon, { backgroundColor: colors.primary + "14" }]}>
+              <Feather name={g.icon} size={22} color={colors.primary} />
+            </View>
+            <View style={es.ghostInfo}>
+              <View style={[es.ghostBar, { backgroundColor: colors.muted, width: "60%" }]} />
+              <View style={[es.ghostBarThin, { backgroundColor: colors.muted, width: "40%" }]} />
+            </View>
+            <Feather name="chevron-right" size={18} color={colors.border} />
+          </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -415,4 +526,44 @@ const styles = StyleSheet.create({
   cardMeta: { flexDirection: "row", gap: 10, flexWrap: "wrap" },
   metaChip: { flexDirection: "row", alignItems: "center", gap: 4 },
   metaText: { fontSize: 12, fontFamily: "Inter_400Regular" },
+
+  searchEmptyWrap: { alignItems: "center", gap: 8, paddingTop: 40 },
+  searchEmptyTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold" },
+  searchEmptySubtitle: { fontSize: 14, fontFamily: "Inter_400Regular" },
+});
+
+const es = StyleSheet.create({
+  root: { flex: 1 },
+  scroll: { flexGrow: 1 },
+
+  hero: { paddingHorizontal: 24, paddingBottom: 0 },
+  heroTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 32 },
+  heroLogo: { fontSize: 28, fontFamily: "Inter_700Bold", color: "#fff", letterSpacing: -0.5 },
+  heroSettings: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.15)", alignItems: "center", justifyContent: "center" },
+
+  gemOuter: { alignSelf: "center", width: 104, height: 104, borderRadius: 52, backgroundColor: "rgba(255,255,255,0.12)", alignItems: "center", justifyContent: "center", marginBottom: 24 },
+  gemMiddle: { width: 80, height: 80, borderRadius: 40, backgroundColor: "rgba(255,255,255,0.18)", alignItems: "center", justifyContent: "center" },
+  gemInner: { width: 60, height: 60, borderRadius: 30, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" },
+
+  heroTitle: { color: "#fff", fontSize: 26, fontFamily: "Inter_700Bold", textAlign: "center", letterSpacing: -0.4, marginBottom: 10 },
+  heroSubtitle: { color: "rgba(255,255,255,0.75)", fontSize: 14, fontFamily: "Inter_400Regular", textAlign: "center", lineHeight: 21, paddingHorizontal: 8, marginBottom: 24 },
+
+  featureRow: { flexDirection: "row", justifyContent: "center", gap: 8, marginBottom: 32 },
+  featurePill: { flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: "rgba(255,255,255,0.18)", paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20 },
+  featurePillText: { color: "rgba(255,255,255,0.95)", fontSize: 11, fontFamily: "Inter_600SemiBold" },
+
+  heroBottom: { height: 28 },
+
+  ctaWrap: { paddingHorizontal: 20, marginTop: -14 },
+  ctaBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, paddingVertical: 16, borderRadius: 16, shadowColor: "#5B21B6", shadowOpacity: 0.35, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 6 },
+  ctaBtnText: { color: "#fff", fontSize: 16, fontFamily: "Inter_700Bold" },
+
+  previewLabel: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 0.8, textTransform: "uppercase", paddingHorizontal: 20, marginTop: 28, marginBottom: 12 },
+
+  ghostList: { paddingHorizontal: 20, gap: 10 },
+  ghostCard: { flexDirection: "row", alignItems: "center", padding: 16, borderRadius: 16, borderWidth: 1, gap: 14 },
+  ghostIcon: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
+  ghostInfo: { flex: 1, gap: 8 },
+  ghostBar: { height: 12, borderRadius: 6 },
+  ghostBarThin: { height: 9, borderRadius: 5 },
 });
