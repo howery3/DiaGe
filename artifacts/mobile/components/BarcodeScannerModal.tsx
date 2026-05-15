@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Modal,
@@ -24,6 +24,17 @@ export function BarcodeScannerModal({ visible, onScanned, onCancel, hint }: Prop
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
+  const [cameraKey, setCameraKey] = useState(0);
+
+  useEffect(() => {
+    if (visible) {
+      setScanned(false);
+      setCameraKey((k) => k + 1);
+      if (!permission?.granted) {
+        requestPermission();
+      }
+    }
+  }, [visible]);
 
   function handleBarCodeScanned({ data }: { data: string }) {
     if (scanned) return;
@@ -31,22 +42,17 @@ export function BarcodeScannerModal({ visible, onScanned, onCancel, hint }: Prop
     onScanned(data);
   }
 
-  function handleOpen() {
-    setScanned(false);
-    if (!permission?.granted) requestPermission();
-  }
-
   return (
     <Modal
       visible={visible}
       animationType="slide"
       onRequestClose={onCancel}
-      onShow={handleOpen}
     >
       <View style={[styles.container, { backgroundColor: "#000" }]}>
         {!permission ? (
           <View style={styles.center}>
             <ActivityIndicator color="#fff" />
+            <Text style={styles.permText}>Checking camera access…</Text>
           </View>
         ) : !permission.granted ? (
           <View style={styles.center}>
@@ -58,8 +64,10 @@ export function BarcodeScannerModal({ visible, onScanned, onCancel, hint }: Prop
           </View>
         ) : (
           <CameraView
+            key={cameraKey}
             style={StyleSheet.absoluteFill}
             facing="back"
+            active={visible && !scanned}
             onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
             barcodeScannerSettings={{
               barcodeTypes: [
