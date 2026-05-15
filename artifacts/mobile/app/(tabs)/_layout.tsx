@@ -2,9 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
 import React, { useEffect, useState } from "react";
 import {
@@ -235,29 +233,6 @@ function TourOverlay({ onDismiss }: { onDismiss: () => void }) {
 
 // ─── Tab layouts ────────────────────────────────────────────────────────────
 
-function NativeTabLayout() {
-  return (
-    <NativeTabs>
-      <NativeTabs.Trigger name="index">
-        <Icon sf={{ default: "archivebox", selected: "archivebox.fill" }} />
-        <Label>My Vault</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="shop">
-        <Icon sf={{ default: "bag", selected: "bag.fill" }} />
-        <Label>Shop</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="reminders">
-        <Icon sf={{ default: "bell", selected: "bell.fill" }} />
-        <Label>Reminders</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="protect">
-        <Icon sf={{ default: "shield", selected: "shield.fill" }} />
-        <Label>Protect</Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
-  );
-}
-
 function ClassicTabLayout() {
   const colors = useColors();
   const colorScheme = useColorScheme();
@@ -359,11 +334,9 @@ export default function TabLayout() {
     });
   }, []);
 
-  const tabs = isLiquidGlassAvailable() ? <NativeTabLayout /> : <ClassicTabLayout />;
-
   return (
     <>
-      {tabs}
+      <ClassicTabLayout />
       {tourVisible && <TourOverlay onDismiss={() => setTourVisible(false)} />}
     </>
   );
