@@ -14,6 +14,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { capture } from "@/utils/posthog";
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -51,6 +52,7 @@ export default function SignInScreen() {
 
         if (createdSessionId) {
           await setActive!({ session: createdSessionId });
+          capture("user_signed_in", { method: strategy === "oauth_apple" ? "apple" : "google" });
           router.replace("/(tabs)");
         }
       } catch (err: unknown) {

@@ -3,6 +3,7 @@ import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
+import { capture } from "@/utils/posthog";
 import {
   ActionSheetIOS,
   Alert,
@@ -146,6 +147,14 @@ export default function AddPieceScreen() {
       diamondBondExpiry, diamondBondDetails: diamondBondDetails.trim(),
       repairHistory: [], documents: [],
       description: description.trim(), lastInspection, imageUri,
+    });
+    capture("piece_added", {
+      type,
+      has_retailer: !!retailer.trim(),
+      has_warranty: goldWarrantyType !== "none",
+      has_diamond_bond: !!diamondBondNumber.trim(),
+      has_price: !!purchasePrice.trim(),
+      has_serial: !!serialNumber.trim(),
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();

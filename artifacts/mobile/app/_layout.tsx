@@ -11,10 +11,13 @@ import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { PostHogProvider } from "posthog-react-native";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { getPostHog } from "@/utils/posthog";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { DiGeProvider } from "@/context/DiGeContext";
@@ -170,7 +173,9 @@ export default function RootLayout() {
 
   if (!fontsLoaded && !fontError) return null;
 
-  return (
+  const posthogClient = getPostHog();
+
+  const inner = (
     <ClerkProvider
       publishableKey={publishableKey}
       tokenCache={tokenCache}
@@ -193,4 +198,14 @@ export default function RootLayout() {
       </ClerkLoaded>
     </ClerkProvider>
   );
+
+  if (posthogClient) {
+    return (
+      <PostHogProvider client={posthogClient} autocapture>
+        {inner}
+      </PostHogProvider>
+    );
+  }
+
+  return inner;
 }

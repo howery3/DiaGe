@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
+import { capture } from "@/utils/posthog";
 import {
   Alert,
   Pressable,
@@ -94,6 +95,11 @@ export default function RetailerDetailScreen() {
     await Share.share({
       message: lines.join("\n"),
       title: `${retailerName} Wishlist`,
+    });
+    capture("wishlist_shared", {
+      retailer: retailerName,
+      item_count: retailerWishlist.length,
+      with_contact: withContact,
     });
   }
 

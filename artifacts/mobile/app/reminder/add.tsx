@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
+import { capture } from "@/utils/posthog";
 import {
   Alert,
   Pressable,
@@ -73,6 +74,11 @@ export default function AddReminderScreen() {
       recurrence,
       notes: notes.trim(),
       isCompleted: false,
+    });
+    capture("reminder_set", {
+      retailer: retailer.trim(),
+      recurrence,
+      linked_to_piece: !!selectedPieceId,
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();

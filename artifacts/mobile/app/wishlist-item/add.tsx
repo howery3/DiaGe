@@ -3,6 +3,7 @@ import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
+import { capture } from "@/utils/posthog";
 import {
   ActivityIndicator,
   Alert,
@@ -67,6 +68,12 @@ export default function AddWishlistItemScreen() {
       priority,
       notes: notes.trim(),
       imageUrl: imageUrl ?? undefined,
+    });
+    capture("wishlist_item_added", {
+      retailer: retailer.trim(),
+      priority,
+      has_price: !!estimatedPrice.trim(),
+      has_url: !!retailerUrl.trim(),
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
