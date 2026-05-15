@@ -18,6 +18,11 @@ export interface PartnerCatalog {
   catalogUrl: string;
   syncCode: string;
   items: CatalogItem[];
+  contact?: {
+    bookingUrl?: string;
+    phone?: string;
+    email?: string;
+  };
 }
 
 export const PARTNER_CATALOGS: PartnerCatalog[] = [
@@ -29,6 +34,9 @@ export const PARTNER_CATALOGS: PartnerCatalog[] = [
     accentLight: "#E8F5F2",
     catalogUrl: "https://www.brilliantearth.com",
     syncCode: "BE2025",
+    contact: {
+      bookingUrl: "https://www.brilliantearth.com/appointments/",
+    },
     items: [
       {
         id: "be-001",
@@ -80,6 +88,9 @@ export const PARTNER_CATALOGS: PartnerCatalog[] = [
     accentLight: "#F5F4F0",
     catalogUrl: "https://mejuri.com",
     syncCode: "MJ2025",
+    contact: {
+      bookingUrl: "https://mejuri.com/pages/stores",
+    },
     items: [
       {
         id: "mj-001",
@@ -131,6 +142,10 @@ export const PARTNER_CATALOGS: PartnerCatalog[] = [
     accentLight: "#F8F0FF",
     catalogUrl: "https://www.tacori.com",
     syncCode: "TC2025",
+    contact: {
+      bookingUrl: "https://www.tacori.com/retailer-locator/",
+      phone: "(800) 822-6748",
+    },
     items: [
       {
         id: "tc-001",
@@ -182,6 +197,10 @@ export const PARTNER_CATALOGS: PartnerCatalog[] = [
     accentLight: "#EDF2FA",
     catalogUrl: "https://www.zales.com",
     syncCode: "ZL2025",
+    contact: {
+      bookingUrl: "https://www.zales.com/stores",
+      phone: "(800) 311-5393",
+    },
     items: [
       {
         id: "zl-001",

@@ -18,9 +18,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { JewelryCard } from "@/components/JewelryCard";
 import { WishlistCard } from "@/components/WishlistCard";
 import { EmptyState } from "@/components/EmptyState";
+import { ContactStoreSheet } from "@/components/ContactStoreSheet";
 import { useDiGe, type WishlistItem } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
+import { PARTNER_CATALOGS } from "@/data/partnerCatalogs";
 
 export default function RetailerDetailScreen() {
   const colors = useColors();
@@ -32,6 +34,12 @@ export default function RetailerDetailScreen() {
 
   const { pieces, wishlistItems, deleteWishlistItem } = useDiGe();
   const [fabOpen, setFabOpen] = useState(false);
+  const [contactSheetOpen, setContactSheetOpen] = useState(false);
+
+  const partnerCatalog = PARTNER_CATALOGS.find(
+    (c) => c.retailerName.toLowerCase() === retailerName.toLowerCase()
+  );
+  const storeContact = partnerCatalog?.contact ?? {};
   const [activeTab, setActiveTab] = useState<"vault" | "wishlist">(tab === "wishlist" ? "wishlist" : "vault");
 
   const retailerPieces = useMemo(
@@ -130,16 +138,18 @@ export default function RetailerDetailScreen() {
 
     const options = [
       "Cancel",
+      "Contact Store",
       ...(hasWishlist ? ["Share Wishlist"] : []),
       "QR Code for In-Store",
-      "Partner Stats Snapshot",
+      "My Snapshot",
       ...(hasWishlist ? ["Find Nearest Store"] : []),
     ];
 
     const run = (label: string) => {
+      if (label === "Contact Store") setContactSheetOpen(true);
       if (label === "Share Wishlist") handleShareList();
       if (label === "QR Code for In-Store") router.push(`/retailer/qr?name=${encoded}` as never);
-      if (label === "Partner Stats Snapshot") router.push(`/retailer/stats?name=${encoded}` as never);
+      if (label === "My Snapshot") router.push(`/retailer/stats?name=${encoded}` as never);
       if (label === "Find Nearest Store") router.push(`/retailer/nearest-store?name=${encoded}` as never);
     };
 
@@ -150,9 +160,10 @@ export default function RetailerDetailScreen() {
       );
     } else {
       Alert.alert(retailerName, "Choose an action", [
+        { text: "Contact Store", onPress: () => setContactSheetOpen(true) },
         ...(hasWishlist ? [{ text: "Share Wishlist", onPress: () => handleShareList() }] : []),
         { text: "QR Code for In-Store", onPress: () => router.push(`/retailer/qr?name=${encoded}` as never) },
-        { text: "Partner Stats Snapshot", onPress: () => router.push(`/retailer/stats?name=${encoded}` as never) },
+        { text: "My Snapshot", onPress: () => router.push(`/retailer/stats?name=${encoded}` as never) },
         ...(hasWishlist ? [{ text: "Find Nearest Store", onPress: () => router.push(`/retailer/nearest-store?name=${encoded}` as never) }] : []),
         { text: "Cancel", style: "cancel" as const },
       ]);
@@ -329,6 +340,15 @@ export default function RetailerDetailScreen() {
           )}
         </ScrollView>
       </View>
+
+      <ContactStoreSheet
+        visible={contactSheetOpen}
+        onClose={() => setContactSheetOpen(false)}
+        retailerName={retailerName}
+        contact={storeContact}
+        wishlistCount={retailerWishlist.length}
+        onSendWishlist={handleShareList}
+      />
 
       <View style={[styles.fabArea, { bottom: insets.bottom + 100 }]}>
         {fabOpen ? (
