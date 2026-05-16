@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
@@ -22,14 +22,16 @@ interface RetailerSummary {
   wishlistCount: number;
 }
 
-const TYPE_EMOJI: Record<JewelryType, string> = {
-  ring: "💍",
-  necklace: "📿",
-  bracelet: "🔗",
-  earrings: "💎",
-  watch: "⌚",
-  brooch: "🌸",
-  other: "✨",
+type MCIName = React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+
+const TYPE_ICONS: Record<JewelryType, MCIName> = {
+  ring: "ring",
+  necklace: "necklace",
+  bracelet: "circle-outline",
+  earrings: "diamond-outline",
+  watch: "watch",
+  brooch: "flower-outline",
+  other: "diamond",
 };
 
 const TYPE_LABELS: Record<JewelryType, string> = {
@@ -168,7 +170,7 @@ export default function VaultScreen() {
                   onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setTypeFilter(t); }}
                   style={[styles.typePill, { backgroundColor: typeFilter === t ? colors.primary : colors.secondary, borderColor: typeFilter === t ? colors.primary : colors.border }]}
                 >
-                  <Text style={styles.typePillEmoji}>{TYPE_EMOJI[t]}</Text>
+                  <MaterialCommunityIcons name={TYPE_ICONS[t]} size={13} color={typeFilter === t ? colors.primaryForeground : colors.mutedForeground} />
                   <Text style={[styles.typePillText, { color: typeFilter === t ? colors.primaryForeground : colors.foreground }]}>{TYPE_LABELS[t]}</Text>
                 </Pressable>
               ))}
@@ -184,7 +186,7 @@ export default function VaultScreen() {
                 style={[styles.pieceCard, { backgroundColor: colors.card, borderColor: colors.border }]}
               >
                 <View style={[styles.pieceIconWrap, { backgroundColor: colors.primary + "14" }]}>
-                  <Text style={styles.pieceEmoji}>{TYPE_EMOJI[p.type]}</Text>
+                  <MaterialCommunityIcons name={TYPE_ICONS[p.type]} size={26} color={colors.primary} />
                 </View>
                 <Text style={[styles.pieceName, { color: colors.foreground }]} numberOfLines={2}>{p.name}</Text>
                 {p.brand ? <Text style={[styles.pieceBrand, { color: colors.mutedForeground }]} numberOfLines={1}>{p.brand}</Text> : null}
@@ -498,14 +500,12 @@ const styles = StyleSheet.create({
   pillScroll: { marginBottom: 10 },
   pillScrollContent: { paddingHorizontal: 20, gap: 8 },
   typePill: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
-  typePillEmoji: { fontSize: 12 },
   typePillText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
 
   pieceScrollContent: { paddingHorizontal: 20, gap: 10 },
   pieceCard: { width: 108, borderRadius: 16, borderWidth: 1, padding: 12, alignItems: "center", gap: 6 },
   pieceCardEmpty: { width: 140, justifyContent: "center", minHeight: 120 },
   pieceIconWrap: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center", marginBottom: 2 },
-  pieceEmoji: { fontSize: 26 },
   pieceName: { fontSize: 12, fontFamily: "Inter_600SemiBold", textAlign: "center", lineHeight: 16 },
   pieceBrand: { fontSize: 10, fontFamily: "Inter_400Regular", textAlign: "center" },
   warrantyBadge: { flexDirection: "row", alignItems: "center", gap: 3, borderWidth: 1, borderRadius: 6, paddingHorizontal: 5, paddingVertical: 2, marginTop: 2 },
