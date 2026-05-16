@@ -55,6 +55,7 @@ export default function VaultScreen() {
   const { pieces, wishlistItems, upcomingReminderCount } = useDiGe();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<JewelryType | "all">("all");
+  const flatListRef = React.useRef<FlatList<RetailerSummary>>(null);
 
   const retailers = useMemo<RetailerSummary[]>(() => {
     const map = new Map<string, RetailerSummary>();
@@ -108,17 +109,51 @@ export default function VaultScreen() {
       {/* Stats row */}
       {pieces.length > 0 ? (
         <View style={styles.statsRow}>
-          {[
-            { label: "Pieces", value: pieces.length, icon: "box" as const },
-            { label: "Retailers", value: retailers.length, icon: "archive" as const },
-            { label: "Wishlist", value: wishlistItems.length, icon: "heart" as const },
-            { label: "Reminders", value: upcomingReminderCount, icon: "bell" as const },
-          ].map((s) => (
-            <View key={s.label} style={[styles.statChip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {([
+            {
+              label: "Pieces", value: pieces.length, icon: "box" as const,
+              onPress: () => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setTypeFilter("all");
+                flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+              },
+            },
+            {
+              label: "Retailers", value: retailers.length, icon: "archive" as const,
+              onPress: () => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                if (filteredRetailers.length > 0) {
+                  flatListRef.current?.scrollToIndex({ index: 0, animated: true });
+                }
+              },
+            },
+            {
+              label: "Wishlist", value: wishlistItems.length, icon: "heart" as const,
+              onPress: () => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push("/(tabs)/wishlist");
+              },
+            },
+            {
+              label: "Reminders", value: upcomingReminderCount, icon: "bell" as const,
+              onPress: () => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push("/(tabs)/reminders");
+              },
+            },
+          ] as const).map((s) => (
+            <Pressable
+              key={s.label}
+              onPress={s.onPress}
+              style={({ pressed }) => [
+                styles.statChip,
+                { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.75 : 1 },
+              ]}
+            >
               <Feather name={s.icon} size={15} color={colors.primary} />
               <Text style={[styles.statValue, { color: colors.foreground }]}>{s.value}</Text>
               <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{s.label}</Text>
-            </View>
+            </Pressable>
           ))}
         </View>
       ) : null}
@@ -281,6 +316,7 @@ export default function VaultScreen() {
       </View>
 
       <FlatList
+        ref={flatListRef}
         data={filteredRetailers}
         keyExtractor={(item) => item.name}
         contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 120 }]}
