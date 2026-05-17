@@ -9,14 +9,14 @@ const MUTED = "#7C6D9A";
 const GOLD = "#D4AA3A";
 
 const pieces = [
-  { id: "1", name: "Engagement Ring", type: "ring", brand: "Tiffany & Co.", retailer: "Tiffany & Co.", color: "#F5E6FF" },
+  { id: "1", name: "Engagement Ring", type: "ring", brand: "Jared", retailer: "Jared", color: "#F5E6FF" },
   { id: "2", name: "Diamond Necklace", type: "necklace", brand: "Kay", retailer: "Kay Jewelers", color: "#E6F0FF" },
   { id: "3", name: "Gold Bracelet", type: "bracelet", brand: "Zales", retailer: "Zales", color: "#FFF3E6" },
-  { id: "4", name: "Sapphire Earrings", type: "earrings", brand: "Helzberg", retailer: "Helzberg", color: "#E6FFF0" },
+  { id: "4", name: "Sapphire Earrings", type: "earrings", brand: "Blue Nile", retailer: "Blue Nile", color: "#E6FFF0" },
 ];
 
 const retailers = [
-  { name: "Tiffany & Co.", pieces: 3, wishlist: 2 },
+  { name: "Jared", pieces: 3, wishlist: 2 },
   { name: "Kay Jewelers", pieces: 2, wishlist: 5 },
   { name: "Zales", pieces: 1, wishlist: 1 },
 ];

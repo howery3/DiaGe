@@ -16,12 +16,12 @@ const TYPES = [
 ];
 
 const pieces = [
-  { name: "Engagement Ring", brand: "Tiffany", retailer: "Tiffany & Co.", icon: "💍", bg: "#F5E6FF", warranty: true, price: "$4,200" },
+  { name: "Engagement Ring", brand: "Jared", retailer: "Jared", icon: "💍", bg: "#F5E6FF", warranty: true, price: "$4,200" },
   { name: "Diamond Necklace", brand: "Kay", retailer: "Kay Jewelers", icon: "📿", bg: "#E6F0FF", warranty: false, price: "$1,800" },
   { name: "Gold Bracelet", brand: "Zales", retailer: "Zales", icon: "⌚", bg: "#FFF3E6", warranty: true, price: "$890" },
-  { name: "Sapphire Studs", brand: "Helzberg", retailer: "Helzberg", icon: "✨", bg: "#E6FFF0", warranty: true, price: "$650" },
+  { name: "Sapphire Studs", brand: "Blue Nile", retailer: "Blue Nile", icon: "✨", bg: "#E6FFF0", warranty: true, price: "$650" },
   { name: "Pearl Pendant", brand: "Kay", retailer: "Kay Jewelers", icon: "🌟", bg: "#FFF0F5", warranty: false, price: "$340" },
-  { name: "Tennis Bracelet", brand: "Tiffany", retailer: "Tiffany & Co.", icon: "💎", bg: "#F0F5FF", warranty: true, price: "$3,100" },
+  { name: "Tennis Bracelet", brand: "Jared", retailer: "Jared", icon: "💎", bg: "#F0F5FF", warranty: true, price: "$3,100" },
 ];
 
 export function VariantB() {

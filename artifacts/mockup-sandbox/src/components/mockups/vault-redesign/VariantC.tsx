@@ -8,8 +8,8 @@ const MUTED = "#7C6D9A";
 const GOLD = "#D4AA3A";
 
 const retailers = [
-  { name: "Tiffany & Co.", pieces: 3, wishlist: 2, icon: "🏪", color: "#EDE8FA" },
-  { name: "Kay Jewelers", pieces: 2, wishlist: 5, icon: "💍", color: "#EDE8FA" },
+  { name: "Jared", pieces: 3, wishlist: 2, icon: "💍", color: "#EDE8FA" },
+  { name: "Kay Jewelers", pieces: 2, wishlist: 5, icon: "🏪", color: "#EDE8FA" },
   { name: "Zales", pieces: 1, wishlist: 1, icon: "🏪", color: "#EDE8FA" },
 ];
 
