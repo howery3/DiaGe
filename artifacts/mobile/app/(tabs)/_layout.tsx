@@ -318,6 +318,18 @@ function ClassicTabLayout() {
             ),
         }}
       />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) =>
+            isIOS ? (
+              <SymbolView name="person.circle" tintColor={color} size={24} />
+            ) : (
+              <Feather name="user" size={22} color={color} />
+            ),
+        }}
+      />
       <Tabs.Screen name="wishlist" options={{ href: null }} />
     </Tabs>
   );
