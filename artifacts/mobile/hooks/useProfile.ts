@@ -7,6 +7,7 @@ export interface UserProfile {
   name: string;
   email: string;
   phone: string;
+  photoUri: string;
   ringSize: string;
   braceletSize: string;
   necklaceLength: string;
@@ -22,6 +23,7 @@ const EMPTY: UserProfile = {
   name: "",
   email: "",
   phone: "",
+  photoUri: "",
   ringSize: "",
   braceletSize: "",
   necklaceLength: "",
@@ -66,6 +68,7 @@ export function useProfile() {
     profile.name,
     profile.email,
     profile.phone,
+    profile.photoUri,
     profile.ringSize,
     profile.braceletSize,
     profile.necklaceLength,
@@ -77,7 +80,7 @@ export function useProfile() {
     profile.budgetRange,
   ].filter(Boolean).length;
 
-  const completionPct = Math.round((completionCount / 12) * 100);
+  const completionPct = Math.round((completionCount / 13) * 100);
 
   function initials(): string {
     const parts = profile.name.trim().split(" ").filter(Boolean);
@@ -86,5 +89,52 @@ export function useProfile() {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
-  return { profile, saveProfile, clearProfile, loaded, hasProfile, initials, completionPct };
+  function buildShareText(): string {
+    const lines: string[] = [];
+    lines.push(`💍 ${profile.name ? profile.name + "'s" : "My"} Jewelry Profile`);
+    lines.push("");
+
+    const sizes: string[] = [];
+    if (profile.ringSize) sizes.push(`Ring: ${profile.ringSize}`);
+    if (profile.braceletSize) sizes.push(`Bracelet: ${profile.braceletSize}`);
+    if (profile.necklaceLength) sizes.push(`Necklace: ${profile.necklaceLength}`);
+    if (sizes.length) {
+      lines.push("📏 Sizes");
+      sizes.forEach((s) => lines.push(`  • ${s}`));
+      lines.push("");
+    }
+
+    const style: string[] = [];
+    if (profile.preferredGoldColor) style.push(`Gold: ${profile.preferredGoldColor}`);
+    if (profile.preferredMetals.length) style.push(`Metals: ${profile.preferredMetals.join(", ")}`);
+    if (profile.preferredStones.length) style.push(`Stones: ${profile.preferredStones.join(", ")}`);
+    if (style.length) {
+      lines.push("✨ Style Preferences");
+      style.forEach((s) => lines.push(`  • ${s}`));
+      lines.push("");
+    }
+
+    if (profile.birthday || profile.anniversary) {
+      lines.push("🎂 Special Dates");
+      if (profile.birthday) {
+        const d = new Date(profile.birthday + "T12:00:00");
+        lines.push(`  • Birthday: ${d.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`);
+      }
+      if (profile.anniversary) {
+        const d = new Date(profile.anniversary + "T12:00:00");
+        lines.push(`  • Anniversary: ${d.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`);
+      }
+      lines.push("");
+    }
+
+    if (profile.budgetRange) {
+      lines.push(`💰 Budget: ${profile.budgetRange}`);
+      lines.push("");
+    }
+
+    lines.push("Sent via DiaGe ✨");
+    return lines.join("\n");
+  }
+
+  return { profile, saveProfile, clearProfile, loaded, hasProfile, initials, completionPct, buildShareText };
 }
