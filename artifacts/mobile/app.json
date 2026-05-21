@@ -37,7 +37,13 @@
       ]
     },
     "web": {
-      "favicon": "./assets/images/icon.png"
+      "favicon": "./assets/images/icon.png",
+      "name": "DiaGe — Jewelry Organizer",
+      "shortName": "DiaGe",
+      "description": "DiaGe helps you track your jewelry collection, manage a wishlist, and set inspection reminders — all in one place.",
+      "lang": "en",
+      "themeColor": "#5B21B6",
+      "backgroundColor": "#0A0714"
     },
     "plugins": [
       [

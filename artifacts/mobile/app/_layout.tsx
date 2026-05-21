@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Head from "expo-router/head";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { PostHogProvider } from "posthog-react-native";
@@ -57,6 +58,14 @@ function AuthGuard() {
 function RootLayoutNav() {
   return (
     <>
+      <Head>
+        <title>DiaGe — Jewelry Organizer</title>
+        <meta name="description" content="DiaGe helps you track your jewelry collection, manage a wishlist, and set inspection reminders — all in one place." />
+        <meta name="theme-color" content="#5B21B6" />
+        <meta property="og:title" content="DiaGe — Jewelry Organizer" />
+        <meta property="og:description" content="DiaGe helps you track your jewelry collection, manage a wishlist, and set inspection reminders — all in one place." />
+        <meta property="og:type" content="website" />
+      </Head>
       <AuthGuard />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
