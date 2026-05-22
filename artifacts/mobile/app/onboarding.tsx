@@ -41,6 +41,16 @@ const SLIDES = [
     features: ["Gold & diamond warranty tracking", "Receipt & document storage", "Certification records"],
   },
   {
+    id: "profile",
+    icon: "user" as const,
+    iconBg: "#6D28D9",
+    accentBg: "#EDE8FA",
+    tag: "Your Jewelry Identity",
+    title: "Build your profile,\nshare your style",
+    body: "Add your ring size, preferred metals, and special dates. Share your preferences with family so they always know the perfect gift.",
+    features: ["Ring, bracelet & necklace sizes", "Style preferences & wishlist notes", "One-tap sharing with loved ones"],
+  },
+  {
     id: "wishlist",
     icon: "heart" as const,
     iconBg: "#7C3AED",
