@@ -185,7 +185,7 @@ export default function EditWishlistItemScreen() {
         <Field label="Retailer Name" colors={colors}>
           <TextInput
             style={[styles.input, { color: colors.foreground, borderColor: colors.border }]}
-            placeholder="e.g. Zales, Kay, Helzberg..."
+            placeholder="e.g. Kay, Zales, Jared, Blue Nile..."
             placeholderTextColor={colors.mutedForeground}
             value={retailer}
             onChangeText={setRetailer}

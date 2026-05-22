@@ -324,7 +324,7 @@ export default function AddPieceScreen() {
 
         <SectionLabel label="Purchase Details" colors={colors} />
         <Field label="Retailer" colors={colors}>
-          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Kay, Zales, Jared, Blue Nile..." placeholderTextColor={colors.mutedForeground} value={retailer} onChangeText={setRetailer} />
+          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Kay, Zales, Jared, James Allen..." placeholderTextColor={colors.mutedForeground} value={retailer} onChangeText={setRetailer} />
         </Field>
         <View style={styles.row}>
           <Field label="Purchase Date" colors={colors} style={{ flex: 1 }}>
