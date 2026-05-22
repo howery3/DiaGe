@@ -351,7 +351,10 @@ export default function SharePieceScreen() {
               <View style={[styles.diamondDot, { backgroundColor: PURPLE }]} />
               <Text style={[styles.footerBrand, { color: PURPLE }]}>DiaGe</Text>
             </View>
-            <Text style={styles.footerDate}>Generated {today}</Text>
+            <View style={styles.footerRight}>
+              <Text style={styles.footerAppStore}>📱 Download on the App Store</Text>
+              <Text style={styles.footerDate}>Generated {today}</Text>
+            </View>
           </View>
         </View>
 
@@ -455,6 +458,8 @@ const styles = StyleSheet.create({
   cardFooter: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 18, paddingVertical: 12 },
   footerLeft: { flexDirection: "row", alignItems: "center", gap: 6 },
   footerBrand: { fontSize: 13, fontFamily: "Inter_700Bold" },
+  footerRight: { alignItems: "flex-end", gap: 2 },
+  footerAppStore: { fontSize: 10, fontFamily: "Inter_500Medium", color: "#6B7280" },
   footerDate: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#9CA3AF" },
 
   shareBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, height: 52, borderRadius: 16 },

@@ -3,7 +3,9 @@ import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import * as Sharing from "expo-sharing";
 import React, { useRef, useState } from "react";
+import { captureRef } from "react-native-view-shot";
 import {
   ActionSheetIOS,
   Alert,
@@ -12,7 +14,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -55,6 +56,7 @@ export default function ProfileScreen() {
 
   const emailRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
+  const profileShareRef = useRef<View>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
@@ -118,7 +120,15 @@ export default function ProfileScreen() {
 
   async function handleShare() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    try { await Share.share({ message: buildShareText() }); } catch { }
+    try {
+      const uri = await captureRef(profileShareRef, { format: "png", quality: 1, result: "tmpfile" });
+      const available = await Sharing.isAvailableAsync();
+      if (available) {
+        await Sharing.shareAsync(uri, { mimeType: "image/png", dialogTitle: "My Jewelry Profile" });
+      } else {
+        Alert.alert("Sharing not available", "Your device doesn't support image sharing.");
+      }
+    } catch { }
   }
 
   // Summary strings shown on closed accordion headers
@@ -140,8 +150,89 @@ export default function ProfileScreen() {
   const shoppingSummary = profile.budgetRange || "Not set";
 
   const profileInitials = initials();
+  const shareDate = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
   return (
+    <>
+      {/* Off-screen profile snapshot card */}
+      <View ref={profileShareRef} collapsable={false} style={snap.card} pointerEvents="none">
+        {/* Header */}
+        <View style={snap.header}>
+          <View style={snap.headerRow}>
+            <View style={snap.logoBadge}>
+              <Text style={snap.logoEmoji}>💎</Text>
+            </View>
+            <View style={snap.headerText}>
+              <Text style={snap.brandName}>DiaGe</Text>
+              <Text style={snap.headerSub}>Jewelry Profile</Text>
+            </View>
+          </View>
+          {profile.name ? (
+            <Text style={snap.profileName}>{profile.name}</Text>
+          ) : null}
+          <Text style={snap.metaLine}>{shareDate}</Text>
+        </View>
+
+        {/* Sizes */}
+        {(profile.ringSize || profile.braceletSize || profile.necklaceLength) ? (
+          <View style={snap.section}>
+            <Text style={snap.sectionTitle}>SIZES</Text>
+            <View style={snap.rowList}>
+              {profile.ringSize ? <Text style={snap.rowItem}>Ring  <Text style={snap.rowValue}>{profile.ringSize}</Text></Text> : null}
+              {profile.braceletSize ? <Text style={snap.rowItem}>Bracelet  <Text style={snap.rowValue}>{profile.braceletSize}</Text></Text> : null}
+              {profile.necklaceLength ? <Text style={snap.rowItem}>Necklace  <Text style={snap.rowValue}>{profile.necklaceLength}</Text></Text> : null}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Style preferences */}
+        {(profile.preferredGoldColor || (profile.preferredMetals ?? []).length > 0 || (profile.preferredStones ?? []).length > 0) ? (
+          <View style={[snap.section, snap.sectionBorder]}>
+            <Text style={snap.sectionTitle}>STYLE PREFERENCES</Text>
+            <View style={snap.rowList}>
+              {profile.preferredGoldColor ? <Text style={snap.rowItem}>Gold  <Text style={snap.rowValue}>{profile.preferredGoldColor}</Text></Text> : null}
+              {(profile.preferredMetals ?? []).length > 0 ? <Text style={snap.rowItem}>Metals  <Text style={snap.rowValue}>{profile.preferredMetals.join(", ")}</Text></Text> : null}
+              {(profile.preferredStones ?? []).length > 0 ? <Text style={snap.rowItem}>Stones  <Text style={snap.rowValue}>{profile.preferredStones.join(", ")}</Text></Text> : null}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Special dates */}
+        {(profile.birthday || profile.anniversary) ? (
+          <View style={[snap.section, snap.sectionBorder]}>
+            <Text style={snap.sectionTitle}>SPECIAL DATES</Text>
+            <View style={snap.rowList}>
+              {profile.birthday ? <Text style={snap.rowItem}>Birthday  <Text style={snap.rowValue}>{formatDate(profile.birthday)}</Text></Text> : null}
+              {profile.anniversary ? <Text style={snap.rowItem}>Anniversary  <Text style={snap.rowValue}>{formatDate(profile.anniversary)}</Text></Text> : null}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Budget */}
+        {profile.budgetRange ? (
+          <View style={[snap.section, snap.sectionBorder]}>
+            <Text style={snap.sectionTitle}>SHOPPING</Text>
+            <Text style={snap.rowItem}>Budget  <Text style={snap.rowValue}>{profile.budgetRange}</Text></Text>
+          </View>
+        ) : null}
+
+        {/* Contact */}
+        {(profile.email || profile.phone) ? (
+          <View style={snap.contact}>
+            <View style={snap.contactRow}>
+              {profile.phone ? <Text style={snap.contactDetail}>📞 {profile.phone}</Text> : null}
+              {profile.email ? <Text style={snap.contactDetail}>📧 {profile.email}</Text> : null}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Footer */}
+        <View style={snap.footer}>
+          <Text style={snap.footerText}>📱 Download DiaGe on the App Store</Text>
+          <Text style={snap.footerSub}>diageapp.com</Text>
+        </View>
+      </View>
+
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       {/* ── Hero ── */}
       <LinearGradient
@@ -392,6 +483,7 @@ export default function ProfileScreen() {
         onCancel={() => setActivePicker(null)}
       />
     </View>
+    </>
   );
 }
 
@@ -574,4 +666,78 @@ const styles = StyleSheet.create({
   // Privacy note
   privacyNote: { flexDirection: "row", alignItems: "flex-start", gap: 10, padding: 14, borderRadius: 12, borderWidth: 1, marginTop: 2 },
   privacyText: { flex: 1, fontSize: 12, fontFamily: "Inter_400Regular", lineHeight: 17 },
+});
+
+const SNAP_WIDTH = 360;
+const SNAP_PRIMARY = "#4C1D95";
+const SNAP_ACCENT = "#5B21B6";
+
+const snap = StyleSheet.create({
+  card: {
+    position: "absolute",
+    left: -2000,
+    top: 0,
+    width: SNAP_WIDTH,
+    backgroundColor: "#fff",
+    overflow: "hidden",
+  },
+  header: {
+    backgroundColor: SNAP_PRIMARY,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 18,
+    gap: 8,
+  },
+  headerRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 6 },
+  logoBadge: {
+    width: 36, height: 36, borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center", justifyContent: "center",
+  },
+  logoEmoji: { fontSize: 18 },
+  headerText: { gap: 1 },
+  brandName: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff" },
+  headerSub: {
+    fontSize: 10, fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.6)",
+    textTransform: "uppercase", letterSpacing: 0.5,
+  },
+  profileName: {
+    fontSize: 24, fontFamily: "Inter_700Bold", color: "#fff", letterSpacing: -0.4,
+  },
+  metaLine: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.55)" },
+
+  section: { paddingHorizontal: 20, paddingVertical: 14 },
+  sectionBorder: { borderTopWidth: 1, borderTopColor: "#F0ECF8" },
+  sectionTitle: {
+    fontSize: 10, fontFamily: "Inter_700Bold",
+    color: SNAP_ACCENT, letterSpacing: 0.8,
+    textTransform: "uppercase", marginBottom: 10,
+  },
+  rowList: { gap: 6 },
+  rowItem: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#555" },
+  rowValue: { fontFamily: "Inter_600SemiBold", color: "#1A1A2E" },
+
+  contact: {
+    backgroundColor: "#F8F7FF",
+    paddingHorizontal: 20, paddingVertical: 14,
+    borderTopWidth: 1, borderTopColor: "#E8E3F5",
+    gap: 4,
+  },
+  contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+  contactDetail: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#555" },
+
+  footer: {
+    backgroundColor: SNAP_PRIMARY,
+    paddingVertical: 10, paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  footerText: {
+    fontSize: 11, fontFamily: "Inter_600SemiBold",
+    color: "rgba(255,255,255,0.75)", letterSpacing: 0.2,
+  },
+  footerSub: {
+    fontSize: 10, fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.4)", letterSpacing: 0.3, marginTop: 2,
+  },
 });

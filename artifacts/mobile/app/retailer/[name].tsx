@@ -188,7 +188,8 @@ export default function RetailerDetailScreen() {
 
         {/* Footer */}
         <View style={snap.footer}>
-          <Text style={snap.footerText}>Powered by DiaGe · diageapp.com</Text>
+          <Text style={snap.footerText}>📱 Download DiaGe on the App Store</Text>
+          <Text style={snap.footerSub}>diageapp.com</Text>
         </View>
       </View>
 
@@ -617,8 +618,15 @@ const snap = StyleSheet.create({
   },
   footerText: {
     fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    color: "rgba(255,255,255,0.75)",
+    letterSpacing: 0.2,
+  },
+  footerSub: {
+    fontSize: 10,
     fontFamily: "Inter_400Regular",
-    color: "rgba(255,255,255,0.5)",
+    color: "rgba(255,255,255,0.4)",
     letterSpacing: 0.3,
+    marginTop: 2,
   },
 });
