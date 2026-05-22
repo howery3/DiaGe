@@ -66,6 +66,10 @@ export interface JewelryPiece {
   watchMovement?: string;
   watchCrystal?: string;
   watchCase?: string;
+  diamondColor?: string;
+  diamondClarity?: string;
+  diamondCaratWeight?: string;
+  diamondCut?: string;
   purchaseDate: string;
   purchasePrice: string;
   retailer: string;

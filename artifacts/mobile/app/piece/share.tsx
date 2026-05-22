@@ -195,6 +195,25 @@ export default function SharePieceScreen() {
             />
           ) : null}
 
+          {/* Diamond Grading section */}
+          {(piece.diamondCut || piece.diamondColor || piece.diamondClarity || piece.diamondCaratWeight) ? (
+            <>
+              <View style={styles.cardDivider} />
+              <View style={styles.cardSection}>
+                <View style={styles.cardSectionHeader}>
+                  <View style={[styles.cardSectionDot, { backgroundColor: PURPLE_LIGHT }]} />
+                  <Text style={[styles.cardSectionTitle, { color: PURPLE }]}>Diamond Grading (4 Cs)</Text>
+                </View>
+                <View style={styles.cardGrid}>
+                  {piece.diamondCaratWeight ? <CardCell label="Carat" value={`${piece.diamondCaratWeight} ct`} /> : null}
+                  {piece.diamondCut ? <CardCell label="Cut" value={piece.diamondCut} /> : null}
+                  {piece.diamondColor ? <CardCell label="Color" value={piece.diamondColor} /> : null}
+                  {piece.diamondClarity ? <CardCell label="Clarity" value={piece.diamondClarity} /> : null}
+                </View>
+              </View>
+            </>
+          ) : null}
+
           {/* Purchase section */}
           <View style={styles.cardSection}>
             <View style={styles.cardSectionHeader}>

@@ -48,6 +48,9 @@ const WATCH_CASE_MATERIALS = ["Stainless Steel", "Gold", "Rose Gold", "Two-Tone"
 const WATCH_BANDS = ["Steel Bracelet", "Gold Bracelet", "Rubber", "Silicone", "Leather", "NATO", "Mesh", "Ceramic", "Titanium"];
 const WATCH_MOVEMENTS = ["Automatic", "Manual", "Quartz", "Swiss Automatic", "Swiss Quartz", "Japanese Automatic", "Japanese Quartz", "Solar", "Kinetic"];
 const WATCH_CRYSTALS = ["Sapphire", "Mineral", "Acrylic", "Hardlex"];
+const DIAMOND_CUTS = ["Ideal", "Excellent", "Very Good", "Good", "Fair", "Poor"];
+const DIAMOND_COLORS = ["D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
+const DIAMOND_CLARITIES = ["FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "I1", "I2"];
 const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: string }[] = [
   { value: "lifetime", label: "Lifetime", desc: "No expiry" },
   { value: "dated", label: "Set Date", desc: "Has expiry" },
@@ -94,6 +97,10 @@ export default function AddPieceScreen() {
   const [watchMovement, setWatchMovement] = useState("");
   const [watchCrystal, setWatchCrystal] = useState("");
   const [watchCase, setWatchCase] = useState("");
+  const [diamondCut, setDiamondCut] = useState("");
+  const [diamondColor, setDiamondColor] = useState("");
+  const [diamondClarity, setDiamondClarity] = useState("");
+  const [diamondCaratWeight, setDiamondCaratWeight] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [purchasePrice, setPurchasePrice] = useState("");
   const [retailer, setRetailer] = useState(prefillRetailer ? decodeURIComponent(prefillRetailer) : "");
@@ -134,6 +141,7 @@ export default function AddPieceScreen() {
       name: name.trim(), type, brand: brand.trim(),
       material: materialSummary, metals, diamondType, gemstones,
       watchBand, watchMovement, watchCrystal, watchCase,
+      diamondCut: diamondCut.trim(), diamondColor, diamondClarity, diamondCaratWeight: diamondCaratWeight.trim(),
       purchaseDate, purchasePrice: purchasePrice.trim(), retailer: retailer.trim(),
       serialNumber: serialNumber.trim(),
       goldWarrantyType, goldWarrantyNumber: goldWarrantyNumber.trim(),
@@ -175,7 +183,7 @@ export default function AddPieceScreen() {
 
   const materialsSummary = type === "watch"
     ? [watchCase, watchBand, watchMovement].filter(Boolean).join(", ") || "Not set"
-    : [...metals, ...(diamondType !== "none" ? [diamondType === "lab" ? "Lab Diamond" : "Natural Diamond"] : []), ...gemstones].join(", ") || "Not set";
+    : [...metals, ...(diamondType !== "none" ? [[diamondType === "lab" ? "Lab Diamond" : "Natural Diamond", diamondCaratWeight && `${diamondCaratWeight}ct`].filter(Boolean).join(" ")] : []), ...gemstones].join(", ") || "Not set";
 
   const purchaseSummary = [
     retailer, purchasePrice && `$${purchasePrice}`, purchaseDate && formatDate(purchaseDate),
@@ -315,6 +323,41 @@ export default function AddPieceScreen() {
                     <Pill key={g} label={g} selected={gemstones.includes(g)} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setGemstones((p) => p.includes(g) ? p.filter((x) => x !== g) : [...p, g]); }} colors={colors} />
                   ))}
                 </PillRow>
+                {diamondType !== "none" && (
+                  <>
+                    <View style={[styles.fourCsDivider, { borderTopColor: colors.border }]}>
+                      <Feather name="star" size={11} color="#7C3AED" />
+                      <Text style={[styles.fourCsTitle, { color: "#7C3AED" }]}>Diamond Grading (4 Cs)</Text>
+                    </View>
+                    <SubLabel label="Cut" colors={colors} />
+                    <PillRow>
+                      {DIAMOND_CUTS.map((c) => (
+                        <Pill key={c} label={c} selected={diamondCut === c} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDiamondCut((p) => p === c ? "" : c); }} colors={colors} />
+                      ))}
+                    </PillRow>
+                    <SubLabel label="Color Grade" colors={colors} />
+                    <PillRow>
+                      {DIAMOND_COLORS.map((c) => (
+                        <Pill key={c} label={c} selected={diamondColor === c} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDiamondColor((p) => p === c ? "" : c); }} colors={colors} />
+                      ))}
+                    </PillRow>
+                    <SubLabel label="Clarity" colors={colors} />
+                    <PillRow>
+                      {DIAMOND_CLARITIES.map((c) => (
+                        <Pill key={c} label={c} selected={diamondClarity === c} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDiamondClarity((p) => p === c ? "" : c); }} colors={colors} />
+                      ))}
+                    </PillRow>
+                    <SubLabel label="Carat Weight" colors={colors} />
+                    <TextInput
+                      style={[styles.input, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.background }]}
+                      placeholder="e.g. 1.25"
+                      placeholderTextColor={colors.mutedForeground}
+                      value={diamondCaratWeight}
+                      onChangeText={setDiamondCaratWeight}
+                      keyboardType="decimal-pad"
+                    />
+                  </>
+                )}
               </>
             )}
           </View>
@@ -589,4 +632,8 @@ const styles = StyleSheet.create({
   // Save button
   saveButton: { borderRadius: 16, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, paddingVertical: 16, marginTop: 6 },
   saveButtonText: { fontSize: 16, fontFamily: "Inter_600SemiBold", color: "#fff" },
+
+  // 4 Cs
+  fourCsDivider: { flexDirection: "row", alignItems: "center", gap: 6, borderTopWidth: StyleSheet.hairlineWidth, marginTop: 16, paddingTop: 14 },
+  fourCsTitle: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 0.4 },
 });
