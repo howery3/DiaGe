@@ -13,6 +13,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDiGe, type JewelryPiece } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
+function fmtValue(n: number): string {
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 1)}M`;
+  if (n >= 10_000) return `$${(n / 1_000).toFixed(n % 1_000 === 0 ? 0 : 1)}K`;
+  return `$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+}
+
 function fmt(iso: string): string {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -173,11 +179,7 @@ export default function InsuranceReportScreen() {
             <StatBox label="Pieces" value={`${pieces.length}`} />
             <StatBox
               label="Est. Value"
-              value={
-                totalValue > 0
-                  ? `$${totalValue.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
-                  : "—"
-              }
+              value={totalValue > 0 ? fmtValue(totalValue) : "—"}
             />
             <StatBox label="Documents" value={`${totalDocs}`} />
             <StatBox label="Repairs" value={`${totalRepairs}`} />
@@ -215,7 +217,7 @@ export default function InsuranceReportScreen() {
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.statBox}>
-      <Text style={styles.statValue} adjustsFontSizeToFit numberOfLines={1} minimumFontScale={0.6}>{value}</Text>
+      <Text style={styles.statValue}>{value}</Text>
       <Text style={styles.statLabel}>{label}</Text>
     </View>
   );
