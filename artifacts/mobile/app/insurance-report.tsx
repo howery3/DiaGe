@@ -215,7 +215,7 @@ export default function InsuranceReportScreen() {
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.statBox}>
-      <Text style={styles.statValue}>{value}</Text>
+      <Text style={styles.statValue} adjustsFontSizeToFit numberOfLines={1} minimumFontScale={0.6}>{value}</Text>
       <Text style={styles.statLabel}>{label}</Text>
     </View>
   );
