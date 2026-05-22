@@ -211,8 +211,8 @@ export default function OnboardingScreen() {
     if (activeIndex < SLIDES.length - 1) {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       const nextIndex = activeIndex + 1;
-      scrollRef.current?.scrollTo({ x: nextIndex * SCREEN_WIDTH, animated: true });
       setActiveIndex(nextIndex);
+      scrollRef.current?.scrollTo({ x: nextIndex * SCREEN_WIDTH, animated: false });
     } else {
       await finish();
     }
@@ -220,7 +220,7 @@ export default function OnboardingScreen() {
 
   function handleScroll(e: { nativeEvent: { contentOffset: { x: number } } }) {
     const index = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
-    setActiveIndex(index);
+    if (index !== activeIndex) setActiveIndex(index);
   }
 
   const slide = SLIDES[activeIndex];
@@ -243,7 +243,7 @@ export default function OnboardingScreen() {
         scrollEventThrottle={16}
         onMomentumScrollEnd={handleScroll}
         style={styles.scroller}
-        scrollEnabled={false}
+        scrollEnabled={true}
       >
         {SLIDES.map((s, idx) => (
           <View key={s.id} style={[styles.slide, { width: SCREEN_WIDTH }]}>
