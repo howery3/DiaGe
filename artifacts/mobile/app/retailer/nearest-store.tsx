@@ -203,6 +203,7 @@ export default function NearestStoreScreen() {
     <>
       <Stack.Screen
         options={{
+          headerShown: true,
           title: "Find Nearest Store",
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.foreground,

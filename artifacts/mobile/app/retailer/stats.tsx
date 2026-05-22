@@ -168,6 +168,7 @@ export default function RetailerStatsScreen() {
     <>
       <Stack.Screen
         options={{
+          headerShown: true,
           title: "Your Snapshot",
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.foreground,
