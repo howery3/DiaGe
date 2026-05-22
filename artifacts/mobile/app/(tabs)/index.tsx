@@ -160,7 +160,10 @@ export default function VaultScreen() {
 
       {/* Collection value banner */}
       {collectionValue > 0 ? (
-        <View style={[styles.valueBanner, { backgroundColor: colors.primary }]}>
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push("/insurance-report" as never); }}
+          style={({ pressed }) => [styles.valueBanner, { backgroundColor: colors.primary, opacity: pressed ? 0.88 : 1 }]}
+        >
           <View style={styles.valueBannerInner}>
             <View>
               <Text style={styles.valueBannerLabel}>COLLECTION VALUE</Text>
@@ -169,13 +172,11 @@ export default function VaultScreen() {
               </Text>
             </View>
             <View style={styles.valueBannerRight}>
-              <Feather name="trending-up" size={20} color="rgba(255,255,255,0.5)" />
-              <Text style={styles.valueBannerPieceCount}>
-                {pieces.length} {pieces.length === 1 ? "piece" : "pieces"}
-              </Text>
+              <Feather name="file-text" size={18} color="rgba(255,255,255,0.7)" />
+              <Text style={styles.valueBannerPieceCount}>View Report</Text>
             </View>
           </View>
-        </View>
+        </Pressable>
       ) : null}
 
       {/* Recent pieces */}
