@@ -103,9 +103,21 @@ export function ReminderCard({ reminder, onComplete, onDelete }: ReminderCardPro
           <View style={[styles.urgBadge, { backgroundColor: urg.color + "18" }]}>
             <Text style={[styles.urgText, { color: urg.color }]}>{urg.label}</Text>
           </View>
-          <Pressable onPress={onDelete} hitSlop={8} style={styles.deleteBtn}>
-            <Feather name="trash-2" size={15} color={colors.mutedForeground} />
-          </Pressable>
+          <View style={styles.actions}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push(`/reminder/edit?id=${reminder.id}` as never);
+              }}
+              hitSlop={8}
+              style={styles.actionBtn}
+            >
+              <Feather name="edit-2" size={14} color={colors.mutedForeground} />
+            </Pressable>
+            <Pressable onPress={onDelete} hitSlop={8} style={styles.actionBtn}>
+              <Feather name="trash-2" size={15} color={colors.mutedForeground} />
+            </Pressable>
+          </View>
         </View>
       </View>
 
@@ -158,7 +170,8 @@ const styles = StyleSheet.create({
   right: { alignItems: "flex-end", gap: 8 },
   urgBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   urgText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
-  deleteBtn: { padding: 2 },
+  actions: { flexDirection: "row", gap: 10 },
+  actionBtn: { padding: 2 },
 
   bookStrip: {
     flexDirection: "row",
