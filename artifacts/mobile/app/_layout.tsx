@@ -14,6 +14,7 @@ import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { PostHogProvider } from "posthog-react-native";
 import React, { useEffect } from "react";
+import { Appearance } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -133,6 +134,10 @@ function RootLayoutNav() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="reminder/edit"
+          options={{ presentation: "modal", headerShown: true }}
+        />
+        <Stack.Screen
           name="reminder/book-appointment"
           options={{ presentation: "modal", headerShown: true }}
         />
@@ -178,6 +183,16 @@ export default function RootLayout() {
         // storage failure — proceed to app normally
       }
     }
+
+    async function restoreTheme() {
+      try {
+        const saved = await AsyncStorage.getItem("@dige_theme");
+        if (saved === "dark" || saved === "light") {
+          Appearance.setColorScheme(saved);
+        }
+      } catch {}
+    }
+    restoreTheme();
 
     if (fontsLoaded || fontError) {
       init();

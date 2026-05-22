@@ -4,6 +4,7 @@ import * as Haptics from "expo-haptics";
 import { router, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  Appearance,
   Alert,
   Platform,
   Pressable,
@@ -11,6 +12,7 @@ import {
   StyleSheet,
   Switch,
   Text,
+  useColorScheme,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -26,11 +28,17 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const { pieces, wishlistItems, reminders, clearAllData } = useDiGe();
   const { profile, hasProfile, initials, completionPct } = useProfile();
-  const [darkMode, setDarkMode] = useState(false);
+  const systemScheme = useColorScheme();
+  const [darkMode, setDarkMode] = useState(systemScheme === "dark");
   const [onboardingDone, setOnboardingDone] = useState(true);
 
   useEffect(() => {
     AsyncStorage.getItem(ONBOARDING_KEY).then((v) => setOnboardingDone(!!v));
+    AsyncStorage.getItem("@dige_theme").then((saved) => {
+      if (saved === "dark") setDarkMode(true);
+      else if (saved === "light") setDarkMode(false);
+      else setDarkMode(systemScheme === "dark");
+    });
   }, []);
 
   const topPad = Platform.OS === "web" ? 60 : insets.top;
@@ -150,6 +158,8 @@ export default function SettingsScreen() {
                   value={darkMode}
                   onValueChange={(v) => {
                     setDarkMode(v);
+                    Appearance.setColorScheme(v ? "dark" : "light");
+                    AsyncStorage.setItem("@dige_theme", v ? "dark" : "light");
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   }}
                   trackColor={{ false: colors.border, true: "#5B21B6" }}
