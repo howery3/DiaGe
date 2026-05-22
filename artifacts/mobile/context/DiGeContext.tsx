@@ -388,11 +388,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
     );
   }, [schedulePush]);
 
-  const upcomingReminderCount = reminders.filter((r) => {
-    if (r.isCompleted) return false;
-    const diff = new Date(r.scheduledDate).getTime() - Date.now();
-    return diff <= 30 * 24 * 60 * 60 * 1000;
-  }).length;
+  const upcomingReminderCount = reminders.filter((r) => !r.isCompleted).length;
 
   const clearAllData = useCallback(async () => {
     setPieces([]);
