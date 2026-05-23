@@ -5,6 +5,7 @@ import { clerkMiddleware } from "@clerk/express";
 import router from "./routes";
 import privacyRouter from "./routes/privacy";
 import supportRouter from "./routes/support";
+import marketingRouter from "./routes/marketing";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -36,5 +37,6 @@ app.use(clerkMiddleware());
 app.use("/api", router);
 app.use("/api", privacyRouter);
 app.use("/api", supportRouter);
+app.use("/api", marketingRouter);
 
 export default app;
