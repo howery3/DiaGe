@@ -62,6 +62,21 @@ Expo/React Native iOS-first mobile app for jewelry customers to track their coll
 - Do NOT use `requireAuth()` from `@clerk/express` — it issues a 302 redirect; use `getAuth(req)` + manual 401 instead
 - `expo-notifications` remote push is unsupported in Expo Go (SDK 53+); local notifications work fine
 
+## EAS Environment Variables
+
+Use the new `eas env` commands (the old `eas secret` CLI is deprecated):
+
+```bash
+# Set a secret for production builds
+eas env:create --name MY_SECRET --value myvalue --environment production --visibility secret
+
+# List all variables for an environment
+eas env:list --environment production
+```
+
+Environments: `production`, `preview`, `development`.
+Visibility options: `public` (baked into bundle), `sensitive` (build-time only), `secret` (server-side, never in bundle).
+
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
