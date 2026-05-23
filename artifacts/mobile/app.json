@@ -21,7 +21,8 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "DiaGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
         "NSCameraUsageDescription": "DiaGe uses your camera to photograph jewelry pieces and paperwork for your vault.",
-        "NSUserNotificationUsageDescription": "DiaGe sends reminders for jewelry inspections and warranty renewals."
+        "NSUserNotificationUsageDescription": "DiaGe sends reminders for jewelry inspections and warranty renewals.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
