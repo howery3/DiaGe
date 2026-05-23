@@ -4,6 +4,7 @@ import pinoHttp from "pino-http";
 import { clerkMiddleware } from "@clerk/express";
 import router from "./routes";
 import privacyRouter from "./routes/privacy";
+import supportRouter from "./routes/support";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -34,5 +35,6 @@ app.use(clerkMiddleware());
 
 app.use("/api", router);
 app.use("/api", privacyRouter);
+app.use("/api", supportRouter);
 
 export default app;
