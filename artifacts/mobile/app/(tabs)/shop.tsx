@@ -80,6 +80,19 @@ export default function ShopScreen() {
                   <Feather name="globe" size={14} color="#fff" />
                   <Text style={styles.browseBtnText}>Browse Website</Text>
                 </View>
+              </View>
+
+              <View style={styles.cardActionsRow2}>
+                <Pressable
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    router.push("/(tabs)/wishlist" as never);
+                  }}
+                  style={[styles.wishlistBtn, { borderColor: colors.primary + "50", backgroundColor: colors.primary + "0D" }]}
+                >
+                  <Feather name="heart" size={14} color={colors.primary} />
+                  <Text style={[styles.wishlistBtnText, { color: colors.primary }]}>My Wishlist</Text>
+                </Pressable>
                 <Pressable
                   onPress={(e) => {
                     e.stopPropagation();
@@ -156,8 +169,9 @@ const styles = StyleSheet.create({
   itemCountText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
   cardDivider: { height: StyleSheet.hairlineWidth },
   cardActions: { flexDirection: "row", gap: 10 },
+  cardActionsRow2: { flexDirection: "row", gap: 10 },
   browseBtn: {
-    flex: 2,
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -166,6 +180,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   browseBtnText: { color: "#fff", fontSize: 13, fontFamily: "Inter_700Bold" },
+  wishlistBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 7,
+    paddingVertical: 11,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  wishlistBtnText: { fontSize: 13, fontFamily: "Inter_700Bold" },
   catalogBtn: {
     flex: 1,
     flexDirection: "row",
