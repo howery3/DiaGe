@@ -354,38 +354,36 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   }, [schedulePush]);
 
   const completeReminder = useCallback((id: string) => {
-    setReminders((prev) =>
-      prev.map((r) => {
-        if (r.id !== id) return r;
-        if (r.notificationId) void cancelNotification(r.notificationId);
-        const completed = { ...r, isCompleted: true, notificationId: undefined };
-        if (r.recurrence !== "none") {
-          const base = new Date(r.scheduledDate);
-          const months = r.recurrence === "6months" ? 6 : r.recurrence === "1year" ? 12 : 24;
-          base.setMonth(base.getMonth() + months);
-          const next: InspectionReminder = {
-            ...r,
-            id: generateId(),
-            scheduledDate: base.toISOString(),
-            isCompleted: false,
-            notificationId: undefined,
-            createdAt: new Date().toISOString(),
-          };
-          scheduleReminderNotification(next).then((notifId) => {
-            if (notifId) {
-              setReminders((prev2) => prev2.map((x) => (x.id === next.id ? { ...x, notificationId: notifId } : x)));
-              schedulePush();
-            }
-          });
-          setTimeout(() => {
-            setReminders((prev2) => { const s = [next, ...prev2.filter((x) => x.id !== id), completed]; schedulePush(); return s; });
-          }, 0);
-          return completed;
+    const current = remindersRef.current.find((r) => r.id === id);
+    if (!current) return;
+
+    if (current.notificationId) void cancelNotification(current.notificationId);
+    const completed = { ...current, isCompleted: true, notificationId: undefined };
+
+    if (current.recurrence !== "none") {
+      const base = new Date(current.scheduledDate);
+      const months = current.recurrence === "6months" ? 6 : current.recurrence === "1year" ? 12 : 24;
+      base.setMonth(base.getMonth() + months);
+      const next: InspectionReminder = {
+        ...current,
+        id: generateId(),
+        scheduledDate: base.toISOString(),
+        isCompleted: false,
+        notificationId: undefined,
+        createdAt: new Date().toISOString(),
+      };
+      setReminders((prev) => [next, ...prev.map((r) => (r.id === id ? completed : r))]);
+      scheduleReminderNotification(next).then((notifId) => {
+        if (notifId) {
+          setReminders((prev) => prev.map((r) => (r.id === next.id ? { ...r, notificationId: notifId } : r)));
+          schedulePush();
         }
-        schedulePush();
-        return completed;
-      })
-    );
+      });
+    } else {
+      setReminders((prev) => prev.map((r) => (r.id === id ? completed : r)));
+    }
+
+    schedulePush();
   }, [schedulePush]);
 
   const upcomingReminderCount = reminders.filter((r) => !r.isCompleted).length;
