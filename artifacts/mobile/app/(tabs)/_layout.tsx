@@ -65,10 +65,18 @@ const STEPS = [
     body: "Connect with licensed insurance partners and request quotes instantly for your most valuable pieces.",
     accentColor: "#B45309",
   },
+  {
+    tab: 4,
+    icon: "user" as const,
+    tag: "Profile",
+    title: "Your jewelry identity",
+    body: "Set your ring size, preferred metals, and special dates. Share your preferences so loved ones always find the perfect gift.",
+    accentColor: "#6D28D9",
+  },
 ];
 
 const TAB_HEIGHT = 49;
-const TAB_W = SW / 4;
+const TAB_W = SW / 5;
 
 function TourOverlay({ onDismiss }: { onDismiss: () => void }) {
   const [step, setStep] = useState(0);
