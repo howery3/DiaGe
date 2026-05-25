@@ -129,6 +129,40 @@ export async function cancelNotification(id: string): Promise<void> {
   } catch {}
 }
 
+const WEEKLY_WISHLIST_ID = "wishlist-weekly-reminder";
+
+export async function scheduleWeeklyWishlistReminder(itemCount: number): Promise<void> {
+  try {
+    await Notifications.cancelScheduledNotificationAsync(WEEKLY_WISHLIST_ID).catch(() => {});
+    if (itemCount === 0) return;
+
+    const body =
+      itemCount === 1
+        ? "You have 1 saved item — check if it's on sale this week"
+        : `You have ${itemCount} saved items — check if any are on sale this week`;
+
+    await Notifications.scheduleNotificationAsync({
+      identifier: WEEKLY_WISHLIST_ID,
+      content: {
+        title: "💎 Wishlist Check-In",
+        body,
+        sound: true,
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 7 * 24 * 60 * 60,
+        repeats: true,
+      },
+    });
+  } catch {}
+}
+
+export async function cancelWeeklyWishlistReminder(): Promise<void> {
+  try {
+    await Notifications.cancelScheduledNotificationAsync(WEEKLY_WISHLIST_ID);
+  } catch {}
+}
+
 export async function cancelWarrantyNotifications(pieceId: string): Promise<void> {
   await cancelNotification(`warranty-gold-${pieceId}`);
   await cancelNotification(`warranty-diamond-${pieceId}`);

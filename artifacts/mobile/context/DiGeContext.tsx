@@ -12,6 +12,7 @@ import {
   cancelNotification,
   cancelWarrantyNotifications,
   scheduleReminderNotification,
+  scheduleWeeklyWishlistReminder,
   syncWarrantyNotifications,
 } from "@/utils/notifications";
 
@@ -257,6 +258,11 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => { if (!loaded) return; void AsyncStorage.setItem(PIECES_KEY, JSON.stringify(pieces)); }, [pieces, loaded]);
   useEffect(() => { if (!loaded) return; void AsyncStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistItems)); }, [wishlistItems, loaded]);
   useEffect(() => { if (!loaded) return; void AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders)); }, [reminders, loaded]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    void scheduleWeeklyWishlistReminder(wishlistItems.length);
+  }, [wishlistItems.length, loaded]);
 
   const addPiece = useCallback((piece: Omit<JewelryPiece, "id" | "createdAt">) => {
     const newPiece: JewelryPiece = { ...piece, id: generateId(), createdAt: new Date().toISOString() };
