@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
+import { capture } from "@/utils/posthog";
 import {
   Alert,
   Linking,
@@ -84,11 +85,11 @@ export default function PartnerInquiryScreen() {
     const canOpen = await Linking.canOpenURL(mailto);
     if (canOpen) {
       await Linking.openURL(mailto);
-      setSubmitted(true);
     } else {
       await Share.share({ message: body });
-      setSubmitted(true);
     }
+    capture("partner_inquiry_submitted", { partner_type: partnerType });
+    setSubmitted(true);
   }
 
   if (submitted) {

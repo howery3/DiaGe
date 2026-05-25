@@ -151,9 +151,17 @@ export default function AddPieceScreen() {
       repairHistory: [], documents: [],
       description: description.trim(), lastInspection, imageUri,
     });
+    const priceVal = parseFloat(purchasePrice.replace(/[^0-9.]/g, ""));
     capture("piece_added", {
-      type, has_retailer: !!retailer.trim(), has_warranty: goldWarrantyType !== "none",
-      has_diamond_bond: !!diamondBondNumber.trim(), has_price: !!purchasePrice.trim(), has_serial: !!serialNumber.trim(),
+      type,
+      brand: brand.trim() || "unknown",
+      has_photo: !!imageUri,
+      has_retailer: !!retailer.trim(),
+      has_warranty: goldWarrantyType !== "none",
+      has_diamond_bond: !!diamondBondNumber.trim(),
+      has_price: !!purchasePrice.trim(),
+      price_range: isNaN(priceVal) ? "unknown" : priceVal < 500 ? "under_500" : priceVal < 1000 ? "500_to_1000" : priceVal < 5000 ? "1000_to_5000" : priceVal < 10000 ? "5000_to_10000" : priceVal < 50000 ? "10000_to_50000" : "over_50000",
+      has_serial: !!serialNumber.trim(),
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();

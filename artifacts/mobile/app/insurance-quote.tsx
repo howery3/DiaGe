@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import React, { useMemo, useState } from "react";
+import { capture } from "@/utils/posthog";
 import {
   Alert,
   Linking,
@@ -130,6 +131,15 @@ export default function InsuranceQuoteScreen() {
     return lines.join("\n");
   }
 
+  function valueRange(n: number): string {
+    if (n < 500) return "under_500";
+    if (n < 1000) return "500_to_1000";
+    if (n < 5000) return "1000_to_5000";
+    if (n < 10000) return "5000_to_10000";
+    if (n < 50000) return "10000_to_50000";
+    return "over_50000";
+  }
+
   async function handleSendQuotes() {
     if (selectedInsurers.length === 0) {
       Alert.alert("Select Insurers", "Please select at least one insurance provider to contact.");
@@ -161,10 +171,24 @@ export default function InsuranceQuoteScreen() {
     for (const insurer of webInsurers) {
       await Linking.openURL(insurer!.url);
     }
+
+    capture("insurance_quote_sent", {
+      insurers: selectedInsurers
+        .map((id) => INSURERS.find((i) => i.id === id)?.name ?? id)
+        .join(", "),
+      insurer_count: selectedInsurers.length,
+      coverage_type: coverageType,
+      piece_count: pieces.length,
+      total_value_range: valueRange(totalValue),
+    });
   }
 
   async function handleShareReport() {
     await Share.share({ message: buildReportText() });
+    capture("insurance_quote_report_shared", {
+      piece_count: pieces.length,
+      total_value_range: valueRange(totalValue),
+    });
   }
 
   const isReady = pieces.length > 0;

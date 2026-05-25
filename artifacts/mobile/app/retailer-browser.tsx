@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { capture } from "@/utils/posthog";
 import {
   ActivityIndicator,
   Alert,
@@ -174,6 +175,10 @@ export default function RetailerBrowserScreen() {
 
   const retailerName = retailer ? decodeURIComponent(retailer) : "Retailer";
   const startUrl = url ? decodeURIComponent(url) : "https://google.com";
+
+  useEffect(() => {
+    capture("retailer_browser_opened", { retailer: retailerName });
+  }, [retailerName]);
 
   function handleMessage(e: WebViewMessageEvent) {
     try {

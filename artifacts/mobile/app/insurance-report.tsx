@@ -12,6 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDiGe, type JewelryPiece } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { capture } from "@/utils/posthog";
 
 function fmtValue(n: number): string {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 1)}M`;
@@ -76,6 +77,15 @@ export default function InsuranceReportScreen() {
     year: "numeric",
   });
 
+  function valueRange(n: number): string {
+    if (n < 500) return "under_500";
+    if (n < 1000) return "500_to_1000";
+    if (n < 5000) return "1000_to_5000";
+    if (n < 10000) return "5000_to_10000";
+    if (n < 50000) return "10000_to_50000";
+    return "over_50000";
+  }
+
   async function handleShareText() {
     const hr = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
     const lines: string[] = [
@@ -132,6 +142,12 @@ export default function InsuranceReportScreen() {
     lines.push(`Generated with DiaGe • ${today}`);
 
     await Share.share({ message: lines.join("\n") });
+    capture("insurance_report_shared", {
+      piece_count: pieces.length,
+      total_value_range: valueRange(totalValue),
+      total_docs: totalDocs,
+      total_repairs: totalRepairs,
+    });
   }
 
   return (
