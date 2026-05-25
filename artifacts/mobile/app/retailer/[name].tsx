@@ -340,6 +340,12 @@ export default function RetailerDetailScreen() {
                 onEdit={() => router.push(`/wishlist-item/edit?id=${item.id}`)}
                 onDelete={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  capture("wishlist_item_removed", {
+                    retailer: item.retailer || "unknown",
+                    type: item.type || "unknown",
+                    sku: item.sku || "unknown",
+                    brand: item.brand || "unknown",
+                  });
                   deleteWishlistItem(item.id);
                 }}
               />

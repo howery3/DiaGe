@@ -25,6 +25,16 @@ const PRIORITIES: { value: WishlistPriority; label: string; color: string }[] = 
   { value: "high", label: "High", color: "#DC2626" },
 ];
 
+function priceRange(raw: string): string {
+  const n = parseFloat(raw.replace(/[^0-9.]/g, ""));
+  if (isNaN(n)) return "unknown";
+  if (n < 500) return "under_500";
+  if (n < 1000) return "500_to_1000";
+  if (n < 5000) return "1000_to_5000";
+  if (n < 10000) return "5000_to_10000";
+  return "over_10000";
+}
+
 export default function AddWishlistItemScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -100,9 +110,12 @@ export default function AddWishlistItemScreen() {
       imageUrl: imageUrl ?? undefined,
     });
     capture("wishlist_item_added", {
-      retailer: retailer.trim(),
+      retailer: retailer.trim() || "unknown",
+      type: type.trim() || "unknown",
+      sku: sku.trim() || "unknown",
+      brand: brand.trim() || "unknown",
+      price_range: priceRange(estimatedPrice.trim()),
       priority,
-      has_price: !!estimatedPrice.trim(),
       has_url: !!retailerUrl.trim(),
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

@@ -9,6 +9,7 @@ import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
 import type { WishlistItem, WishlistPriority } from "@/context/DiGeContext";
+import { capture } from "@/utils/posthog";
 
 const PRIMARY = "#5B21B6";
 const PRIMARY_DARK = "#4C1D95";
@@ -53,6 +54,12 @@ export function WishlistCard({ item, onPress, onDelete, onEdit }: WishlistCardPr
       const available = await Sharing.isAvailableAsync();
       if (available) {
         await Sharing.shareAsync(uri, { mimeType: "image/png", dialogTitle: item.name });
+        capture("wishlist_item_shared", {
+          retailer: item.retailer || "unknown",
+          type: item.type || "unknown",
+          sku: item.sku || "unknown",
+          brand: item.brand || "unknown",
+        });
       } else {
         Alert.alert("Sharing not available", "Your device doesn't support image sharing.");
       }
