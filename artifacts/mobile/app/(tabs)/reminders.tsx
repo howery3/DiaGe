@@ -2,43 +2,94 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React from "react";
-import { FlatList, Platform, Pressable, SectionList, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyState } from "@/components/EmptyState";
 import { ReminderCard } from "@/components/ReminderCard";
 import { useDiGe, type InspectionReminder } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
-type Section = { title: string; data: InspectionReminder[] };
+type Section = { title: string; data: InspectionReminder[]; isRetailer?: boolean };
+
+function buildSections(reminders: InspectionReminder[]): Section[] {
+  const now = Date.now();
+  const active = reminders.filter((r) => !r.isCompleted);
+  const completed = reminders.filter((r) => r.isCompleted);
+
+  // Group active reminders by retailer
+  const retailerMap = new Map<string, InspectionReminder[]>();
+  for (const r of active) {
+    const key = r.retailer.trim() || "General";
+    if (!retailerMap.has(key)) retailerMap.set(key, []);
+    retailerMap.get(key)!.push(r);
+  }
+
+  // Sort each group by scheduledDate (overdue first, then soonest)
+  for (const [, items] of retailerMap) {
+    items.sort((a, b) => new Date(a.scheduledDate).getTime() - new Date(b.scheduledDate).getTime());
+  }
+
+  // Sort retailer groups by their earliest reminder date
+  const sortedEntries = [...retailerMap.entries()].sort(([, a], [, b]) => {
+    const aMin = Math.min(...a.map((r) => new Date(r.scheduledDate).getTime()));
+    const bMin = Math.min(...b.map((r) => new Date(r.scheduledDate).getTime()));
+    return aMin - bMin;
+  });
+
+  const sections: Section[] = sortedEntries.map(([retailer, data]) => ({
+    title: retailer,
+    data,
+    isRetailer: true,
+  }));
+
+  if (completed.length > 0) {
+    const sortedCompleted = [...completed].sort(
+      (a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime()
+    );
+    sections.push({ title: "Completed", data: sortedCompleted });
+  }
+
+  return sections;
+}
+
+function urgencyChip(reminder: InspectionReminder, colors: ReturnType<typeof useColors>) {
+  const now = Date.now();
+  const ms = new Date(reminder.scheduledDate).getTime() - now;
+  if (ms < 0) {
+    return (
+      <View style={[chipStyles.chip, { backgroundColor: "#FEE2E2" }]}>
+        <Text style={[chipStyles.text, { color: "#DC2626" }]}>Overdue</Text>
+      </View>
+    );
+  }
+  if (ms <= 7 * 24 * 60 * 60 * 1000) {
+    return (
+      <View style={[chipStyles.chip, { backgroundColor: "#FEF3C7" }]}>
+        <Text style={[chipStyles.text, { color: "#D97706" }]}>This week</Text>
+      </View>
+    );
+  }
+  if (ms <= 30 * 24 * 60 * 60 * 1000) {
+    return (
+      <View style={[chipStyles.chip, { backgroundColor: colors.primary + "15" }]}>
+        <Text style={[chipStyles.text, { color: colors.primary }]}>Due soon</Text>
+      </View>
+    );
+  }
+  return null;
+}
+
+const chipStyles = StyleSheet.create({
+  chip: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20, alignSelf: "flex-start" },
+  text: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
+});
 
 export default function RemindersScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { reminders, completeReminder, deleteReminder, upcomingReminderCount } = useDiGe();
 
-  const now = Date.now();
-
-  const overdue = reminders.filter(
-    (r) => !r.isCompleted && new Date(r.scheduledDate).getTime() < now
-  );
-  const upcoming = reminders.filter(
-    (r) =>
-      !r.isCompleted &&
-      new Date(r.scheduledDate).getTime() >= now &&
-      new Date(r.scheduledDate).getTime() - now <= 30 * 24 * 60 * 60 * 1000
-  );
-  const future = reminders.filter(
-    (r) =>
-      !r.isCompleted && new Date(r.scheduledDate).getTime() - now > 30 * 24 * 60 * 60 * 1000
-  );
-  const completed = reminders.filter((r) => r.isCompleted);
-
-  const sections: Section[] = [
-    ...(overdue.length ? [{ title: "Overdue", data: overdue }] : []),
-    ...(upcoming.length ? [{ title: "Due Soon", data: upcoming }] : []),
-    ...(future.length ? [{ title: "Upcoming", data: future }] : []),
-    ...(completed.length ? [{ title: "Completed", data: completed }] : []),
-  ];
+  const sections = buildSections(reminders);
 
   async function handleAdd() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -79,19 +130,47 @@ export default function RemindersScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 100 }]}
           renderSectionHeader={({ section }) => (
-            <Text style={[styles.sectionHeader, { color: colors.mutedForeground }]}>
-              {section.title}
-            </Text>
+            <View style={styles.sectionHeaderRow}>
+              {section.isRetailer ? (
+                <View style={[styles.retailerIconWrap, { backgroundColor: colors.primary + "15" }]}>
+                  <Feather name="shopping-bag" size={12} color={colors.primary} />
+                </View>
+              ) : (
+                <View style={[styles.retailerIconWrap, { backgroundColor: colors.mutedForeground + "20" }]}>
+                  <Feather name="check-circle" size={12} color={colors.mutedForeground} />
+                </View>
+              )}
+              <Text
+                style={[
+                  styles.sectionHeader,
+                  { color: section.isRetailer ? colors.foreground : colors.mutedForeground },
+                ]}
+              >
+                {section.title}
+              </Text>
+              {section.isRetailer ? (
+                <View style={[styles.countBadge, { backgroundColor: colors.border }]}>
+                  <Text style={[styles.countText, { color: colors.mutedForeground }]}>
+                    {section.data.length}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
           )}
-          renderItem={({ item }) => (
-            <ReminderCard
-              reminder={item}
-              onComplete={() => completeReminder(item.id)}
-              onDelete={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                deleteReminder(item.id);
-              }}
-            />
+          renderItem={({ item, section }) => (
+            <View>
+              {section.isRetailer ? (
+                <View style={styles.chipRow}>{urgencyChip(item, colors)}</View>
+              ) : null}
+              <ReminderCard
+                reminder={item}
+                onComplete={() => completeReminder(item.id)}
+                onDelete={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  deleteReminder(item.id);
+                }}
+              />
+            </View>
           )}
           showsVerticalScrollIndicator={false}
           stickySectionHeadersEnabled={false}
@@ -118,14 +197,33 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 },
   emptyWrap: { flex: 1 },
   list: { paddingHorizontal: 20, flexGrow: 1 },
-  sectionHeader: {
-    fontSize: 11,
-    fontFamily: "Inter_600SemiBold",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginBottom: 8,
-    marginTop: 16,
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 20,
+    marginBottom: 10,
   },
+  retailerIconWrap: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sectionHeader: {
+    flex: 1,
+    fontSize: 13,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: -0.1,
+  },
+  countBadge: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  countText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
+  chipRow: { marginBottom: 4 },
   fab: {
     position: "absolute",
     right: 20,

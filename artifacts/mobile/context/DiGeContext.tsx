@@ -344,13 +344,10 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   }, [schedulePush]);
 
   const deleteReminder = useCallback((id: string) => {
-    setReminders((prev) => {
-      const target = prev.find((r) => r.id === id);
-      if (target?.notificationId) void cancelNotification(target.notificationId);
-      const next = prev.filter((r) => r.id !== id);
-      schedulePush();
-      return next;
-    });
+    const target = remindersRef.current.find((r) => r.id === id);
+    if (target?.notificationId) void cancelNotification(target.notificationId);
+    void cancelNotification(`${id}-advance`);
+    setReminders((prev) => { const next = prev.filter((r) => r.id !== id); schedulePush(); return next; });
   }, [schedulePush]);
 
   const completeReminder = useCallback((id: string) => {
@@ -358,6 +355,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
     if (!current) return;
 
     if (current.notificationId) void cancelNotification(current.notificationId);
+    void cancelNotification(`${id}-advance`);
     const completed = { ...current, isCompleted: true, notificationId: undefined };
 
     if (current.recurrence !== "none") {

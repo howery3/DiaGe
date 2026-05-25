@@ -35,6 +35,7 @@ export async function scheduleReminderNotification(
       ? `${reminder.jewelryName} is due for inspection at ${reminder.retailer}`
       : `${reminder.jewelryName} is due for an inspection`;
 
+    // Schedule the on-day notification
     const id = await Notifications.scheduleNotificationAsync({
       content: {
         title: "💎 Inspection Reminder",
@@ -47,6 +48,29 @@ export async function scheduleReminderNotification(
         date: triggerDate,
       },
     });
+
+    // Schedule a 7-day advance notification
+    const advanceDate = new Date(triggerDate);
+    advanceDate.setDate(advanceDate.getDate() - 7);
+    if (advanceDate > new Date()) {
+      const advanceBody = reminder.retailer
+        ? `${reminder.jewelryName} inspection at ${reminder.retailer} is coming up in 7 days`
+        : `${reminder.jewelryName} inspection is coming up in 7 days`;
+      await Notifications.scheduleNotificationAsync({
+        identifier: `${reminder.id}-advance`,
+        content: {
+          title: "💎 Upcoming Inspection",
+          body: advanceBody,
+          sound: true,
+          data: { reminderId: reminder.id },
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: advanceDate,
+        },
+      }).catch(() => {});
+    }
+
     return id;
   } catch {
     return null;
