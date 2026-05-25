@@ -172,7 +172,7 @@ router.get("/privacy", (_req, res) => {
     <section>
       <h2>Who We Are</h2>
       <p>DiaGe ("we", "us", "our") is a personal jewelry organizer app that helps you store warranty documents, purchase records, wishlists, and inspection reminders. This Privacy Policy applies to all users of the DiaGe mobile application.</p>
-      <p>For any privacy-related questions, you can reach us at: <strong>privacy@diageapp.com</strong></p>
+      <p>For any privacy-related questions, you can reach us at: <strong>diage.app@gmail.com</strong></p>
     </section>
 
     <section>
@@ -244,7 +244,7 @@ router.get("/privacy", (_req, res) => {
         <li>Tap "Clear All Vault Data" and confirm</li>
       </ul>
       <p>This will permanently erase all pieces, wishlists, reminders, and profile information from your device. This action cannot be undone.</p>
-      <p>To request deletion of any analytics data we may hold, email us at <strong>privacy@diageapp.com</strong> and we will respond within 30 days.</p>
+      <p>To request deletion of any analytics data we may hold, email us at <strong>diage.app@gmail.com</strong> and we will respond within 30 days.</p>
     </section>
 
     <section>
@@ -279,7 +279,7 @@ router.get("/privacy", (_req, res) => {
       <div class="contact-card">
         <div class="contact-row">
           <span class="contact-icon">✉</span>
-          <a href="mailto:privacy@diageapp.com">privacy@diageapp.com</a>
+          <a href="mailto:diage.app@gmail.com">diage.app@gmail.com</a>
         </div>
         <div class="contact-row">
           <span class="contact-icon">🌐</span>

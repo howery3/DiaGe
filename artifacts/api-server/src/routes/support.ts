@@ -170,7 +170,7 @@ router.get("/support", (_req, res) => {
       <div class="contact-card">
         <div class="contact-row">
           <span class="contact-icon">✉</span>
-          <a href="mailto:support@diageapp.com">support@diageapp.com</a>
+          <a href="mailto:diage.app@gmail.com">diage.app@gmail.com</a>
         </div>
       </div>
     </section>
@@ -194,7 +194,7 @@ router.get("/support", (_req, res) => {
       <p>Tap the total value banner on the home screen, or go to Profile → My Report. You can share the full report as text or screenshot it for your insurer.</p>
 
       <p><strong>How do I delete my account and data?</strong></p>
-      <p>Go to Settings → scroll to the Data section → tap "Clear All Vault Data". This permanently erases all your pieces, wishlists, and reminders. To delete your account entirely, email us at <a href="mailto:support@diageapp.com" style="color:#8B5CF6;">support@diageapp.com</a>.</p>
+      <p>Go to Settings → scroll to the Data section → tap "Clear All Vault Data". This permanently erases all your pieces, wishlists, and reminders. To delete your account entirely, email us at <a href="mailto:diage.app@gmail.com" style="color:#8B5CF6;">diage.app@gmail.com</a>.</p>
     </section>
 
     <footer>
