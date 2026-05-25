@@ -200,7 +200,7 @@ router.get("/support", (_req, res) => {
     <footer>
       DiaGe — Your jewelry, beautifully organized.
       <br /><br />
-      © 2025 DiaGe. All rights reserved.
+      © 2026 DiaGe. All rights reserved.
     </footer>
   </div>
 </body>

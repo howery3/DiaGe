@@ -263,13 +263,13 @@ router.get("/marketing", (_req, res) => {
   <section class="cta">
     <h2>Give your jewelry the home it deserves</h2>
     <p>Download DiaGe and start organizing your collection today.</p>
-    <a class="app-store-btn" href="https://apps.apple.com" target="_blank">
+    <div class="app-store-btn">
       <span style="font-size:28px;line-height:1">🍎</span>
       <div>
-        <span>Download on the</span>
+        <span>Coming Soon to the</span>
         App Store
       </div>
-    </a>
+    </div>
   </section>
 
   <footer>
@@ -277,7 +277,7 @@ router.get("/marketing", (_req, res) => {
       <a href="/api/privacy">Privacy Policy</a>
       <a href="/api/support">Support</a>
     </div>
-    © 2025 DiaGe. All rights reserved.
+    © 2026 DiaGe. All rights reserved.
   </footer>
 
 </body>
