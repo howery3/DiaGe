@@ -1,10 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as Location from "expo-location";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Linking,
   Pressable,
   ScrollView,
@@ -170,8 +171,7 @@ export default function NearestStoreScreen() {
     return lines.join("\n");
   }
 
-  async function handleEmailWishlist(place: PlaceResult) {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  async function doSendWishlist(place: PlaceResult) {
     const body = buildWishlistMessage();
     const subject = encodeURIComponent(`My ${retailerName} Wishlist — DiaGe`);
     const mailto = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
@@ -179,6 +179,7 @@ export default function NearestStoreScreen() {
       retailer: retailerName,
       store_name: place.name,
       item_count: wishlist.length,
+      has_contact_info: !!(profile.name && (profile.phone || profile.email)),
     });
     const canOpen = await Linking.canOpenURL(mailto);
     if (canOpen) {
@@ -186,6 +187,33 @@ export default function NearestStoreScreen() {
     } else {
       await Share.share({ message: body, title: `My ${retailerName} Wishlist` });
     }
+  }
+
+  async function handleEmailWishlist(place: PlaceResult) {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const isIncomplete = !profile.name || (!profile.phone && !profile.email);
+    if (isIncomplete) {
+      Alert.alert(
+        "Add Your Contact Info?",
+        "The store won't know how to reach you. Add your name and phone or email so they can follow up.",
+        [
+          {
+            text: "Complete Profile",
+            onPress: () => {
+              router.push("/(tabs)/profile");
+            },
+          },
+          {
+            text: "Send Anyway",
+            style: "destructive",
+            onPress: () => doSendWishlist(place),
+          },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+      return;
+    }
+    await doSendWishlist(place);
   }
 
   async function handleCall(phone: string) {
