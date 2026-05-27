@@ -46,14 +46,25 @@ export default function SignInScreen() {
         setLoading(strategy === "oauth_apple" ? "apple" : "google");
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
+        const redirectUrl = AuthSession.makeRedirectUri({ scheme: "diage" });
+
         const { createdSessionId, setActive } = await startSSOFlow({
           strategy,
-          redirectUrl: AuthSession.makeRedirectUri(),
+          redirectUrl,
         });
 
         if (createdSessionId) {
           await setActive!({ session: createdSessionId });
           capture("user_signed_in", { method: strategy === "oauth_apple" ? "apple" : "google" });
+          router.replace("/(tabs)");
+        } else if (setActive) {
+          // Session was created via redirect but not returned as createdSessionId
+          // (can happen when the OAuth provider already has an active session)
+          try {
+            await setActive({ session: null });
+          } catch {
+            // ignore — if there's already an active session the auth guard will redirect
+          }
           router.replace("/(tabs)");
         }
       } catch (err: unknown) {
