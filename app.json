@@ -4,6 +4,12 @@
       "eas": {
         "projectId": "c83fed9c-d01b-4c7f-bfc5-d7158caef2f5"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "com.diage.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     }
   }
 }
