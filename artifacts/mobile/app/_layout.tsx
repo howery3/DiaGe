@@ -13,7 +13,7 @@ import Head from "expo-router/head";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { PostHogProvider } from "posthog-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Appearance } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -35,9 +35,8 @@ const queryClient = new QueryClient();
 
 const ONBOARDING_KEY = "@dige_onboarded";
 
-const BUILT_IN_CLERK_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
-const PRODUCTION_CONFIG_URL = "https://diage.replit.app/api/config";
 
 function AuthGuard() {
   const { isSignedIn, isLoaded } = useAuth();
@@ -170,21 +169,6 @@ export default function RootLayout() {
     Inter_600SemiBold,
     Inter_700Bold,
   });
-  const [clerkKey, setClerkKey] = useState(BUILT_IN_CLERK_KEY);
-  const [clerkKeyReady, setClerkKeyReady] = useState(!!BUILT_IN_CLERK_KEY);
-
-  useEffect(() => {
-    if (BUILT_IN_CLERK_KEY) return;
-    fetch(PRODUCTION_CONFIG_URL)
-      .then((r) => r.json())
-      .then((data: { clerkPublishableKey?: string }) => {
-        if (data.clerkPublishableKey) {
-          setClerkKey(data.clerkPublishableKey);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setClerkKeyReady(true));
-  }, []);
 
   useEffect(() => {
     async function init() {
@@ -210,18 +194,18 @@ export default function RootLayout() {
     }
     restoreTheme();
 
-    if ((fontsLoaded || fontError) && clerkKeyReady) {
+    if (fontsLoaded || fontError) {
       init();
     }
-  }, [fontsLoaded, fontError, clerkKeyReady]);
+  }, [fontsLoaded, fontError]);
 
-  if ((!fontsLoaded && !fontError) || !clerkKeyReady) return null;
+  if (!fontsLoaded && !fontError) return null;
 
   const posthogClient = getPostHog();
 
   const inner = (
     <ClerkProvider
-      publishableKey={clerkKey}
+      publishableKey={publishableKey}
       tokenCache={tokenCache}
       proxyUrl={proxyUrl}
     >
