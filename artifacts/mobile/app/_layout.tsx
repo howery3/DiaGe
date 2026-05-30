@@ -29,7 +29,7 @@ import {
 } from "@/utils/notifications";
 
 SplashScreen.preventAutoHideAsync();
-configureNotificationHandler();
+try { configureNotificationHandler(); } catch { /* notifications unavailable in this runtime */ }
 
 const queryClient = new QueryClient();
 
@@ -173,7 +173,7 @@ export default function RootLayout() {
   useEffect(() => {
     async function init() {
       SplashScreen.hideAsync();
-      requestNotificationPermissions();
+      try { requestNotificationPermissions(); } catch { /* notifications unavailable */ }
       try {
         const value = await AsyncStorage.getItem(ONBOARDING_KEY);
         if (!value) {
