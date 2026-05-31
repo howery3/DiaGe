@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Users, TrendingUp, Gem, Menu, X, Bell } from "lucide-react";
+import { LayoutDashboard, Users, TrendingUp, Gem, Menu, X, Bell, Contact } from "lucide-react";
 import { RETAILER_NAME, PARENT_COMPANY } from "@/data/demo";
 
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leads", label: "Wishlist Leads", icon: Users },
+  { href: "/customers", label: "Your Customers", icon: Contact },
   { href: "/trends", label: "Trends & Insights", icon: TrendingUp },
 ];
 
