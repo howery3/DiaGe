@@ -201,6 +201,7 @@ export default function PrivacyScreen() {
             colors={colors}
             items={[
               "Clerk (authentication) — manages your sign-in and account identity; subject to Clerk's Privacy Policy at clerk.com/privacy",
+              "Replit (cloud infrastructure) — hosts DiaGe's API server and the PostgreSQL database where your vault data is stored; subject to Replit's Privacy Policy at replit.com/privacy",
               "PostHog (analytics) — records anonymized in-app events (feature usage, screen views) to help us improve DiaGe; subject to PostHog's Privacy Policy at posthog.com/privacy",
               "Camera — used only to photograph jewelry and scan retailer QR codes",
               "Photo Library — used only to attach images you choose to vault entries",
