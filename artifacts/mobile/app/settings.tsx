@@ -20,6 +20,7 @@ import { useAuth } from "@clerk/expo";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
+import { DEMO_PIECES, DEMO_WISHLIST, DEMO_REMINDERS } from "@/utils/demoData";
 
 const ONBOARDING_KEY = "@dige_onboarded";
 const APP_VERSION = "1.0.0";
@@ -27,7 +28,7 @@ const APP_VERSION = "1.0.0";
 export default function SettingsScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { pieces, wishlistItems, reminders, clearAllData } = useDiGe();
+  const { pieces, wishlistItems, reminders, clearAllData, addPiece, addWishlistItem, addReminder } = useDiGe();
   const { signOut, getToken } = useAuth();
   const { profile, hasProfile, initials, completionPct } = useProfile();
   const systemScheme = useColorScheme();
@@ -58,6 +59,28 @@ export default function SettingsScreen() {
             await AsyncStorage.removeItem(ONBOARDING_KEY);
             setOnboardingDone(false);
             Alert.alert("Done", "Close and reopen the app to see the welcome screens.");
+          },
+        },
+      ]
+    );
+  }
+
+  async function handleLoadDemo() {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const total = DEMO_PIECES.length + DEMO_WISHLIST.length + DEMO_REMINDERS.length;
+    Alert.alert(
+      "Load Demo Data",
+      `This will add ${DEMO_PIECES.length} jewelry pieces, ${DEMO_WISHLIST.length} wishlist items, and ${DEMO_REMINDERS.length} reminders to your vault. Your existing data is not affected.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: `Add ${total} Items`,
+          onPress: async () => {
+            for (const piece of DEMO_PIECES) addPiece(piece);
+            for (const item of DEMO_WISHLIST) addWishlistItem(item);
+            for (const reminder of DEMO_REMINDERS) addReminder(reminder);
+            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            Alert.alert("Demo data loaded", "Your vault is now populated with sample jewelry pieces, wishlist items, and reminders.");
           },
         },
       ]
@@ -250,6 +273,20 @@ export default function SettingsScreen() {
               sublabel={onboardingDone ? "Will show on next app open" : "Already reset"}
               colors={colors}
               onPress={handleResetOnboarding}
+              chevron
+            />
+          </View>
+
+          {/* Demo */}
+          <SectionLabel label="Demo" colors={colors} />
+          <View style={[styles.group, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <SettingsRow
+              icon="star"
+              iconBg="#5B21B6"
+              label="Load Demo Data"
+              sublabel="Adds 8 pieces, 4 wishlist items & 4 reminders"
+              colors={colors}
+              onPress={handleLoadDemo}
               chevron
             />
           </View>

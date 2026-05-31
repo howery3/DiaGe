@@ -38,7 +38,10 @@ export default function WishlistScreen() {
         renderItem={({ item }) => (
           <WishlistCard
             item={item}
-            onPress={() => {}}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push(`/wishlist-item/edit?id=${item.id}`);
+            }}
             onEdit={() => router.push(`/wishlist-item/edit?id=${item.id}`)}
             onDelete={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
