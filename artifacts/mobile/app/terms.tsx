@@ -143,9 +143,24 @@ export default function TermsScreen() {
           </Body>
         </Section>
 
+        <Section title="Governing Law">
+          <Body colors={colors}>
+            These Terms are governed by and construed in accordance with the laws of the State of Delaware, United States, without regard to its conflict of law principles. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts located in Delaware, and you consent to personal jurisdiction in those courts.
+          </Body>
+        </Section>
+
+        <Section title="Minimum Age">
+          <Body colors={colors}>
+            You must be at least 13 years of age to use DiaGe. By using the App, you represent that you meet this requirement. If you are under 18, you represent that you have your parent or guardian's permission to use the App.
+          </Body>
+        </Section>
+
         <Section title="Contact">
           <Body colors={colors}>
-            If you have questions about these Terms, please contact us through the App or at the contact information provided on our website.
+            If you have questions about these Terms, please contact us at:
+          </Body>
+          <Body colors={colors}>
+            <Strong colors={colors}>support@digeapp.com</Strong>
           </Body>
         </Section>
 

@@ -86,7 +86,8 @@
     "extra": {
       "eas": {
         "projectId": "95346f58-0da9-474e-bd0a-ef834b081197"
-      }
+      },
+      "privacyPolicyUrl": "https://DiaGe.replit.app/privacy"
     },
     "owner": "howery3"
   }

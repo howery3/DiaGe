@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAuth } from "@clerk/expo";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
@@ -27,6 +28,7 @@ export default function SettingsScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { pieces, wishlistItems, reminders, clearAllData } = useDiGe();
+  const { signOut, getToken } = useAuth();
   const { profile, hasProfile, initials, completionPct } = useProfile();
   const systemScheme = useColorScheme();
   const [darkMode, setDarkMode] = useState(systemScheme === "dark");
@@ -56,6 +58,42 @@ export default function SettingsScreen() {
             await AsyncStorage.removeItem(ONBOARDING_KEY);
             setOnboardingDone(false);
             Alert.alert("Done", "Close and reopen the app to see the welcome screens.");
+          },
+        },
+      ]
+    );
+  }
+
+  async function handleDeleteAccount() {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    Alert.alert(
+      "Delete Account",
+      "This will permanently delete your account and all associated data — pieces, wishlists, and reminders — from your device and our servers. This cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete My Account",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const token = await getToken();
+              const apiBase = process.env.EXPO_PUBLIC_DOMAIN
+                ? `https://${process.env.EXPO_PUBLIC_DOMAIN}/api`
+                : "http://localhost:8080/api";
+              const res = await fetch(`${apiBase}/account`, {
+                method: "DELETE",
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+              });
+              if (!res.ok && res.status !== 204) {
+                throw new Error(`Server error: ${res.status}`);
+              }
+              await signOut();
+            } catch (err) {
+              Alert.alert(
+                "Error",
+                "Could not delete your account. Please try again or contact support@digeapp.com."
+              );
+            }
           },
         },
       ]
@@ -227,6 +265,17 @@ export default function SettingsScreen() {
               labelColor="#DC2626"
               colors={colors}
               onPress={handleClearVault}
+              chevron
+            />
+            <Divider colors={colors} />
+            <SettingsRow
+              icon="trash-2"
+              iconBg="#7F1D1D"
+              label="Delete Account"
+              sublabel="Permanently removes your account and all data"
+              labelColor="#EF4444"
+              colors={colors}
+              onPress={handleDeleteAccount}
               chevron
             />
           </View>
