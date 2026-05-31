@@ -2,6 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
 import Overview from "@/pages/Overview";
+import Metrics from "@/pages/Metrics";
 import Retailers from "@/pages/Retailers";
 import GeoSku from "@/pages/GeoSku";
 
@@ -14,6 +15,7 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Overview} />
+        <Route path="/metrics" component={Metrics} />
         <Route path="/retailers" component={Retailers} />
         <Route path="/geography" component={GeoSku} />
       </Switch>

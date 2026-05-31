@@ -1,8 +1,9 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Building2, MapPin, Lock } from "lucide-react";
+import { LayoutDashboard, Building2, MapPin, Lock, TrendingUp } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "Platform Overview", icon: LayoutDashboard },
+  { href: "/metrics", label: "Traffic & Conversion", icon: TrendingUp },
   { href: "/retailers", label: "Retailer Performance", icon: Building2 },
   { href: "/geography", label: "SKU Geography", icon: MapPin },
 ];

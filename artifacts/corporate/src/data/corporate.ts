@@ -35,6 +35,76 @@ export const RETENTION_COHORT = [
   { label: "Day 90", pct: 53 },
 ];
 
+export const FUNNEL_STAGES = [
+  { stage: "App Installs",         count: 12847, pct: 100,  color: "#5B21B6", note: "Total registered users" },
+  { stage: "Wishlist Active",       count: 10019, pct: 78,   color: "#6D28D9", note: "Users with ≥1 saved item" },
+  { stage: "Shared with Store",     count: 3210,  pct: 32,   color: "#7C3AED", note: "% of wishlist-active users" },
+  { stage: "Lead Contacted",        count: 2183,  pct: 68,   color: "#8B5CF6", note: "% of shared leads" },
+  { stage: "In-Store Visit",        count: 1483,  pct: 68,   color: "#A78BFA", note: "% of contacted leads" },
+  { stage: "Purchase Attributed",   count: 892,   pct: 60,   color: "#C4B5FD", note: "% of store visits" },
+];
+
+export const ATV_COMPARISON = [
+  { label: "DiaGe Users",         value: 2847, highlight: true },
+  { label: "Signet Avg Customer", value: 1240, highlight: false },
+  { label: "Jewelry Retail Avg",  value: 890,  highlight: false },
+];
+
+export const ATV_BY_CATEGORY = [
+  { category: "Engagement Rings",  atv: 4847 },
+  { category: "Bridal Sets",       atv: 6284 },
+  { category: "Fine Jewelry",      atv: 2341 },
+  { category: "Watches",           atv: 3210 },
+  { category: "Fashion Jewelry",   atv: 891  },
+  { category: "Accessories",       atv: 412  },
+];
+
+export const ATV_BY_BANNER = [
+  { banner: "Jared",                    atv: 3847, type: "signet" as const },
+  { banner: "Kay Jewelers",             atv: 2592, type: "signet" as const },
+  { banner: "Zales",                    atv: 2341, type: "signet" as const },
+  { banner: "Banter by Piercing Pagoda",atv: 498,  type: "signet" as const },
+];
+
+export const TRAFFIC_SOURCES = [
+  { source: "In-App Retailer Browser", pct: 38, users: 4882, color: "#5B21B6" },
+  { source: "External Product Link",   pct: 27, users: 3469, color: "#7C3AED" },
+  { source: "In-Store QR Scan",        pct: 19, users: 2441, color: "#8B5CF6" },
+  { source: "Manual SKU Entry",        pct: 11, users: 1413, color: "#A78BFA" },
+  { source: "Organic / Other",         pct: 5,  users: 642,  color: "#C4B5FD" },
+];
+
+export const CONVERSION_BENCHMARKS = [
+  { metric: "App Install → Purchase",     diage: 6.9,  industry: 1.2,  label: "6.9% vs 1.2% avg" },
+  { metric: "Lead → Store Visit",         diage: 68,   industry: 22,   label: "68% vs 22% avg" },
+  { metric: "Store Visit → Purchase",     diage: 60.2, industry: 31,   label: "60% vs 31% avg" },
+  { metric: "Wishlist → Quote Request",   diage: 88.7, industry: 12,   label: "89% vs 12% avg" },
+];
+
+export const SESSION_METRICS = {
+  sessionsPerWeek: 3.2,
+  avgSessionMinutes: 8.4,
+  avgItemsViewed: 6.7,
+  wishlistAddRate: 73,
+  pushNotifOptIn: 81,
+  retailerBrowseRate: 58,
+};
+
+export const WEEKLY_SESSIONS = [
+  { week: "W1 Jan", sessions: 1.8 },
+  { week: "W2 Jan", sessions: 2.1 },
+  { week: "W3 Jan", sessions: 2.3 },
+  { week: "W4 Jan", sessions: 2.6 },
+  { week: "W1 Feb", sessions: 2.8 },
+  { week: "W2 Feb", sessions: 2.9 },
+  { week: "W3 Feb", sessions: 3.0 },
+  { week: "W4 Feb", sessions: 3.1 },
+  { week: "W1 Mar", sessions: 3.1 },
+  { week: "W2 Mar", sessions: 3.2 },
+  { week: "W3 Mar", sessions: 3.2 },
+  { week: "W4 Mar", sessions: 3.2 },
+];
+
 export const SIGNET_PROJECTION = {
   addressableCustomers: 9300000,
   projectedAdoptionPct: 18,
