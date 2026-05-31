@@ -35,9 +35,20 @@ export const RETENTION_COHORT = [
   { label: "Day 90", pct: 53 },
 ];
 
+export const SIGNET_PROJECTION = {
+  addressableCustomers: 9300000,
+  projectedAdoptionPct: 18,
+  projectedUsers: 1674000,
+  projectedWishlistValue: 6800000000,
+  projectedQuoteRequests: 214000,
+  bannerCount: 4,
+  locationCount: 2800,
+  timeframeYears: 3,
+};
+
 export interface RetailerKPI {
   name: string;
-  type: "mass" | "independent";
+  type: "signet" | "partner";
   location: string;
   customers: number;
   activeWishlists: number;
@@ -50,8 +61,8 @@ export interface RetailerKPI {
 export const RETAILER_KPIS: RetailerKPI[] = [
   {
     name: "Kay Jewelers",
-    type: "mass",
-    location: "National",
+    type: "signet",
+    location: "National · 900+ locations",
     customers: 843,
     activeWishlists: 612,
     totalWishlistValue: 2184700,
@@ -61,8 +72,8 @@ export const RETAILER_KPIS: RetailerKPI[] = [
   },
   {
     name: "Jared",
-    type: "mass",
-    location: "National",
+    type: "signet",
+    location: "National · 200+ locations",
     customers: 621,
     activeWishlists: 441,
     totalWishlistValue: 1803200,
@@ -72,8 +83,8 @@ export const RETAILER_KPIS: RetailerKPI[] = [
   },
   {
     name: "Zales",
-    type: "mass",
-    location: "National",
+    type: "signet",
+    location: "National · 700+ locations",
     customers: 487,
     activeWishlists: 334,
     totalWishlistValue: 1142800,
@@ -82,20 +93,20 @@ export const RETAILER_KPIS: RetailerKPI[] = [
     conversionRate: 14.7,
   },
   {
-    name: "Helzberg Diamonds",
-    type: "mass",
-    location: "National",
+    name: "Banter by Piercing Pagoda",
+    type: "signet",
+    location: "National · 800+ kiosk locations",
     customers: 312,
     activeWishlists: 219,
-    totalWishlistValue: 784100,
+    totalWishlistValue: 622400,
     quoteRequests: 41,
-    avgItemsPerCustomer: 3.4,
+    avgItemsPerCustomer: 3.2,
     conversionRate: 13.1,
   },
   {
-    name: "Bella Fine Jewelers",
-    type: "independent",
-    location: "New York, NY",
+    name: "Brilliant Earth",
+    type: "partner",
+    location: "National + online",
     customers: 234,
     activeWishlists: 178,
     totalWishlistValue: 842300,
@@ -104,59 +115,37 @@ export const RETAILER_KPIS: RetailerKPI[] = [
     conversionRate: 21.4,
   },
   {
-    name: "The Diamond Exchange",
-    type: "independent",
-    location: "Chicago, IL",
+    name: "Pandora",
+    type: "partner",
+    location: "National · 350+ locations",
     customers: 189,
     activeWishlists: 143,
-    totalWishlistValue: 621700,
+    totalWishlistValue: 421700,
     quoteRequests: 39,
     avgItemsPerCustomer: 4.9,
     conversionRate: 20.1,
   },
   {
-    name: "Prestige Jewelers",
-    type: "independent",
-    location: "Miami, FL",
+    name: "Blue Nile",
+    type: "partner",
+    location: "Online-first + 10 showrooms",
     customers: 156,
     activeWishlists: 112,
-    totalWishlistValue: 534400,
+    totalWishlistValue: 634400,
     quoteRequests: 31,
     avgItemsPerCustomer: 4.6,
     conversionRate: 19.8,
   },
   {
-    name: "Crown Jewels",
-    type: "independent",
-    location: "Houston, TX",
+    name: "Mejuri",
+    type: "partner",
+    location: "North America · 30+ locations",
     customers: 142,
     activeWishlists: 98,
-    totalWishlistValue: 412800,
+    totalWishlistValue: 312800,
     quoteRequests: 28,
     avgItemsPerCustomer: 4.2,
     conversionRate: 18.9,
-  },
-  {
-    name: "Pacific Gems",
-    type: "independent",
-    location: "Los Angeles, CA",
-    customers: 128,
-    activeWishlists: 89,
-    totalWishlistValue: 374200,
-    quoteRequests: 24,
-    avgItemsPerCustomer: 3.9,
-    conversionRate: 17.3,
-  },
-  {
-    name: "Sterling & Stone",
-    type: "independent",
-    location: "Boston, MA",
-    customers: 98,
-    activeWishlists: 71,
-    totalWishlistValue: 287100,
-    quoteRequests: 19,
-    avgItemsPerCustomer: 3.7,
-    conversionRate: 16.8,
   },
 ];
 
@@ -261,14 +250,25 @@ export const SKU_GEO_DATA: SkuGeoRow[] = [
     },
   },
   {
-    sku: "MIK-PN-9MM",
-    name: "Mikimoto Pearl Necklace",
-    retailer: "Mikimoto",
-    avgPrice: 7200,
-    totalSaves: 987,
+    sku: "ZL-HSR-220",
+    name: "Vera Wang LOVE Ring",
+    retailer: "Zales",
+    avgPrice: 1899,
+    totalSaves: 1041,
     byMetro: {
-      "New York": 187, "Los Angeles": 164, "Chicago": 108, "Houston": 89,
-      "Atlanta": 81, "Dallas": 74, "Miami": 71, "Seattle": 64, "Boston": 58, "San Francisco": 54,
+      "New York": 172, "Los Angeles": 158, "Chicago": 114, "Houston": 91,
+      "Atlanta": 84, "Dallas": 78, "Miami": 71, "Seattle": 62, "Boston": 55, "San Francisco": 47,
+    },
+  },
+  {
+    sku: "BP-PP-STK-7",
+    name: "Stackable Diamond Ring Set",
+    retailer: "Banter by Piercing Pagoda",
+    avgPrice: 449,
+    totalSaves: 892,
+    byMetro: {
+      "New York": 148, "Los Angeles": 134, "Chicago": 97, "Houston": 78,
+      "Atlanta": 71, "Dallas": 68, "Miami": 61, "Seattle": 52, "Boston": 47, "San Francisco": 39,
     },
   },
 ];

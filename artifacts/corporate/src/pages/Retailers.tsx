@@ -40,8 +40,10 @@ function RetailerRow({ r }: { r: RetailerKPI }) {
           <div className="text-xs text-muted-foreground mt-0.5">{r.location}</div>
         </div>
         <div className="text-xs px-2 py-1 rounded-full font-medium"
-          style={{ background: r.type === "mass" ? "hsl(211 100% 93%)" : "hsl(262 40% 94%)", color: r.type === "mass" ? "#0055a5" : "hsl(262 80% 30%)" }}>
-          {r.type === "mass" ? "Mass Retailer" : "Independent"}
+          style={r.type === "signet"
+            ? { background: "hsl(262 40% 94%)", color: "hsl(262 80% 30%)" }
+            : { background: "hsl(211 100% 93%)", color: "#0055a5" }}>
+          {r.type === "signet" ? "Signet Banner" : "Partner Retailer"}
         </div>
       </div>
       <div className="grid grid-cols-5 gap-3">
@@ -69,14 +71,16 @@ const TAB_METRICS = [
 ];
 
 export default function Retailers() {
-  const [tab, setTab] = useState<"mass" | "independent">("mass");
+  const [tab, setTab] = useState<"signet" | "partner">("signet");
   const [metric, setMetric] = useState("customers");
 
   const filtered = RETAILER_KPIS.filter((r) => r.type === tab);
   const selectedMetric = TAB_METRICS.find((m) => m.key === metric)!;
 
-  const massTotal = RETAILER_KPIS.filter((r) => r.type === "mass").reduce((s, r) => s + r.totalWishlistValue, 0);
-  const indieTotal = RETAILER_KPIS.filter((r) => r.type === "independent").reduce((s, r) => s + r.totalWishlistValue, 0);
+  const signetTotal = RETAILER_KPIS.filter((r) => r.type === "signet").reduce((s, r) => s + r.totalWishlistValue, 0);
+  const partnerTotal = RETAILER_KPIS.filter((r) => r.type === "partner").reduce((s, r) => s + r.totalWishlistValue, 0);
+  const signetConvAvg = RETAILER_KPIS.filter((r) => r.type === "signet").reduce((s, r) => s + r.conversionRate, 0) / RETAILER_KPIS.filter((r) => r.type === "signet").length;
+  const partnerConvAvg = RETAILER_KPIS.filter((r) => r.type === "partner").reduce((s, r) => s + r.conversionRate, 0) / RETAILER_KPIS.filter((r) => r.type === "partner").length;
 
   return (
     <div className="p-8 max-w-[1300px]">
@@ -87,42 +91,47 @@ export default function Retailers() {
           <h1 className="text-2xl font-bold text-foreground">Retailer Performance</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Engagement and value metrics broken down by retailer type — May 2026
+          Engagement and wishlist value across Signet banners and partner retailers — May 2026
         </p>
       </div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-card border border-card-border rounded-xl p-5">
-          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Mass Retailers</div>
-          <div className="text-3xl font-bold" style={{ color: CHART_COLORS.blue }}>
-            {fmtCurrency(massTotal)}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "hsl(262 40% 94%)", color: "hsl(262 80% 30%)" }}>
+              Signet Banners
+            </span>
+            <span className="text-xs text-muted-foreground">Kay · Jared · Zales · Banter</span>
+          </div>
+          <div className="text-3xl font-bold" style={{ color: CHART_COLORS.purple }}>
+            {fmtCurrency(signetTotal)}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            {RETAILER_KPIS.filter((r) => r.type === "mass").reduce((s, r) => s + r.customers, 0).toLocaleString()} customers across{" "}
-            {RETAILER_KPIS.filter((r) => r.type === "mass").length} retailers
+            {RETAILER_KPIS.filter((r) => r.type === "signet").reduce((s, r) => s + r.customers, 0).toLocaleString()} customers ·{" "}
+            <span style={{ color: CHART_COLORS.green, fontWeight: 600 }}>{signetConvAvg.toFixed(1)}% avg conversion</span>
           </div>
         </div>
         <div className="bg-card border border-card-border rounded-xl p-5">
-          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Independent Retailers</div>
-          <div className="text-3xl font-bold" style={{ color: CHART_COLORS.purple }}>
-            {fmtCurrency(indieTotal)}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "hsl(211 100% 93%)", color: "#0055a5" }}>
+              Partner Retailers
+            </span>
+            <span className="text-xs text-muted-foreground">Non-Signet platform partners</span>
+          </div>
+          <div className="text-3xl font-bold" style={{ color: CHART_COLORS.blue }}>
+            {fmtCurrency(partnerTotal)}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            {RETAILER_KPIS.filter((r) => r.type === "independent").reduce((s, r) => s + r.customers, 0).toLocaleString()} customers across{" "}
-            {RETAILER_KPIS.filter((r) => r.type === "independent").length} retailers ·{" "}
-            <span style={{ color: CHART_COLORS.green, fontWeight: 600 }}>
-              {(RETAILER_KPIS.filter((r) => r.type === "independent").reduce((s, r) => s + r.conversionRate, 0) / RETAILER_KPIS.filter((r) => r.type === "independent").length).toFixed(1)}% avg conversion
-            </span>
-            {" "}vs{" "}
-            {(RETAILER_KPIS.filter((r) => r.type === "mass").reduce((s, r) => s + r.conversionRate, 0) / RETAILER_KPIS.filter((r) => r.type === "mass").length).toFixed(1)}% mass
+            {RETAILER_KPIS.filter((r) => r.type === "partner").reduce((s, r) => s + r.customers, 0).toLocaleString()} customers ·{" "}
+            <span style={{ color: CHART_COLORS.green, fontWeight: 600 }}>{partnerConvAvg.toFixed(1)}% avg conversion</span>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="flex items-center gap-2 mb-5">
-        {(["mass", "independent"] as const).map((t) => (
+        {(["signet", "partner"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -131,7 +140,7 @@ export default function Retailers() {
               ? { background: "#5B21B6", color: "#fff" }
               : { background: "hsl(var(--card))", color: "hsl(var(--muted-foreground))", border: "1px solid hsl(var(--border))" }}
           >
-            {t === "mass" ? "Mass Retailers" : "Independent Retailers"}
+            {t === "signet" ? "Signet Banners" : "Partner Retailers"}
           </button>
         ))}
       </div>
@@ -141,7 +150,9 @@ export default function Retailers() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="font-semibold text-sm text-foreground">Comparison</div>
-            <div className="text-xs text-muted-foreground">Side-by-side across {tab === "mass" ? "mass" : "independent"} retailers</div>
+            <div className="text-xs text-muted-foreground">
+              Side-by-side across {tab === "signet" ? "Signet banners" : "partner retailers"}
+            </div>
           </div>
           <div className="flex gap-2">
             {TAB_METRICS.map((m) => (
@@ -173,15 +184,16 @@ export default function Retailers() {
         </ResponsiveContainer>
       </div>
 
-      {/* Retailer detail rows */}
+      {/* Detail rows */}
       <div className="flex flex-col gap-4">
         {filtered.map((r) => <RetailerRow key={r.name} r={r} />)}
       </div>
 
       {/* Insight callout */}
       <div className="mt-6 rounded-xl px-5 py-4 text-sm" style={{ background: "hsl(262 40% 94%)", color: "hsl(262 80% 25%)" }}>
-        <strong>Independent retailers convert {((RETAILER_KPIS.filter(r => r.type === "independent").reduce((s, r) => s + r.conversionRate, 0) / RETAILER_KPIS.filter(r => r.type === "independent").length) - (RETAILER_KPIS.filter(r => r.type === "mass").reduce((s, r) => s + r.conversionRate, 0) / RETAILER_KPIS.filter(r => r.type === "mass").length)).toFixed(1)}% higher</strong> than mass retailers on average.
-        {" "}Their smaller footprint makes each customer relationship higher-touch — a strong signal for boutique partner expansion in 2026.
+        <strong>Kay Jewelers leads all Signet banners</strong> with {fmtCurrency(RETAILER_KPIS.find(r => r.name === "Kay Jewelers")!.totalWishlistValue)} in tracked wishlist value
+        and the highest conversion rate at {RETAILER_KPIS.find(r => r.name === "Kay Jewelers")!.conversionRate}%.
+        {" "}Banter by Piercing Pagoda shows strong customer volume with significant upside as higher-AOV products are added to the platform.
       </div>
     </div>
   );

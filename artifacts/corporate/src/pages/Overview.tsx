@@ -3,8 +3,8 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer,
 } from "recharts";
-import { PLATFORM_KPIS, MONTHLY_GROWTH, FEATURE_ADOPTION, RETENTION_COHORT } from "@/data/corporate";
-import { Users, TrendingUp, ShoppingBag, MessageSquare, Store, Gem } from "lucide-react";
+import { PLATFORM_KPIS, MONTHLY_GROWTH, FEATURE_ADOPTION, RETENTION_COHORT, SIGNET_PROJECTION } from "@/data/corporate";
+import { Users, TrendingUp, ShoppingBag, MessageSquare, Store, Gem, Building2 } from "lucide-react";
 
 const CHART_COLORS = {
   blue: "#0079F2", purple: "#795EFF", green: "#009118", red: "#A60808", pink: "#ec4899",
@@ -43,7 +43,7 @@ const KPIS = [
   { label: "30-Day Retention", value: `${PLATFORM_KPIS.retention30d}%`, sub: "Industry avg: 32%", icon: TrendingUp, color: "#009118" },
   { label: "Total Wishlist Value", value: fmtM(PLATFORM_KPIS.totalWishlistValue), sub: "Across all active wishlists", icon: ShoppingBag, color: "#0079F2" },
   { label: "Quote Requests Sent", value: fmt(PLATFORM_KPIS.quoteRequests), sub: "Via in-app insurance partners", icon: MessageSquare, color: "#795EFF" },
-  { label: "Partner Retailers", value: fmt(PLATFORM_KPIS.partnerRetailers), sub: "Mass + independent", icon: Store, color: "#009118" },
+  { label: "Signet Partner Retailers", value: fmt(PLATFORM_KPIS.partnerRetailers), sub: "4 Signet banners + partners", icon: Store, color: "#009118" },
 ];
 
 export default function Overview() {
@@ -185,6 +185,38 @@ export default function Overview() {
             <strong>68% 30-day retention</strong> — 2× the industry average for consumer apps (32%).
             Users track high-value assets; churn is inherently low.
           </div>
+        </div>
+      </div>
+
+      {/* Signet Opportunity Projection */}
+      <div className="mt-8 rounded-xl border overflow-hidden" style={{ borderColor: "hsl(262 60% 60% / 0.3)", background: "linear-gradient(135deg, hsl(262 40% 12%) 0%, hsl(262 50% 18%) 100%)" }}>
+        <div className="px-6 py-5 border-b" style={{ borderColor: "hsl(262 60% 60% / 0.2)" }}>
+          <div className="flex items-center gap-2">
+            <Building2 size={16} style={{ color: "#A78BFA" }} />
+            <span className="text-sm font-semibold" style={{ color: "#E9D5FF" }}>
+              Signet Jewelers · Full-Scale Deployment Opportunity
+            </span>
+            <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "rgba(167,139,250,0.2)", color: "#C4B5FD" }}>
+              3-Year Projection
+            </span>
+          </div>
+          <p className="text-xs mt-1" style={{ color: "rgba(196,181,253,0.65)" }}>
+            Based on {(SIGNET_PROJECTION.addressableCustomers / 1_000_000).toFixed(1)}M Signet customers served annually across {SIGNET_PROJECTION.bannerCount} banners · {SIGNET_PROJECTION.locationCount.toLocaleString()} locations · {SIGNET_PROJECTION.projectedAdoptionPct}% projected adoption at current growth trajectory
+          </p>
+        </div>
+        <div className="grid grid-cols-4 divide-x" style={{ divideColor: "hsl(262 60% 60% / 0.2)" }}>
+          {[
+            { label: "Projected Users", value: `${(SIGNET_PROJECTION.projectedUsers / 1_000_000).toFixed(1)}M`, sub: `${SIGNET_PROJECTION.projectedAdoptionPct}% of addressable base` },
+            { label: "Tracked Wishlist Value", value: `$${(SIGNET_PROJECTION.projectedWishlistValue / 1_000_000_000).toFixed(1)}B`, sub: "At current avg wishlist size" },
+            { label: "Quote Requests / Year", value: `${(SIGNET_PROJECTION.projectedQuoteRequests / 1_000).toFixed(0)}K`, sub: "Insurance + financing leads" },
+            { label: "Banners Covered", value: `${SIGNET_PROJECTION.bannerCount} banners`, sub: "Kay · Jared · Zales · Banter" },
+          ].map((stat) => (
+            <div key={stat.label} className="px-6 py-4" style={{ borderRight: "1px solid hsl(262 60% 60% / 0.15)" }}>
+              <div className="text-xs mb-1" style={{ color: "rgba(196,181,253,0.6)" }}>{stat.label}</div>
+              <div className="text-2xl font-bold" style={{ color: "#A78BFA" }}>{stat.value}</div>
+              <div className="text-xs mt-0.5" style={{ color: "rgba(196,181,253,0.5)" }}>{stat.sub}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

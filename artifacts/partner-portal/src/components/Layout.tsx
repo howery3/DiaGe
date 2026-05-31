@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { LayoutDashboard, Users, TrendingUp, Gem, Menu, X, Bell } from "lucide-react";
-import { RETAILER_NAME } from "@/data/demo";
+import { RETAILER_NAME, PARENT_COMPANY } from "@/data/demo";
 
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -26,6 +26,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <span className="text-[#A78BFA] text-xs font-semibold ml-1 px-1.5 py-0.5 bg-[#3B1E8E] rounded">Partner</span>
           </div>
           <p className="text-[#C4B5FD] text-xs truncate">{RETAILER_NAME}</p>
+          <p className="text-[#7C5CBF] text-[10px] mt-0.5">A {PARENT_COMPANY} Banner</p>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">
@@ -55,8 +56,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
               KJ
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white text-xs font-semibold truncate">Kay Jewelers</p>
-              <p className="text-[#A78BFA] text-xs truncate">Enterprise Partner</p>
+              <p className="text-white text-xs font-semibold truncate">{RETAILER_NAME}</p>
+              <p className="text-[#A78BFA] text-xs truncate">{PARENT_COMPANY} · Enterprise</p>
             </div>
           </div>
         </div>

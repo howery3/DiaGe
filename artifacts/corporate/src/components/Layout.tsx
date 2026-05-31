@@ -32,7 +32,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               Corp
             </span>
           </div>
-          <div className="flex items-center gap-1 mt-2">
+          <div className="text-xs mt-1.5 font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>
+            Prepared for Signet Jewelers
+          </div>
+          <div className="flex items-center gap-1 mt-1.5">
             <Lock size={10} style={{ color: "hsl(var(--sidebar-primary))" }} />
             <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
               Confidential · Internal Only

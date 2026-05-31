@@ -1,4 +1,5 @@
 export const RETAILER_NAME = "Kay Jewelers";
+export const PARENT_COMPANY = "Signet Jewelers";
 
 export const KPI = {
   customersReached: 843,
