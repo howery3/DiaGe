@@ -5,7 +5,6 @@ import React, { useMemo, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyState } from "@/components/EmptyState";
-import { RetailerStoreCard } from "@/components/RetailerStoreCard";
 import { WishlistCard } from "@/components/WishlistCard";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
@@ -150,10 +149,6 @@ export default function WishlistScreen() {
                 />
               ))}
 
-              {/* Per-retailer store card — skip for "Other" with no retailer */}
-              {retailer !== "Other" && (
-                <RetailerStoreCard retailer={retailer} items={items} />
-              )}
             </View>
           ))}
         </ScrollView>
