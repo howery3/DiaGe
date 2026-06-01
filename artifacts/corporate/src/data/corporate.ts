@@ -188,7 +188,7 @@ export const INTEGRATION_POINTS = [
 
 export const ROLLOUT_SCALE = [
   { milestone: "Pilot",           stores: 25,   banners: 2, associates: 100,   timeframe: "Now",      pct: 1   },
-  { milestone: "Banner Rollout",  stores: 250,  banners: 3, associates: 1000,  timeframe: "Month 3",  pct: 10  },
+  { milestone: "Banner Rollout",  stores: 500,  banners: 4, associates: 2000,  timeframe: "Month 3",  pct: 20  },
   { milestone: "Full Signet",     stores: 2500, banners: 4, associates: 10000, timeframe: "Month 12", pct: 100 },
 ];
 
