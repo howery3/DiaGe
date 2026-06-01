@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyState } from "@/components/EmptyState";
-import { MyStoreCard } from "@/components/MyStoreCard";
 import { ReminderCard } from "@/components/ReminderCard";
 import { useDiGe, type InspectionReminder } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
@@ -127,7 +126,6 @@ export default function RemindersScreen() {
           contentContainerStyle={[styles.emptyScroll, { paddingBottom: insets.bottom + 100 }]}
           showsVerticalScrollIndicator={false}
         >
-          <MyStoreCard />
           <View style={styles.emptyWrap}>
             <EmptyState
               icon="bell"
@@ -140,7 +138,6 @@ export default function RemindersScreen() {
         <SectionList
           sections={sections}
           keyExtractor={(item) => item.id}
-          ListHeaderComponent={<MyStoreCard />}
           contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 100 }]}
           renderSectionHeader={({ section }) => (
             <View style={styles.sectionHeaderRow}>
