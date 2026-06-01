@@ -34,7 +34,7 @@ interface ReminderCardProps {
 export function ReminderCard({ reminder, onComplete, onDelete }: ReminderCardProps) {
   const colors = useColors();
   const urg = urgency(reminder.scheduledDate, reminder.isCompleted);
-  const showBook = !reminder.isCompleted && !!reminder.retailer;
+  const showBook = !reminder.isCompleted && !!reminder.retailer && !reminder.jewelryName.startsWith("Wishlist Appt");
 
   async function handleComplete() {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
