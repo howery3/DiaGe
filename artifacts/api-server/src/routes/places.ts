@@ -16,12 +16,16 @@ router.get("/places/nearby", async (req, res) => {
   }
 
   try {
+    // Use Nearby Search (not Text Search) — Text Search treats location as a
+    // bias and can return results from anywhere. Nearby Search strictly
+    // restricts to the given radius around the user's real coordinates.
     const url = new URL(
-      "https://maps.googleapis.com/maps/api/place/textsearch/json"
+      "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     );
-    url.searchParams.set("query", `${query} jewelry`);
+    url.searchParams.set("keyword", query);
     url.searchParams.set("location", `${lat},${lng}`);
     url.searchParams.set("radius", "48280"); // 30 miles in meters
+    url.searchParams.set("type", "jewelry_store");
     url.searchParams.set("key", apiKey);
 
     const response = await fetch(url.toString());
@@ -31,6 +35,7 @@ router.get("/places/nearby", async (req, res) => {
         place_id: string;
         name: string;
         formatted_address: string;
+        vicinity: string;
         rating?: number;
         geometry: { location: { lat: number; lng: number } };
       }[];
@@ -45,7 +50,7 @@ router.get("/places/nearby", async (req, res) => {
     const places = (data.results ?? []).slice(0, 5).map((p) => ({
       placeId: p.place_id,
       name: p.name,
-      address: p.formatted_address,
+      address: p.vicinity || p.formatted_address,
       rating: p.rating,
       lat: p.geometry?.location?.lat,
       lng: p.geometry?.location?.lng,
