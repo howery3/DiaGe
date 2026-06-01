@@ -1,22 +1,36 @@
 import { Feather } from "@expo/vector-icons";
+import { useAuth } from "@clerk/expo";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import React from "react";
-import { Platform, Pressable, SectionList, StyleSheet, Text, View } from "react-native";
+import React, { useRef, useState } from "react";
+import {
+  Alert,
+  Animated,
+  Platform,
+  Pressable,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyState } from "@/components/EmptyState";
 import { ReminderCard } from "@/components/ReminderCard";
 import { useDiGe, type InspectionReminder } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { usePreferredStore } from "@/hooks/usePreferredStore";
+import { useProfile } from "@/hooks/useProfile";
+
+const API_BASE = process.env.EXPO_PUBLIC_DOMAIN
+  ? `https://${process.env.EXPO_PUBLIC_DOMAIN}/api`
+  : "http://localhost:5000/api";
 
 type Section = { title: string; data: InspectionReminder[]; isRetailer?: boolean };
 
 function buildSections(reminders: InspectionReminder[]): Section[] {
-  const now = Date.now();
   const active = reminders.filter((r) => !r.isCompleted);
   const completed = reminders.filter((r) => r.isCompleted);
 
-  // Group active reminders by retailer
   const retailerMap = new Map<string, InspectionReminder[]>();
   for (const r of active) {
     const key = r.retailer.trim() || "General";
@@ -24,12 +38,10 @@ function buildSections(reminders: InspectionReminder[]): Section[] {
     retailerMap.get(key)!.push(r);
   }
 
-  // Sort each group by scheduledDate (overdue first, then soonest)
   for (const [, items] of retailerMap) {
     items.sort((a, b) => new Date(a.scheduledDate).getTime() - new Date(b.scheduledDate).getTime());
   }
 
-  // Sort retailer groups by their earliest reminder date
   const sortedEntries = [...retailerMap.entries()].sort(([, a], [, b]) => {
     const aMin = Math.min(...a.map((r) => new Date(r.scheduledDate).getTime()));
     const bMin = Math.min(...b.map((r) => new Date(r.scheduledDate).getTime()));
@@ -88,15 +100,104 @@ export default function RemindersScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { reminders, completeReminder, deleteReminder, upcomingReminderCount } = useDiGe();
+  const { store } = usePreferredStore();
+  const { profile } = useProfile();
+  const { getToken } = useAuth();
 
   const sections = buildSections(reminders);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [booking, setBooking] = useState(false);
 
-  async function handleAdd() {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  const menuAnim = useRef(new Animated.Value(0)).current;
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+
+  function openMenu() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setMenuOpen(true);
+    Animated.parallel([
+      Animated.spring(menuAnim, { toValue: 1, useNativeDriver: true, damping: 15, stiffness: 200 }),
+      Animated.spring(rotateAnim, { toValue: 1, useNativeDriver: true, damping: 15, stiffness: 200 }),
+    ]).start();
+  }
+
+  function closeMenu() {
+    Animated.parallel([
+      Animated.spring(menuAnim, { toValue: 0, useNativeDriver: true, damping: 15, stiffness: 200 }),
+      Animated.spring(rotateAnim, { toValue: 0, useNativeDriver: true, damping: 15, stiffness: 200 }),
+    ]).start(() => setMenuOpen(false));
+  }
+
+  function toggleMenu() {
+    if (menuOpen) { closeMenu(); } else { openMenu(); }
+  }
+
+  async function handleAddReminder() {
+    closeMenu();
+    await new Promise((r) => setTimeout(r, 120));
     router.push("/reminder/add");
   }
 
+  async function handleBookAppointment() {
+    if (!store) {
+      closeMenu();
+      await new Promise((r) => setTimeout(r, 120));
+      Alert.alert(
+        "No Store Linked",
+        "Link a Signet store from your Profile first, then you can book appointments directly from here.",
+        [
+          { text: "Go to Profile", onPress: () => router.push("/(tabs)/profile") },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+      return;
+    }
+
+    closeMenu();
+    setBooking(true);
+    try {
+      const token = await getToken();
+      const payload = {
+        storeId: store.id,
+        type: "appointment",
+        data: {
+          userName: profile.name || "DiaGe User",
+          userEmail: profile.email || "",
+          userPhone: profile.phone || "",
+          message: "I'd like to schedule a jewelry inspection appointment.",
+          sharedAt: new Date().toISOString(),
+        },
+      };
+      const res = await fetch(`${API_BASE}/store-share`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Request failed");
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert(
+        "Request Sent! 🗓",
+        `${store.name} will reach out to confirm your appointment time. Expected response within 24 hours.`,
+        [{ text: "OK" }]
+      );
+    } catch {
+      Alert.alert("Couldn't send", "Please check your connection and try again.");
+    } finally {
+      setBooking(false);
+    }
+  }
+
   const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const fabBottom = insets.bottom + 100;
+
+  const rotate = rotateAnim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "45deg"] });
+
+  const item1Translate = menuAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -72] });
+  const item2Translate = menuAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -136] });
+  const itemOpacity = menuAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 0, 1] });
+  const backdropOpacity = menuAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -177,12 +278,70 @@ export default function RemindersScreen() {
         />
       )}
 
-      <Pressable
-        onPress={handleAdd}
-        style={[styles.fab, { backgroundColor: colors.primary, bottom: insets.bottom + 100 }]}
-      >
-        <Feather name="plus" size={24} color={colors.primaryForeground} />
-      </Pressable>
+      {/* Backdrop — closes menu when tapped */}
+      {menuOpen && (
+        <Animated.View
+          style={[styles.backdrop, { opacity: backdropOpacity }]}
+          pointerEvents="auto"
+        >
+          <Pressable style={StyleSheet.absoluteFill} onPress={closeMenu} />
+        </Animated.View>
+      )}
+
+      {/* FAB menu items */}
+      <View style={[styles.fabArea, { bottom: fabBottom }]} pointerEvents="box-none">
+
+        {/* Item 2 — Book Appointment */}
+        <Animated.View
+          style={[styles.fabItem, { transform: [{ translateY: item2Translate }], opacity: itemOpacity }]}
+          pointerEvents={menuOpen ? "auto" : "none"}
+        >
+          <Pressable
+            onPress={handleBookAppointment}
+            disabled={booking}
+            style={({ pressed }) => [
+              styles.fabItemLabel,
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            <Text style={[styles.fabItemText, { color: colors.foreground }]}>
+              {store ? `Book at ${store.name.split("—")[0].trim()}` : "Book Appointment"}
+            </Text>
+          </Pressable>
+          <View style={[styles.fabMini, { backgroundColor: "#0079F2" }]}>
+            <Feather name="calendar" size={18} color="#fff" />
+          </View>
+        </Animated.View>
+
+        {/* Item 1 — Add Reminder */}
+        <Animated.View
+          style={[styles.fabItem, { transform: [{ translateY: item1Translate }], opacity: itemOpacity }]}
+          pointerEvents={menuOpen ? "auto" : "none"}
+        >
+          <Pressable
+            onPress={handleAddReminder}
+            style={({ pressed }) => [
+              styles.fabItemLabel,
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            <Text style={[styles.fabItemText, { color: colors.foreground }]}>Add Reminder</Text>
+          </Pressable>
+          <View style={[styles.fabMini, { backgroundColor: colors.primary }]}>
+            <Feather name="bell" size={18} color="#fff" />
+          </View>
+        </Animated.View>
+
+        {/* Main FAB */}
+        <Pressable
+          onPress={toggleMenu}
+          style={({ pressed }) => [styles.fab, { backgroundColor: colors.primary, opacity: pressed ? 0.9 : 1 }]}
+        >
+          <Animated.View style={{ transform: [{ rotate }] }}>
+            <Feather name="plus" size={24} color={colors.primaryForeground} />
+          </Animated.View>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -217,16 +376,21 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_700Bold",
     letterSpacing: -0.1,
   },
-  countBadge: {
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
+  countBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10 },
   countText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
   chipRow: { marginBottom: 4 },
-  fab: {
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    zIndex: 10,
+  },
+  fabArea: {
     position: "absolute",
     right: 20,
+    alignItems: "flex-end",
+    zIndex: 20,
+  },
+  fab: {
     width: 54,
     height: 54,
     borderRadius: 27,
@@ -238,4 +402,36 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
   },
+  fabMini: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+  },
+  fabItem: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  fabItemLabel: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  fabItemText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
 });
