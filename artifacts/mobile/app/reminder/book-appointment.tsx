@@ -153,6 +153,7 @@ export default function BookAppointmentScreen() {
       if (!res.ok) throw new Error("Request failed");
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setSent(true);
+      setTimeout(() => router.back(), 1800);
     } catch {
       Alert.alert("Couldn't send", "Please check your connection and try again.");
     } finally {
