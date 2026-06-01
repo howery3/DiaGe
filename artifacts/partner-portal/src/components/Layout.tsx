@@ -6,7 +6,7 @@ import { RETAILER_NAME, PARENT_COMPANY } from "@/data/demo";
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leads", label: "Wishlist Leads", icon: Users },
-  { href: "/customers", label: "Your Customers", icon: Contact },
+  { href: "/customers", label: "DiaGe Opt-Ins", icon: Contact },
   { href: "/trends", label: "Trends & Insights", icon: TrendingUp },
 ];
 

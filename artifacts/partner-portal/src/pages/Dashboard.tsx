@@ -53,7 +53,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold text-gray-900">{RETAILER_NAME} — Partner Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-0.5">DiaGe customer wishlist activity and engagement overview</p>
+        <p className="text-sm text-gray-500 mt-0.5">Customer-initiated wishlist signals from the DiaGe app — use alongside your existing clientelling and scheduling tools</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
