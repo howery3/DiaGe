@@ -61,7 +61,7 @@ export function RetailerStoreCard({ retailer, items }: Props) {
   const [showApptSheet, setShowApptSheet] = useState(false);
 
   const banner = bannerForRetailer(retailer);
-  const store = getStore(retailer);
+  const store = getStore(banner);
   const accentColor = BANNER_COLORS[banner] ?? "#5B21B6";
 
   async function handleSendWishlist() {
@@ -169,7 +169,7 @@ export function RetailerStoreCard({ retailer, items }: Props) {
           </View>
         </View>
         <Pressable
-          onPress={() => saveStore(retailer, null)}
+          onPress={() => saveStore(banner, null)}
           hitSlop={12}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
