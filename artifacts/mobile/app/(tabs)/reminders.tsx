@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyState } from "@/components/EmptyState";
+import { MyStoreCard } from "@/components/MyStoreCard";
 import { ReminderCard } from "@/components/ReminderCard";
 import { useDiGe, type InspectionReminder } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
@@ -216,6 +217,8 @@ export default function RemindersScreen() {
           Jewelry inspection schedule
         </Text>
       </View>
+
+      <MyStoreCard />
 
       {reminders.length === 0 ? (
         <View style={styles.emptyWrap}>
