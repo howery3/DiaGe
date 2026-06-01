@@ -17,6 +17,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DatePickerModal } from "@/components/DatePickerModal";
+import { RetailerPicker } from "@/components/RetailerPicker";
 import { useDiGe, type GoldWarrantyType, type JewelryType } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -382,7 +383,7 @@ export default function EditPieceScreen() {
 
         <SectionLabel label="Purchase Details" colors={colors} />
         <Field label="Retailer" colors={colors}>
-          <TextInput style={[styles.input, { color: colors.foreground, borderColor: colors.border }]} placeholder="e.g. Kay, Zales, Jared, Blue Nile..." placeholderTextColor={colors.mutedForeground} value={retailer} onChangeText={setRetailer} />
+          <RetailerPicker value={retailer} onChange={setRetailer} colors={colors} />
         </Field>
         <View style={styles.row}>
           <Field label="Purchase Date" colors={colors} style={{ flex: 1 }}>

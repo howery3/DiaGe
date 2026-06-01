@@ -20,6 +20,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DatePickerModal } from "@/components/DatePickerModal";
+import { RetailerPicker } from "@/components/RetailerPicker";
 import { useDiGe, type GoldWarrantyType, type JewelryType } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -375,13 +376,7 @@ export default function AddPieceScreen() {
         <Accordion icon="shopping-bag" title="Purchase Details" summary={purchaseSummary} open={openSection === "purchase"} onToggle={() => toggleSection("purchase")} colors={colors}>
           <View style={[styles.cardInner, { borderTopColor: colors.border }]}>
             <SubLabel label="Retailer" colors={colors} />
-            <TextInput
-              style={[styles.input, { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.background }]}
-              placeholder="e.g. Kay, Zales, Jared, James Allen..."
-              placeholderTextColor={colors.mutedForeground}
-              value={retailer}
-              onChangeText={setRetailer}
-            />
+            <RetailerPicker value={retailer} onChange={setRetailer} colors={colors} />
             <View style={styles.row}>
               <View style={{ flex: 1 }}>
                 <SubLabel label="Purchase Date" colors={colors} />
