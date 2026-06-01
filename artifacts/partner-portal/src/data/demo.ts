@@ -247,6 +247,23 @@ export const LEADS: Lead[] = [
   },
 ];
 
+export interface RetailerPurchaseDoc {
+  name: string;
+  type: "warranty" | "receipt" | "certificate" | "appraisal" | "repair";
+}
+
+export interface RetailerPurchase {
+  item: string;
+  sku: string;
+  purchasePrice: number;
+  purchaseDate: string;
+  warrantyType: "Kay Gold" | "Diamond Bond" | "Extended Care" | "Lifetime Warranty" | null;
+  warrantyExpiry: string | null;
+  warrantyStatus: "active" | "expiring-soon" | "expired" | null;
+  diamondBond: boolean;
+  docs: RetailerPurchaseDoc[];
+}
+
 export interface CustomerProfile {
   id: string;
   name: string;
@@ -264,6 +281,7 @@ export interface CustomerProfile {
   visitCount: number;
   lastVisit: string;
   tier: "vip" | "regular" | "new";
+  retailerPurchases: RetailerPurchase[];
 }
 
 export const CUSTOMER_PROFILES: CustomerProfile[] = [
@@ -284,6 +302,53 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 6,
     lastVisit: "May 18, 2026",
     tier: "vip",
+    retailerPurchases: [
+      {
+        item: "Neil Lane Diamond Engagement Ring",
+        sku: "V-NL-ENR-001",
+        purchasePrice: 8999,
+        purchaseDate: "Feb 14, 2025",
+        warrantyType: "Diamond Bond",
+        warrantyExpiry: "Feb 14, 2027",
+        warrantyStatus: "active",
+        diamondBond: true,
+        docs: [
+          { name: "Diamond Bond Certificate.pdf", type: "certificate" },
+          { name: "GIA Report #5192837461.pdf", type: "certificate" },
+          { name: "Purchase Receipt — Feb 2025.pdf", type: "receipt" },
+          { name: "Insurance Appraisal $10,200.pdf", type: "appraisal" },
+        ],
+      },
+      {
+        item: "Diamond Eternity Band 1 ctw",
+        sku: "19088741",
+        purchasePrice: 5400,
+        purchaseDate: "Jun 3, 2025",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Jun 3, 2026",
+        warrantyStatus: "expiring-soon",
+        diamondBond: false,
+        docs: [
+          { name: "Kay Gold Warranty Card.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Jun 2025.pdf", type: "receipt" },
+        ],
+      },
+      {
+        item: "Cultured Pearl Stud Earrings",
+        sku: "19044022",
+        purchasePrice: 4001,
+        purchaseDate: "Dec 19, 2025",
+        warrantyType: "Extended Care",
+        warrantyExpiry: "Dec 19, 2027",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Extended Care Plan.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Dec 2025.pdf", type: "receipt" },
+          { name: "Cleaning & Inspection Record.pdf", type: "repair" },
+        ],
+      },
+    ],
   },
   {
     id: "cp2",
@@ -302,6 +367,38 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 4,
     lastVisit: "May 22, 2026",
     tier: "vip",
+    retailerPurchases: [
+      {
+        item: "Leo Diamond® Engagement Ring 1½ ctw",
+        sku: "LE-LDR-001",
+        purchasePrice: 9499,
+        purchaseDate: "Mar 20, 2025",
+        warrantyType: "Diamond Bond",
+        warrantyExpiry: "Mar 20, 2027",
+        warrantyStatus: "active",
+        diamondBond: true,
+        docs: [
+          { name: "Diamond Bond Certificate.pdf", type: "certificate" },
+          { name: "Leo Diamond IGI Report #LO91284.pdf", type: "certificate" },
+          { name: "Purchase Receipt — Mar 2025.pdf", type: "receipt" },
+          { name: "Insurance Appraisal $11,500.pdf", type: "appraisal" },
+        ],
+      },
+      {
+        item: "Open Hearts by Jane Seymour® Bracelet",
+        sku: "19091024",
+        purchasePrice: 3201,
+        purchaseDate: "Sep 12, 2025",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Sep 12, 2026",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Kay Gold Warranty Card.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Sep 2025.pdf", type: "receipt" },
+        ],
+      },
+    ],
   },
   {
     id: "cp3",
@@ -320,6 +417,36 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 3,
     lastVisit: "Apr 30, 2026",
     tier: "regular",
+    retailerPurchases: [
+      {
+        item: "Vera Wang LOVE™ Diamond Ring",
+        sku: "VW-LV-001",
+        purchasePrice: 4799,
+        purchaseDate: "Jun 28, 2025",
+        warrantyType: "Lifetime Warranty",
+        warrantyExpiry: null,
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Vera Wang LOVE Lifetime Warranty.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Jun 2025.pdf", type: "receipt" },
+          { name: "Diamond Authenticity Certificate.pdf", type: "certificate" },
+        ],
+      },
+      {
+        item: "Blue Sapphire & Diamond Drop Earrings",
+        sku: "19062904",
+        purchasePrice: 2401,
+        purchaseDate: "Nov 4, 2025",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Nov 4, 2025",
+        warrantyStatus: "expired",
+        diamondBond: false,
+        docs: [
+          { name: "Purchase Receipt — Nov 2025.pdf", type: "receipt" },
+        ],
+      },
+    ],
   },
   {
     id: "cp4",
@@ -338,6 +465,39 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 2,
     lastVisit: "May 10, 2026",
     tier: "regular",
+    retailerPurchases: [
+      {
+        item: "Neil Lane Halo Diamond Engagement Ring",
+        sku: "V-NL-HAL-004",
+        purchasePrice: 6199,
+        purchaseDate: "Sep 30, 2025",
+        warrantyType: "Diamond Bond",
+        warrantyExpiry: "Sep 30, 2027",
+        warrantyStatus: "active",
+        diamondBond: true,
+        docs: [
+          { name: "Diamond Bond Certificate.pdf", type: "certificate" },
+          { name: "GIA Report #2196854001.pdf", type: "certificate" },
+          { name: "Purchase Receipt — Sep 2025.pdf", type: "receipt" },
+          { name: "Insurance Appraisal $7,400.pdf", type: "appraisal" },
+        ],
+      },
+      {
+        item: "Le Vian® Chocolate Diamond® Ring",
+        sku: "LV-CDR-012",
+        purchasePrice: 3601,
+        purchaseDate: "Jan 14, 2026",
+        warrantyType: "Extended Care",
+        warrantyExpiry: "Jan 14, 2028",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Extended Care Plan.pdf", type: "warranty" },
+          { name: "Le Vian Certificate of Authenticity.pdf", type: "certificate" },
+          { name: "Purchase Receipt — Jan 2026.pdf", type: "receipt" },
+        ],
+      },
+    ],
   },
   {
     id: "cp5",
@@ -356,6 +516,37 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 5,
     lastVisit: "May 27, 2026",
     tier: "regular",
+    retailerPurchases: [
+      {
+        item: "Diamond Tennis Bracelet 3 ctw — 14K White Gold",
+        sku: "19026114",
+        purchasePrice: 3199,
+        purchaseDate: "Nov 29, 2025",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Nov 29, 2026",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Kay Gold Warranty Card.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Nov 2025.pdf", type: "receipt" },
+          { name: "Prong Re-tip Service Record.pdf", type: "repair" },
+        ],
+      },
+      {
+        item: "Diamond Stud Earrings ½ ctw",
+        sku: "19044712",
+        purchasePrice: 2201,
+        purchaseDate: "Feb 10, 2026",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Feb 10, 2027",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Kay Gold Warranty Card.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Feb 2026.pdf", type: "receipt" },
+        ],
+      },
+    ],
   },
   {
     id: "cp6",
@@ -374,6 +565,7 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 1,
     lastVisit: "Apr 15, 2026",
     tier: "new",
+    retailerPurchases: [],
   },
   {
     id: "cp7",
@@ -392,6 +584,22 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 2,
     lastVisit: "May 20, 2026",
     tier: "new",
+    retailerPurchases: [
+      {
+        item: "Enchanted Disney Rapunzel Diamond Ring",
+        sku: "ED-RAP-007",
+        purchasePrice: 2099,
+        purchaseDate: "Apr 22, 2026",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Apr 22, 2027",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Kay Gold Warranty Card.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Apr 2026.pdf", type: "receipt" },
+        ],
+      },
+    ],
   },
   {
     id: "cp8",
@@ -410,6 +618,54 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 7,
     lastVisit: "May 29, 2026",
     tier: "vip",
+    retailerPurchases: [
+      {
+        item: "Neil Lane Bridal Set — Engagement Ring & Band",
+        sku: "V-NL-BRS-002",
+        purchasePrice: 13499,
+        purchaseDate: "Jul 12, 2025",
+        warrantyType: "Diamond Bond",
+        warrantyExpiry: "Jul 12, 2027",
+        warrantyStatus: "active",
+        diamondBond: true,
+        docs: [
+          { name: "Diamond Bond Certificate.pdf", type: "certificate" },
+          { name: "GIA Report #6103948827.pdf", type: "certificate" },
+          { name: "Purchase Receipt — Jul 2025.pdf", type: "receipt" },
+          { name: "Insurance Appraisal $15,800.pdf", type: "appraisal" },
+          { name: "6-Month Cleaning Record.pdf", type: "repair" },
+        ],
+      },
+      {
+        item: "Diamond Tennis Bracelet 5 ctw — 14K White Gold",
+        sku: "19098421",
+        purchasePrice: 6799,
+        purchaseDate: "Dec 1, 2025",
+        warrantyType: "Extended Care",
+        warrantyExpiry: "Dec 1, 2027",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Extended Care Plan.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Dec 2025.pdf", type: "receipt" },
+          { name: "Insurance Appraisal $8,100.pdf", type: "appraisal" },
+        ],
+      },
+      {
+        item: "Sapphire & Diamond Three-Stone Ring",
+        sku: "19077341",
+        purchasePrice: 4302,
+        purchaseDate: "Mar 8, 2026",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Mar 8, 2026",
+        warrantyStatus: "expired",
+        diamondBond: false,
+        docs: [
+          { name: "Purchase Receipt — Mar 2026.pdf", type: "receipt" },
+          { name: "Sapphire Origin Certificate.pdf", type: "certificate" },
+        ],
+      },
+    ],
   },
   {
     id: "cp9",
@@ -428,6 +684,22 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 2,
     lastVisit: "May 12, 2026",
     tier: "new",
+    retailerPurchases: [
+      {
+        item: "Open Hearts by Jane Seymour® Diamond Necklace",
+        sku: "19011893",
+        purchasePrice: 3199,
+        purchaseDate: "Jan 31, 2026",
+        warrantyType: "Kay Gold",
+        warrantyExpiry: "Jan 31, 2027",
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Kay Gold Warranty Card.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Jan 2026.pdf", type: "receipt" },
+        ],
+      },
+    ],
   },
   {
     id: "cp10",
@@ -446,5 +718,37 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     visitCount: 3,
     lastVisit: "May 8, 2026",
     tier: "regular",
+    retailerPurchases: [
+      {
+        item: "Leo Diamond® Engagement Ring ¾ ctw",
+        sku: "LE-LDR-003",
+        purchasePrice: 4799,
+        purchaseDate: "Oct 18, 2025",
+        warrantyType: "Diamond Bond",
+        warrantyExpiry: "Oct 18, 2027",
+        warrantyStatus: "active",
+        diamondBond: true,
+        docs: [
+          { name: "Diamond Bond Certificate.pdf", type: "certificate" },
+          { name: "Leo Diamond IGI Report #LO91741.pdf", type: "certificate" },
+          { name: "Purchase Receipt — Oct 2025.pdf", type: "receipt" },
+          { name: "Insurance Appraisal $5,800.pdf", type: "appraisal" },
+        ],
+      },
+      {
+        item: "Vera Wang LOVE™ Diamond Wedding Band",
+        sku: "VW-LV-WB-002",
+        purchasePrice: 4101,
+        purchaseDate: "Mar 15, 2026",
+        warrantyType: "Lifetime Warranty",
+        warrantyExpiry: null,
+        warrantyStatus: "active",
+        diamondBond: false,
+        docs: [
+          { name: "Vera Wang LOVE Lifetime Warranty.pdf", type: "warranty" },
+          { name: "Purchase Receipt — Mar 2026.pdf", type: "receipt" },
+        ],
+      },
+    ],
   },
 ];
