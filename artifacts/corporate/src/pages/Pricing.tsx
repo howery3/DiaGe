@@ -5,6 +5,8 @@ const ANNUAL_PRICE = PRICE_PER_LOCATION * 12;
 const SIGNET_STORES = 2_800;
 const AVG_ORDER_VALUE = 2_847;
 const ANNUAL_DISCOUNT_PCT = 15;
+const AVG_BRIDAL_SALE = 2_000;
+const BRIDAL_WARRANTY = 369;
 
 const TIERS = [
   { label: "Pilot",        stores: 10,          color: "#5B21B6" },
@@ -72,13 +74,34 @@ export default function Pricing() {
               <p className="text-white/60 text-xs">per store location</p>
             </div>
           </div>
-          <p className="text-white/70 text-sm mb-6">
+          <p className="text-white/70 text-sm mb-5">
             Or <span className="font-semibold text-white">${Math.round(ANNUAL_PRICE * (1 - ANNUAL_DISCOUNT_PCT / 100) / 12)}/mo</span> billed annually — save {ANNUAL_DISCOUNT_PCT}%
           </p>
+
+          {/* Warranty equivalency — the core pitch */}
+          <div className="bg-white/10 border border-white/20 rounded-2xl px-5 py-4 mb-5">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="text-center px-4 py-2 bg-white/10 rounded-xl">
+                <p className="text-2xl font-black">${AVG_BRIDAL_SALE.toLocaleString()}</p>
+                <p className="text-xs text-white/70 mt-0.5">avg bridal sale</p>
+              </div>
+              <div className="text-white/50 text-xl font-light">→</div>
+              <div className="text-center px-4 py-2 bg-white/20 rounded-xl ring-2 ring-white/30">
+                <p className="text-2xl font-black">${BRIDAL_WARRANTY}</p>
+                <p className="text-xs text-white/70 mt-0.5">Diamond Bond warranty</p>
+              </div>
+              <div className="text-white/50 text-xl font-light">=</div>
+              <div className="flex-1 min-w-[160px]">
+                <p className="text-sm font-bold leading-snug">One warranty sold pays for DiaGe for the entire month.</p>
+                <p className="text-xs text-white/60 mt-1">The cost of DiaGe is literally the price of one protection plan on one average bridal sale — every other sale is pure upside.</p>
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-3">
             <div className="bg-white/15 rounded-xl px-4 py-2">
               <p className="text-xs text-white/60 mb-0.5">Break-even</p>
-              <p className="text-sm font-bold">1 sale / month</p>
+              <p className="text-sm font-bold">1 bridal warranty / mo</p>
             </div>
             <div className="bg-white/15 rounded-xl px-4 py-2">
               <p className="text-xs text-white/60 mb-0.5">ROI at avg order</p>
