@@ -8,6 +8,7 @@ import {
   Animated,
   Platform,
   Pressable,
+  ScrollView,
   SectionList,
   StyleSheet,
   Text,
@@ -218,20 +219,25 @@ export default function RemindersScreen() {
         </Text>
       </View>
 
-      <MyStoreCard />
-
       {reminders.length === 0 ? (
-        <View style={styles.emptyWrap}>
-          <EmptyState
-            icon="bell"
-            title="No reminders yet"
-            subtitle="Schedule inspection reminders for your jewelry pieces to keep warranties valid."
-          />
-        </View>
+        <ScrollView
+          contentContainerStyle={[styles.emptyScroll, { paddingBottom: insets.bottom + 100 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <MyStoreCard />
+          <View style={styles.emptyWrap}>
+            <EmptyState
+              icon="bell"
+              title="No reminders yet"
+              subtitle="Schedule inspection reminders for your jewelry pieces to keep warranties valid."
+            />
+          </View>
+        </ScrollView>
       ) : (
         <SectionList
           sections={sections}
           keyExtractor={(item) => item.id}
+          ListHeaderComponent={<MyStoreCard />}
           contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 100 }]}
           renderSectionHeader={({ section }) => (
             <View style={styles.sectionHeaderRow}>
@@ -357,7 +363,8 @@ const styles = StyleSheet.create({
   badge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   badgeText: { fontSize: 12, fontFamily: "Inter_700Bold" },
   subtitle: { fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 },
-  emptyWrap: { flex: 1 },
+  emptyScroll: { flexGrow: 1 },
+  emptyWrap: { flex: 1, minHeight: 300 },
   list: { paddingHorizontal: 20, flexGrow: 1 },
   sectionHeaderRow: {
     flexDirection: "row",
