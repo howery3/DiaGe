@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { CalendarClock, MapPin, Navigation, Gem, Clock, MessageSquare, UserPlus, CheckCircle2, ArrowRight, Star, Wrench, Gift, Heart, Eye, ExternalLink, RefreshCw } from "lucide-react";
-import { APPOINTMENT_REQUESTS, type AppointmentRequest } from "@/data/demo";
+import { CalendarClock, MapPin, Navigation, Gem, Clock, MessageSquare, UserPlus, CheckCircle2, ArrowRight, Star, Wrench, Gift, Heart, Eye, ExternalLink, RefreshCw, AlertTriangle, Shield, Phone, Mail, Copy, CheckCheck } from "lucide-react";
+import { APPOINTMENT_REQUESTS, MISSED_INSPECTIONS, type AppointmentRequest, type MissedInspection } from "@/data/demo";
 import { useStore } from "@/context/StoreContext";
 
 
@@ -211,6 +211,28 @@ function RequestCard({ req, onStatusChange }: { req: AppointmentRequest; onStatu
         {expanded && (
           <div className="mt-4 pt-4 border-t border-[#F0EEF8] space-y-3">
 
+            {/* Associate Prep Brief */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Shield size={11} className="text-gray-400" />
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Associate Prep Brief</span>
+              </div>
+              <div className="space-y-1 font-mono text-[11px] text-gray-700 leading-relaxed">
+                <p><span className="text-gray-400 mr-1">CUSTOMER </span>{req.customerName}{req.isOptIn ? " (Opt-In)" : " (Anonymous)"}</p>
+                <p><span className="text-gray-400 mr-1">OCCASION </span>{req.occasion}</p>
+                <p><span className="text-gray-400 mr-1">PREFERRED</span>{req.preferredWindow}</p>
+                {req.ringSize && <p><span className="text-gray-400 mr-1">RING SIZE</span>{req.ringSize}</p>}
+                {req.budget   && <p><span className="text-gray-400 mr-1">BUDGET   </span>{req.budget}</p>}
+                <p><span className="text-gray-400 mr-1">ITEMS    </span>{req.wishlistPreview.slice(0, 2).join(", ")}{req.wishlistPreview.length > 2 ? ` +${req.wishlistPreview.length - 2} more` : ""}</p>
+                {req.totalWishlistValue > 0 && (
+                  <p><span className="text-gray-400 mr-1">WL VALUE </span>${req.totalWishlistValue.toLocaleString()}</p>
+                )}
+                {req.note && (
+                  <p className="italic"><span className="text-gray-400 mr-1">NOTE     </span>"{req.note}"</p>
+                )}
+              </div>
+            </div>
+
             {/* Positioning note */}
             <div className="flex items-start gap-2 bg-[#F3F0FF] rounded-xl px-3 py-2.5">
               <CalendarClock size={13} className="text-[#5B21B6] flex-shrink-0 mt-0.5" />
@@ -324,6 +346,66 @@ function RequestCard({ req, onStatusChange }: { req: AppointmentRequest; onStatu
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function MissedInspectionCard({ insp }: { insp: MissedInspection }) {
+  const [copied, setCopied] = useState(false);
+  const msg = `Hi ${insp.name.split(" ")[0]}! This is [Associate] from Kay Jewelers Fifth Ave. We noticed you had a 6-month inspection for your ${insp.ringName} and we missed you! Your Diamond Bond protection plan requires these check-ins to stay active. Let's get you rescheduled at a time that works — reply here or call us anytime!`;
+
+  function copyOutreach() {
+    navigator.clipboard.writeText(msg).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    });
+  }
+
+  return (
+    <div className="bg-white rounded-xl border border-red-200 overflow-hidden">
+      <div className="px-4 py-3">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xs flex-shrink-0">
+            {insp.name.split(" ").map((n: string) => n[0]).join("")}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-semibold text-gray-900 text-sm">{insp.name}</p>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200 flex-shrink-0">
+                {insp.daysSinceMissed}d overdue
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 mt-0.5 truncate">{insp.ringName}</p>
+            <p className="text-[10px] text-red-500 mt-0.5">
+              Missed: {insp.missedAppointmentDate} · Purchased {insp.purchaseDate}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-red-100 px-4 py-2 flex items-center gap-2 flex-wrap">
+        <a
+          href={`tel:${insp.phone}`}
+          className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-[#5B21B6] transition-colors"
+        >
+          <Phone size={11} /> {insp.phone}
+        </a>
+        <a
+          href={`mailto:${insp.email}`}
+          className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-[#5B21B6] transition-colors"
+        >
+          <Mail size={11} /> {insp.email}
+        </a>
+        <button
+          type="button"
+          onClick={copyOutreach}
+          className="ml-auto flex items-center gap-1.5 text-xs font-semibold text-[#5B21B6] hover:bg-[#F3F0FF] px-2 py-1 rounded-lg transition-colors"
+        >
+          {copied
+            ? <><CheckCheck size={11} className="text-green-600" /> Copied!</>
+            : <><Copy size={11} /> Copy outreach msg</>
+          }
+        </button>
+      </div>
     </div>
   );
 }
@@ -446,6 +528,27 @@ export default function Appointments() {
         <div className="bg-white rounded-xl border border-[#E5E2F0] px-4 py-3">
           <p className="text-xl font-bold text-gray-900">{loggedPct}%</p>
           <p className="text-xs text-gray-400 mt-0.5">Booked or completed</p>
+        </div>
+      </div>
+
+      {/* Diamond Bond at Risk */}
+      <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
+        <div className="flex items-center gap-2 mb-1">
+          <AlertTriangle size={14} className="text-red-600" />
+          <h2 className="text-sm font-semibold text-red-800">Diamond Bond at Risk — Missed Inspections</h2>
+          <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
+            {MISSED_INSPECTIONS.length} customers
+          </span>
+        </div>
+        <p className="text-xs text-red-600 mb-3 leading-relaxed">
+          These customers booked an inspection appointment via DiaGe but did not show up.
+          Without a completed 6-month inspection, their Diamond Bond protection plan may lapse — 
+          reach out now to reschedule.
+        </p>
+        <div className="grid md:grid-cols-2 gap-2.5">
+          {MISSED_INSPECTIONS.map((insp) => (
+            <MissedInspectionCard key={insp.id} insp={insp} />
+          ))}
         </div>
       </div>
 

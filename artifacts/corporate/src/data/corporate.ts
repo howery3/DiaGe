@@ -429,3 +429,64 @@ export const SKU_GEO_DATA: SkuGeoRow[] = [
     },
   },
 ];
+
+// ─── Cross-Banner Customer Opportunity ───────────────────────────────────────
+
+export const CROSS_BANNER = {
+  totalCrossBannerCustomers: 1847,
+  crossBannerPct: 14.4,
+  avgBannersPerCustomer: 2.3,
+  avgCrossBannerValue: 8400,
+  byCombo: [
+    { banners: "Kay + Jared",          customers: 612, avgValue: 9200 },
+    { banners: "Kay + Zales",          customers: 481, avgValue: 6800 },
+    { banners: "Jared + Zales",        customers: 298, avgValue: 7400 },
+    { banners: "Kay + Banter",         customers: 247, avgValue: 4100 },
+    { banners: "All 4 Signet Banners", customers: 209, avgValue: 12800 },
+  ],
+};
+
+// ─── Time-to-Appointment by Banner ───────────────────────────────────────────
+
+export const TIME_TO_APPT = [
+  { banner: "Banter by Piercing Pagoda", days: 3.4, appointments: 98,  wishlistShares: 312, sharePct: 31 },
+  { banner: "Kay Jewelers",              days: 4.2, appointments: 312, wishlistShares: 843, sharePct: 37 },
+  { banner: "Jared",                     days: 5.8, appointments: 224, wishlistShares: 621, sharePct: 36 },
+  { banner: "Zales",                     days: 6.1, appointments: 181, wishlistShares: 487, sharePct: 37 },
+];
+
+// ─── DiaGe Revenue Attribution ───────────────────────────────────────────────
+
+export const REVENUE_ATTRIBUTION = {
+  totalAttributed: 2842000,
+  avgOrderValue: 2847,
+  conversionRate: 60.2,
+  byBanner: [
+    { banner: "Kay Jewelers",              attributed: 1184000, orders: 415, color: "#5B21B6" },
+    { banner: "Jared",                     attributed: 891000,  orders: 232, color: "#0079F2" },
+    { banner: "Zales",                     attributed: 534000,  orders: 228, color: "#D97706" },
+    { banner: "Banter by Piercing Pagoda", attributed: 233000,  orders: 468, color: "#B91C1C" },
+  ],
+  monthlyTrend: [
+    { month: "Jan", revenue: 284000 },
+    { month: "Feb", revenue: 412000 },
+    { month: "Mar", revenue: 581000 },
+    { month: "Apr", revenue: 798000 },
+    { month: "May", revenue: 767000 },
+  ],
+};
+
+// ─── Diamond Bond Risk (Network Level) ───────────────────────────────────────
+
+export const DIAMOND_BOND_RISK = {
+  totalAtRisk: 847,
+  totalDiamondBondCustomers: 4200,
+  atRiskPct: 20.2,
+  estimatedValueAtRisk: 12800000,
+  byBanner: [
+    { banner: "Kay Jewelers", atRisk: 312, total: 1840, valueAtRisk: 4200000, color: "#5B21B6" },
+    { banner: "Jared",        atRisk: 248, total: 1200, valueAtRisk: 5100000, color: "#0079F2" },
+    { banner: "Zales",        atRisk: 187, total: 820,  valueAtRisk: 2900000, color: "#D97706" },
+    { banner: "Banter",       atRisk: 100, total: 340,  valueAtRisk: 600000,  color: "#B91C1C" },
+  ],
+};

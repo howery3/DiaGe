@@ -2,8 +2,8 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-import { Users, ShoppingBag, DollarSign, TrendingUp, MessageSquare, Star, Flame, CalendarClock, ShieldAlert, ArrowRight } from "lucide-react";
-import { KPI, KPI_DELTAS, MONTHLY_ACTIVITY, TYPE_BREAKDOWN, PRICE_RANGE_DATA, ACTIONABLE_NOW } from "@/data/demo";
+import { Users, ShoppingBag, DollarSign, TrendingUp, MessageSquare, Star, Flame, CalendarClock, ShieldAlert, ArrowRight, Zap } from "lucide-react";
+import { KPI, KPI_DELTAS, MONTHLY_ACTIVITY, TYPE_BREAKDOWN, PRICE_RANGE_DATA, ACTIONABLE_NOW, STORE_CONVERSION_FUNNEL, READY_TO_BUY_SIGNALS } from "@/data/demo";
 import { useStore } from "@/context/StoreContext";
 import { useLocation } from "wouter";
 
@@ -214,6 +214,91 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Ready to Buy — High-Intent Signals */}
+      <div className="bg-white rounded-2xl border border-[#E5E2F0] p-5">
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <Zap size={15} className="text-rose-500" />
+            <h2 className="text-sm font-semibold text-gray-800">Ready to Buy — High-Intent Signals</h2>
+          </div>
+          <button type="button" onClick={() => setLocation("/leads")}
+            className="text-xs text-[#5B21B6] hover:underline flex items-center gap-1">
+            View all leads <ArrowRight size={10} />
+          </button>
+        </div>
+        <p className="text-xs text-gray-400 mb-3">
+          Customers who have had high-value items saved for 30+ days — purchase intent signals are strongest; reach out now.
+        </p>
+        <div className="space-y-2.5">
+          {READY_TO_BUY_SIGNALS.map((s) => (
+            <div key={s.leadId} className="flex items-start gap-3 bg-rose-50 rounded-xl border border-rose-100 px-3 py-2.5">
+              <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 font-bold text-xs flex-shrink-0">
+                {s.name.split(" ").map((n: string) => n[0]).join("")}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                  <p className="text-sm font-semibold text-gray-900">{s.name}</p>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                    Saved {s.savedDays}d ago
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 truncate">{s.item}</p>
+                <p className="text-[11px] text-gray-400 italic mt-0.5">{s.intent}</p>
+              </div>
+              <div className="flex-shrink-0 text-right">
+                <p className="text-sm font-bold text-[#5B21B6]">${s.estimatedValue.toLocaleString()}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* DiaGe Conversion Funnel */}
+      <div className="bg-white rounded-2xl border border-[#E5E2F0] p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold text-gray-800">DiaGe Conversion Funnel — This Store</h2>
+          <span className="text-[11px] text-gray-400">last 30 days</span>
+        </div>
+        <div className="space-y-4">
+          {STORE_CONVERSION_FUNNEL.map((s, i) => {
+            const base = STORE_CONVERSION_FUNNEL[0].count;
+            const barPct = Math.round((s.count / base) * 100);
+            const stepPct = i === 0 ? null
+              : Math.round((s.count / STORE_CONVERSION_FUNNEL[i - 1].count) * 100);
+            return (
+              <div key={s.stage}>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-[#F3F0FF] text-[#5B21B6] text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm font-medium text-gray-700">{s.stage}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-gray-900">{s.count.toLocaleString()}</span>
+                    {stepPct !== null && (
+                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#F3F0FF] text-[#5B21B6]">
+                        {stepPct}% of prev
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="w-full bg-[#F3F0FF] rounded-full h-2.5">
+                  <div
+                    className="h-2.5 rounded-full bg-[#5B21B6] transition-all"
+                    style={{ width: `${barPct}%`, opacity: 1 - i * 0.12 }}
+                  />
+                </div>
+                <p className="text-[10px] text-gray-400 mt-0.5">{s.note}</p>
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-[10px] text-gray-400 mt-4 pt-3 border-t border-[#F3F0FF]">
+          Purchase attribution is based on DiaGe-referred visits logged by associates. Data is for demo purposes.
+        </p>
       </div>
     </div>
   );

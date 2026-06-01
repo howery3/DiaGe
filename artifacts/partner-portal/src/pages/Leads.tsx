@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Phone, Mail, ChevronDown, ChevronUp, Gem, MapPin, Navigation, Zap, Clock, AlertCircle, UserPlus, Timer } from "lucide-react";
-import { LEADS, RETAILER_NAME, STORE_NAME, STORE_CITY, type Lead } from "@/data/demo";
+import { useState, useEffect, useRef } from "react";
+import { Phone, Mail, ChevronDown, ChevronUp, Gem, MapPin, Navigation, Zap, Clock, AlertCircle, UserPlus, Timer, Send, Copy, CheckCheck, MessageSquare } from "lucide-react";
+import { LEADS, READY_TO_BUY_SIGNALS, OUTREACH_TEMPLATES, type Lead } from "@/data/demo";
 import { useStore } from "@/context/StoreContext";
 
 interface LiveShare {
@@ -121,6 +121,91 @@ function LiveShareCard({ share }: { share: LiveShare }) {
   );
 }
 
+function OutreachModal({
+  lead,
+  onClose,
+}: {
+  lead: Lead;
+  onClose: () => void;
+}) {
+  type TemplateKey = "readyToBuy" | "inStockAlert";
+  const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("readyToBuy");
+  const [copied, setCopied] = useState(false);
+  const firstName = lead.name.split(" ")[0];
+
+  const templates: { key: TemplateKey; label: string; description: string }[] = [
+    { key: "readyToBuy", label: "Ready to Buy", description: "For leads with long-saved high-value items" },
+    { key: "inStockAlert", label: "In-Stock Alert", description: "Let them know their item is available" },
+  ];
+
+  const message = activeTemplate === "readyToBuy"
+    ? OUTREACH_TEMPLATES.readyToBuy(firstName, lead.topItem)
+    : OUTREACH_TEMPLATES.inStockAlert(firstName, lead.topItem);
+
+  function copyMsg() {
+    navigator.clipboard.writeText(message).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    });
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
+      <div
+        className="bg-white rounded-2xl border border-[#E5E2F0] shadow-2xl w-full max-w-md p-5 space-y-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-bold text-gray-900">Personalized Outreach</p>
+            <p className="text-xs text-gray-400 mt-0.5">{lead.name} · {lead.topItem}</p>
+          </div>
+          <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">&times;</button>
+        </div>
+
+        <div className="flex gap-2">
+          {templates.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setActiveTemplate(t.key)}
+              className={`flex-1 text-left px-3 py-2 rounded-xl border text-xs transition-colors ${
+                activeTemplate === t.key
+                  ? "border-[#5B21B6] bg-[#F3F0FF] text-[#5B21B6]"
+                  : "border-[#E5E2F0] text-gray-500 hover:border-[#8B5CF6]"
+              }`}
+            >
+              <p className="font-semibold">{t.label}</p>
+              <p className="text-[10px] mt-0.5 opacity-75">{t.description}</p>
+            </button>
+          ))}
+        </div>
+
+        <div className="bg-[#F8F7FF] rounded-xl border border-[#E5E2F0] p-3">
+          <p className="text-xs text-gray-700 whitespace-pre-line leading-relaxed">{message}</p>
+        </div>
+
+        <p className="text-[10px] text-gray-400">
+          Replace [Associate] with your name before sending. Copy and send via your preferred channel (SMS, email, clienteling tool).
+        </p>
+
+        <div className="flex gap-2">
+          <button type="button" onClick={copyMsg}
+            className="flex-1 flex items-center justify-center gap-2 bg-[#5B21B6] text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-[#4C1D95] transition-colors">
+            {copied ? <><CheckCheck size={14} /> Copied!</> : <><Copy size={14} /> Copy message</>}
+          </button>
+          <a
+            href={`mailto:${lead.email}?subject=Your ${lead.topItem}&body=${encodeURIComponent(message)}`}
+            className="flex items-center justify-center gap-2 bg-[#F3F0FF] text-[#5B21B6] text-sm font-semibold py-2.5 px-4 rounded-xl hover:bg-[#EDE8FA] transition-colors"
+          >
+            <MessageSquare size={14} /> Email
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const PRIORITY_STYLE: Record<Lead["priority"], string> = {
   high:   "bg-red-50 text-red-700 border-red-200",
   medium: "bg-amber-50 text-amber-700 border-amber-200",
@@ -152,6 +237,8 @@ function fmt(n: number) { return `$${n.toLocaleString()}`; }
 function LeadCard({ lead }: { lead: Lead }) {
   const { current } = useStore();
   const [expanded, setExpanded] = useState(false);
+  const [showOutreach, setShowOutreach] = useState(false);
+  const rtbSignal = READY_TO_BUY_SIGNALS.find((s) => s.leadId === lead.id);
   const dist = distanceBadge(lead.distanceMiles);
   const hours = hoursAgo(lead.sharedDate.replace("Shared ", "").replace(" ago", "").trim());
   const fresh = freshnessConfig(hours > 0 ? hours : 2);
@@ -185,6 +272,11 @@ function LeadCard({ lead }: { lead: Lead }) {
             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${PRIORITY_STYLE[lead.priority]}`}>
               {PRIORITY_LABEL[lead.priority]}
             </span>
+            {rtbSignal && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1">
+                <Zap size={8} /> Ready to Buy
+              </span>
+            )}
           </div>
         </div>
 
@@ -254,6 +346,17 @@ function LeadCard({ lead }: { lead: Lead }) {
               </div>
             </div>
 
+            {rtbSignal && (
+              <div className="flex items-start gap-2 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2.5">
+                <Zap size={12} className="text-rose-600 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-rose-700 mb-0.5">Ready to Buy Signal</p>
+                  <p className="text-[11px] text-rose-600 leading-relaxed">{rtbSignal.intent}</p>
+                  <p className="text-[11px] font-semibold text-rose-700 mt-0.5">Saved {rtbSignal.savedDays} days ago · Est. ${rtbSignal.estimatedValue.toLocaleString()}</p>
+                </div>
+              </div>
+            )}
+
             <div className="flex gap-2 pt-1">
               <a href={`tel:${lead.phone.replace(/\D/g, "")}`}
                 className="flex-1 flex items-center justify-center gap-2 bg-[#5B21B6] text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-[#4C1D95] transition-colors">
@@ -264,6 +367,13 @@ function LeadCard({ lead }: { lead: Lead }) {
                 <Mail size={14} /> Email
               </a>
             </div>
+            <button
+              type="button"
+              onClick={() => setShowOutreach(true)}
+              className="w-full flex items-center justify-center gap-2 border border-[#DDD6FE] text-[#5B21B6] text-sm font-semibold py-2.5 rounded-xl hover:bg-[#F3F0FF] transition-colors"
+            >
+              <Send size={14} /> Personalized Outreach Message
+            </button>
             <p className="text-[10px] text-gray-400 text-center">
               After outreach, log the interaction in your scheduling tool as usual
             </p>
@@ -280,6 +390,10 @@ function LeadCard({ lead }: { lead: Lead }) {
           ? <><ChevronUp size={14} /> Hide details</>
           : <><ChevronDown size={14} /> View contact & details</>}
       </button>
+
+      {showOutreach && (
+        <OutreachModal lead={lead} onClose={() => setShowOutreach(false)} />
+      )}
     </div>
   );
 }

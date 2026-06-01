@@ -951,3 +951,130 @@ export const CUSTOMER_PROFILES: CustomerProfile[] = [
     ],
   },
 ];
+
+// ─── Missed Inspections / Diamond Bond at Risk ────────────────────────────────
+
+export interface MissedInspection {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  ringName: string;
+  warrantyType: string;
+  diamondBond: boolean;
+  purchaseDate: string;
+  missedAppointmentDate: string;
+  daysSinceMissed: number;
+}
+
+export const MISSED_INSPECTIONS: MissedInspection[] = [
+  {
+    id: "mi1",
+    name: "Jessica Liu",
+    phone: "(212) 555-0834",
+    email: "jessica.liu@gmail.com",
+    ringName: "Neil Lane Diamond Engagement Ring (1.2ct)",
+    warrantyType: "Diamond Bond Protection Plan",
+    diamondBond: true,
+    purchaseDate: "Nov 12, 2024",
+    missedAppointmentDate: "May 12, 2026",
+    daysSinceMissed: 20,
+  },
+  {
+    id: "mi2",
+    name: "Marcus Webb",
+    phone: "(212) 555-0721",
+    email: "marcuswebb.nyc@gmail.com",
+    ringName: "Leo Diamond Bridal Set",
+    warrantyType: "Diamond Bond Protection Plan",
+    diamondBond: true,
+    purchaseDate: "Sep 3, 2024",
+    missedAppointmentDate: "May 5, 2026",
+    daysSinceMissed: 27,
+  },
+  {
+    id: "mi3",
+    name: "Amanda Foster",
+    phone: "(646) 555-0298",
+    email: "afoster@icloud.com",
+    ringName: "Vera Wang LOVE Diamond Ring",
+    warrantyType: "Diamond Bond Protection Plan",
+    diamondBond: true,
+    purchaseDate: "Jul 18, 2025",
+    missedAppointmentDate: "Apr 28, 2026",
+    daysSinceMissed: 34,
+  },
+  {
+    id: "mi4",
+    name: "Carlos Rivera",
+    phone: "(917) 555-0643",
+    email: "carlos.r@gmail.com",
+    ringName: "Diamond Solitaire Ring (0.9ct)",
+    warrantyType: "Diamond Bond Protection Plan",
+    diamondBond: true,
+    purchaseDate: "Mar 5, 2025",
+    missedAppointmentDate: "Apr 14, 2026",
+    daysSinceMissed: 48,
+  },
+  {
+    id: "mi5",
+    name: "Hannah Choi",
+    phone: "(347) 555-0512",
+    email: "hchoi22@gmail.com",
+    ringName: "Le Vian Chocolate Diamond Bridal Set",
+    warrantyType: "Diamond Bond Protection Plan",
+    diamondBond: true,
+    purchaseDate: "Dec 20, 2024",
+    missedAppointmentDate: "Apr 2, 2026",
+    daysSinceMissed: 60,
+  },
+];
+
+// ─── Store Conversion Funnel ──────────────────────────────────────────────────
+
+export const STORE_CONVERSION_FUNNEL = [
+  { stage: "Wishlists Shared",    count: 843, note: "DiaGe customers who sent their wishlist to your store" },
+  { stage: "Appt Requested",      count: 312, note: "Made a visit request via the DiaGe app" },
+  { stage: "Appt Completed",      count: 198, note: "Confirmed in-store visit (63% show rate)" },
+  { stage: "Purchase Attributed", count: 127, note: "Sale closed — est. avg ticket $2,847" },
+];
+
+// ─── Ready to Buy Signals ─────────────────────────────────────────────────────
+
+export const READY_TO_BUY_SIGNALS = [
+  {
+    leadId: "1",
+    name: "Sophia Kim",
+    item: "Leo Diamond Engagement Ring",
+    savedDays: 47,
+    estimatedValue: 18400,
+    intent: "Item viewed 12x in-app; ring size saved; occasion tagged as engagement",
+  },
+  {
+    leadId: "2",
+    name: "James Whitfield",
+    item: "Neil Lane Halo Ring",
+    savedDays: 62,
+    estimatedValue: 14700,
+    intent: "Has had this item saved for 62 days — checked it 9 times; budget matches price",
+  },
+  {
+    leadId: "4",
+    name: "Priya Nair",
+    item: "Sapphire Three-Stone Ring",
+    savedDays: 38,
+    estimatedValue: 12100,
+    intent: "Ring size, budget, and preferred date all saved — all purchase signals present",
+  },
+];
+
+// ─── Outreach Message Templates ───────────────────────────────────────────────
+
+export const OUTREACH_TEMPLATES = {
+  missedInspection: (name: string, ring: string) =>
+    `Hi ${name}! This is [Associate] from Kay Jewelers Fifth Ave.\n\nWe noticed you had a 6-month inspection scheduled for your ${ring} and we missed you! Your Diamond Bond protection plan requires these check-ins to stay active, so let's get you rescheduled at a time that works.\n\nReply here or call us anytime. We'd love to see you!`,
+  readyToBuy: (name: string, item: string) =>
+    `Hi ${name}, it's [Associate] from Kay Jewelers Fifth Ave.\n\nI noticed you've had ${item} saved on your DiaGe wishlist for a while now, just wanted to let you know it's in stock and I'd love to help make it yours.\n\nWould you like to come in for a private showing? Happy to set aside time just for you!`,
+  inStockAlert: (name: string, item: string) =>
+    `Hi ${name}! Quick note from Kay Jewelers Fifth Ave. The ${item} you saved on DiaGe is currently available in-store.\n\nWe also have a few complementary pieces you might love. Stop in anytime or reply to schedule a private appointment!`,
+};
