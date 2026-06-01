@@ -58,7 +58,7 @@ const GOLD_WARRANTY_OPTIONS: { value: GoldWarrantyType; label: string; desc: str
   { value: "none", label: "None", desc: "No coverage" },
 ];
 
-type Section = "basic" | "materials" | "purchase" | "warranty" | "notes";
+type Section = "basic" | "materials" | "purchase" | "warranty" | "notes" | null;
 type DateField = "purchaseDate" | "goldExpiry" | "diamondExpiry" | "lastInspection";
 
 function formatDate(iso: string): string {
@@ -126,7 +126,7 @@ export default function AddPieceScreen() {
   function toggleSection(s: Section) {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setOpenSection((prev) => (prev === s ? s : s));
+    setOpenSection((prev) => (prev === s ? null : s));
   }
 
   function handleSave() {
