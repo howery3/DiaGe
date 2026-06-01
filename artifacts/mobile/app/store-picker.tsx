@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Location from "expo-location";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -48,10 +49,25 @@ export default function StorePickerScreen() {
   const [saving, setSaving] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${API_BASE}/stores`)
-      .then((r) => r.json())
-      .then((data) => { setAllStores(data); setLoading(false); })
-      .catch(() => setLoading(false));
+    async function loadStores() {
+      let locSuffix = "";
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === "granted") {
+          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+          locSuffix = `&lat=${loc.coords.latitude}&lng=${loc.coords.longitude}`;
+        }
+      } catch { /* location optional — stores still load without it */ }
+
+      try {
+        const r = await fetch(`${API_BASE}/stores${locSuffix ? `?${locSuffix.slice(1)}` : ""}`);
+        const data = await r.json();
+        setAllStores(data);
+      } catch { /* ignore */ } finally {
+        setLoading(false);
+      }
+    }
+    loadStores();
   }, []);
 
   const baseStores = retailerParam
