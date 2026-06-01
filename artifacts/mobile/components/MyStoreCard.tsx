@@ -103,7 +103,7 @@ function StoreRow({ store, wishlistCount }: { store: PreferredStore; wishlistCou
   }
 
   return (
-    <>
+    <React.Fragment>
     <AppointmentSheet
       visible={showApptSheet}
       store={store}
@@ -186,7 +186,7 @@ function StoreRow({ store, wishlistCount }: { store: PreferredStore; wishlistCou
         <Text style={[styles.changeLinkText, { color: colors.mutedForeground }]}>Change store</Text>
       </Pressable>
     </View>
-    </>
+    </React.Fragment>
   );
 }
 

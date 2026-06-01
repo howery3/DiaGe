@@ -142,7 +142,7 @@ export function RetailerStoreCard({ retailer, items }: Props) {
   }
 
   return (
-    <>
+    <React.Fragment>
     {store && (
       <AppointmentSheet
         visible={showApptSheet}
@@ -230,7 +230,7 @@ export function RetailerStoreCard({ retailer, items }: Props) {
         <Text style={[styles.changeText, { color: colors.mutedForeground }]}>Change store</Text>
       </Pressable>
     </View>
-    </>
+    </React.Fragment>
   );
 }
 
