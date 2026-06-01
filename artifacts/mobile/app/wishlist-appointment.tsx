@@ -63,7 +63,7 @@ export default function WishlistAppointmentScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { retailer: retailerParam } = useLocalSearchParams<{ retailer?: string }>();
-  const { wishlistItems } = useDiGe();
+  const { wishlistItems, addReminder } = useDiGe();
   const { stores } = usePreferredStore();
   const { profile } = useProfile();
   const { getToken } = useAuth();
@@ -132,6 +132,26 @@ export default function WishlistAppointmentScreen() {
         }),
       });
       if (!res.ok) throw new Error("Request failed");
+
+      // Create a reminder so the appointment shows up in the Reminders tab
+      const daysAhead: Record<string, number> = {
+        asap: 1,
+        thisweek: 5,
+        nextweek: 12,
+        later: 30,
+      };
+      const apptDate = new Date();
+      apptDate.setDate(apptDate.getDate() + (daysAhead[datePref] ?? 7));
+
+      addReminder({
+        jewelryName: `Wishlist Appt — ${retailer || "Signet Store"}`,
+        retailer: selectedStore!.name,
+        scheduledDate: apptDate.toISOString(),
+        recurrence: "none",
+        notes: `Booked via DiaGe · ${items.length} item${items.length !== 1 ? "s" : ""} · ${timeLabel} · ${dateLabel}`,
+        isCompleted: false,
+      });
+
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setSent(true);
       setTimeout(() => router.back(), 1800);
