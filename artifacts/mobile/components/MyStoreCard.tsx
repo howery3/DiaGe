@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { AppointmentSheet } from "@/components/AppointmentSheet";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
 import { usePreferredStore, type PreferredStore } from "@/hooks/usePreferredStore";
@@ -47,6 +48,7 @@ function StoreRow({ store, wishlistCount }: { store: PreferredStore; wishlistCou
 
   const [sharing, setSharing] = useState(false);
   const [shared, setShared] = useState(false);
+  const [showApptSheet, setShowApptSheet] = useState(false);
   const { wishlistItems } = useDiGe();
   const storeWishlist = wishlistItems.filter(
     (w) => !w.retailer || w.retailer === store.banner || store.banner.toLowerCase().includes((w.retailer ?? "").toLowerCase())
@@ -96,44 +98,20 @@ function StoreRow({ store, wishlistCount }: { store: PreferredStore; wishlistCou
     }
   }
 
-  async function handleBookAppointment() {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setSharing(true);
-    try {
-      const token = await getToken();
-      const payload = {
-        storeId: store.id,
-        type: "appointment",
-        data: {
-          userName: profile.name || "DiaGe User",
-          userEmail: profile.email || "",
-          userPhone: profile.phone || "",
-          message: "I'd like to schedule an appointment to discuss my wishlist.",
-          sharedAt: new Date().toISOString(),
-        },
-      };
-      await fetch(`${API_BASE}/store-share`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      });
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert(
-        "Request Sent!",
-        `${store.name} will reach out to confirm your appointment time. Expected response within 24 hours.`,
-        [{ text: "OK" }]
-      );
-    } catch {
-      Alert.alert("Couldn't send", "Please check your connection and try again.");
-    } finally {
-      setSharing(false);
-    }
+  function handleBookAppointment() {
+    setShowApptSheet(true);
   }
 
   return (
+    <>
+    <AppointmentSheet
+      visible={showApptSheet}
+      store={store}
+      retailer={store.banner}
+      items={wishlistItems}
+      onClose={() => setShowApptSheet(false)}
+      onSent={() => {}}
+    />
     <View style={[styles.storeBlock, { borderTopColor: colors.border }]}>
       {/* Store info row */}
       <View style={styles.storeRow}>
@@ -208,6 +186,7 @@ function StoreRow({ store, wishlistCount }: { store: PreferredStore; wishlistCou
         <Text style={[styles.changeLinkText, { color: colors.mutedForeground }]}>Change store</Text>
       </Pressable>
     </View>
+    </>
   );
 }
 

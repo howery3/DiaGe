@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { AppointmentSheet } from "@/components/AppointmentSheet";
 import { useColors } from "@/hooks/useColors";
 import { usePreferredStore } from "@/hooks/usePreferredStore";
 import { useProfile } from "@/hooks/useProfile";
@@ -57,6 +58,7 @@ export function RetailerStoreCard({ retailer, items }: Props) {
 
   const [working, setWorking] = useState(false);
   const [success, setSuccess] = useState<"wishlist" | "appointment" | null>(null);
+  const [showApptSheet, setShowApptSheet] = useState(false);
 
   const banner = bannerForRetailer(retailer);
   const store = getStore(retailer);
@@ -105,44 +107,9 @@ export function RetailerStoreCard({ retailer, items }: Props) {
     }
   }
 
-  async function handleBookAppointment() {
+  function handleBookAppointment() {
     if (!store) return;
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setWorking(true);
-    try {
-      const token = await getToken();
-      await fetch(`${API_BASE}/store-share`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          storeId: store.id,
-          type: "appointment",
-          data: {
-            userName: profile.name || "DiaGe User",
-            userEmail: profile.email || "",
-            userPhone: profile.phone || "",
-            retailer,
-            itemCount: items.length,
-            message: `I'd like to schedule an appointment to discuss my ${retailer} wishlist (${items.length} item${items.length !== 1 ? "s" : ""}).`,
-            sharedAt: new Date().toISOString(),
-          },
-        }),
-      });
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setSuccess("appointment");
-      Alert.alert(
-        "Appointment Requested!",
-        `${store.name} will reach out to confirm your appointment time.`,
-        [{ text: "OK", onPress: () => setSuccess(null) }]
-      );
-    } catch {
-      Alert.alert("Couldn't send", "Please check your connection and try again.");
-    } finally {
-      setWorking(false);
-    }
+    setShowApptSheet(true);
   }
 
   if (!store) {
@@ -175,6 +142,17 @@ export function RetailerStoreCard({ retailer, items }: Props) {
   }
 
   return (
+    <>
+    {store && (
+      <AppointmentSheet
+        visible={showApptSheet}
+        store={store}
+        retailer={retailer}
+        items={items}
+        onClose={() => setShowApptSheet(false)}
+        onSent={() => setSuccess("appointment")}
+      />
+    )}
     <View style={[styles.card, { borderColor: accentColor + "40", backgroundColor: accentColor + "06" }]}>
       {/* Store row */}
       <View style={styles.storeRow}>
@@ -252,6 +230,7 @@ export function RetailerStoreCard({ retailer, items }: Props) {
         <Text style={[styles.changeText, { color: colors.mutedForeground }]}>Change store</Text>
       </Pressable>
     </View>
+    </>
   );
 }
 
