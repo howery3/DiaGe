@@ -114,7 +114,7 @@ export default function SettingsScreen() {
             } catch (err) {
               Alert.alert(
                 "Error",
-                "Could not delete your account. Please try again or contact support@digeapp.com."
+                "Could not delete your account. Please try again or contact diage.app@gmail.com."
               );
             }
           },

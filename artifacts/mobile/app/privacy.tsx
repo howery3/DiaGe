@@ -186,7 +186,7 @@ export default function PrivacyScreen() {
             ]}
           />
           <Body colors={colors}>
-            If you have questions about a specific policy or quote, contact the insurer directly. For general questions about the DiaGe app, contact us at <Strong colors={colors}>support@digeapp.com</Strong>.
+            If you have questions about a specific policy or quote, contact the insurer directly. For general questions about the DiaGe app, contact us at <Strong colors={colors}>diage.app@gmail.com</Strong>.
           </Body>
         </Section>
 

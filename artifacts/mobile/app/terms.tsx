@@ -160,7 +160,7 @@ export default function TermsScreen() {
             If you have questions about these Terms, please contact us at:
           </Body>
           <Body colors={colors}>
-            <Strong colors={colors}>support@digeapp.com</Strong>
+            <Strong colors={colors}>diage.app@gmail.com</Strong>
           </Body>
         </Section>
 
