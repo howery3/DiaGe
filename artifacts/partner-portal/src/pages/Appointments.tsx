@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { CalendarClock, MapPin, Navigation, Gem, Clock, MessageSquare, UserPlus, CheckCircle2, ArrowRight, Star, Wrench, Gift, Heart, Eye, ExternalLink, RefreshCw } from "lucide-react";
-import { APPOINTMENT_REQUESTS, RETAILER_NAME, type AppointmentRequest } from "@/data/demo";
+import { APPOINTMENT_REQUESTS, type AppointmentRequest } from "@/data/demo";
+import { useStore } from "@/context/StoreContext";
 
-const PORTAL_STORE_ID = "kay-fifth-ave";
 
 interface LiveShare {
   id: string;
@@ -337,6 +337,7 @@ const STATUS_TABS = [
 ] as const;
 
 export default function Appointments() {
+  const { current } = useStore();
   const [demoRequests, setDemoRequests] = useState(APPOINTMENT_REQUESTS);
   const [liveRequests, setLiveRequests] = useState<AppointmentRequest[]>([]);
   const [liveLoading, setLiveLoading] = useState(true);
@@ -344,7 +345,7 @@ export default function Appointments() {
 
   const fetchLive = useCallback(async () => {
     try {
-      const res = await fetch(`/api/store-shares?storeId=${PORTAL_STORE_ID}`);
+      const res = await fetch(`/api/store-shares?storeId=${current.storeId}`);
       if (!res.ok) return;
       const all: LiveShare[] = await res.json();
       const appts = all
@@ -354,9 +355,11 @@ export default function Appointments() {
     } catch { /* silently ignore */ } finally {
       setLiveLoading(false);
     }
-  }, []);
+  }, [current.storeId]);
 
   useEffect(() => {
+    setLiveRequests([]);
+    setLiveLoading(true);
     fetchLive();
     const interval = setInterval(fetchLive, 10000);
     return () => clearInterval(interval);

@@ -3,7 +3,8 @@ import {
   PieChart, Pie, Cell,
 } from "recharts";
 import { TrendingUp, Award, Tag, Zap, Clock, ChevronUp } from "lucide-react";
-import { TOP_SKUS, TOP_BRANDS, DAY_OF_WEEK_ACTIVITY, RISING_SKUS, OCCASION_BREAKDOWN, RETAILER_NAME } from "@/data/demo";
+import { TOP_SKUS, TOP_BRANDS, DAY_OF_WEEK_ACTIVITY, RISING_SKUS, OCCASION_BREAKDOWN } from "@/data/demo";
+import { useStore } from "@/context/StoreContext";
 
 const PURPLE = "#5B21B6";
 const LIGHT = "#8B5CF6";
@@ -24,11 +25,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function Trends() {
+  const { current } = useStore();
   return (
     <div className="space-y-5">
       <div>
         <h1 className="text-xl font-bold text-gray-900">Trends & Insights</h1>
-        <p className="text-sm text-gray-500 mt-0.5">What {RETAILER_NAME} customers are saving and sharing via DiaGe</p>
+        <p className="text-sm text-gray-500 mt-0.5">What {current.banner} customers are saving and sharing via DiaGe</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-3">
@@ -189,7 +191,7 @@ export default function Trends() {
             <h2 className="font-bold text-lg mb-1">Powered by DiaGe Customer Intelligence</h2>
             <p className="text-[#C4B5FD] text-sm max-w-xl">
               Every wishlist save and store share is a customer actively shopping and ready to buy —
-              not inferred behavior, but direct opt-in intent signals from {RETAILER_NAME} customers.
+              not inferred behavior, but direct opt-in intent signals from {current.banner} customers.
             </p>
           </div>
           <div className="flex gap-3 flex-shrink-0">

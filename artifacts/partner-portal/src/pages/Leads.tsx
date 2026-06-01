@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Phone, Mail, ChevronDown, ChevronUp, Gem, MapPin, Navigation, Zap, Clock, AlertCircle, UserPlus, Timer } from "lucide-react";
 import { LEADS, RETAILER_NAME, STORE_NAME, STORE_CITY, type Lead } from "@/data/demo";
-
-const PORTAL_STORE_ID = "kay-fifth-ave";
+import { useStore } from "@/context/StoreContext";
 
 interface LiveShare {
   id: string;
@@ -151,6 +150,7 @@ function distanceBadge(miles: number) {
 function fmt(n: number) { return `$${n.toLocaleString()}`; }
 
 function LeadCard({ lead }: { lead: Lead }) {
+  const { current } = useStore();
   const [expanded, setExpanded] = useState(false);
   const dist = distanceBadge(lead.distanceMiles);
   const hours = hoursAgo(lead.sharedDate.replace("Shared ", "").replace(" ago", "").trim());
@@ -225,7 +225,7 @@ function LeadCard({ lead }: { lead: Lead }) {
             <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
               <AlertCircle size={13} className="text-amber-600 flex-shrink-0 mt-0.5" />
               <p className="text-[11px] text-amber-700 leading-relaxed">
-                <span className="font-semibold">This is first contact.</span> They haven't linked {RETAILER_NAME} as their preferred store yet.
+                <span className="font-semibold">This is first contact.</span> They haven't linked {current.banner} as their preferred store yet.
                 A successful outreach could convert them into a permanent DiaGe Opt-In customer — giving you their full purchase history and wishlist going forward.
               </p>
             </div>
@@ -259,7 +259,7 @@ function LeadCard({ lead }: { lead: Lead }) {
                 className="flex-1 flex items-center justify-center gap-2 bg-[#5B21B6] text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-[#4C1D95] transition-colors">
                 <Phone size={14} /> Call Now
               </a>
-              <a href={`mailto:${lead.email}?subject=Your ${RETAILER_NAME} Wishlist&body=Hi ${lead.name.split(" ")[0]}, I'm reaching out about the items you saved on your DiaGe wishlist...`}
+              <a href={`mailto:${lead.email}?subject=Your ${current.banner} Wishlist&body=Hi ${lead.name.split(" ")[0]}, I'm reaching out about the items you saved on your DiaGe wishlist...`}
                 className="flex-1 flex items-center justify-center gap-2 bg-[#F3F0FF] text-[#5B21B6] text-sm font-semibold py-2.5 rounded-xl hover:bg-[#EDE8FA] transition-colors">
                 <Mail size={14} /> Email
               </a>
@@ -285,21 +285,23 @@ function LeadCard({ lead }: { lead: Lead }) {
 }
 
 export default function Leads() {
+  const { current } = useStore();
   const [priorityFilter, setPriorityFilter] = useState<"all" | Lead["priority"]>("all");
   const [rangeKey, setRangeKey] = useState("100");
   const [liveShares, setLiveShares] = useState<LiveShare[]>([]);
 
   useEffect(() => {
+    setLiveShares([]);
     async function fetchShares() {
       try {
-        const res = await fetch(`/api/store-shares?storeId=${PORTAL_STORE_ID}`);
+        const res = await fetch(`/api/store-shares?storeId=${current.storeId}`);
         if (res.ok) setLiveShares(await res.json());
       } catch { /* fail silently */ }
     }
     fetchShares();
     const id = setInterval(fetchShares, 6000);
     return () => clearInterval(id);
-  }, []);
+  }, [current.storeId]);
 
   const maxMiles = RANGE_OPTIONS.find((r) => r.key === rangeKey)?.max ?? Infinity;
   const sorted   = [...LEADS].sort((a, b) => a.distanceMiles - b.distanceMiles);

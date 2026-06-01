@@ -3,7 +3,8 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { Users, ShoppingBag, DollarSign, TrendingUp, MessageSquare, Star, Flame, CalendarClock, ShieldAlert, ArrowRight } from "lucide-react";
-import { KPI, KPI_DELTAS, MONTHLY_ACTIVITY, TYPE_BREAKDOWN, PRICE_RANGE_DATA, ACTIONABLE_NOW, RETAILER_NAME } from "@/data/demo";
+import { KPI, KPI_DELTAS, MONTHLY_ACTIVITY, TYPE_BREAKDOWN, PRICE_RANGE_DATA, ACTIONABLE_NOW } from "@/data/demo";
+import { useStore } from "@/context/StoreContext";
 import { useLocation } from "wouter";
 
 const PURPLE = "#5B21B6";
@@ -63,11 +64,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function Dashboard() {
+  const { current } = useStore();
   const [, setLocation] = useLocation();
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">{RETAILER_NAME} — Partner Dashboard</h1>
+        <h1 className="text-xl font-bold text-gray-900">{current.banner} — Partner Dashboard</h1>
         <p className="text-sm text-gray-500 mt-0.5">Customer-initiated wishlist signals from the DiaGe app — use alongside your existing clientelling and scheduling tools</p>
       </div>
 

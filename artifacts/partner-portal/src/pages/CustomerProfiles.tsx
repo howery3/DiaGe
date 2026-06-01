@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Search, Phone, Mail, MapPin, ChevronDown, ChevronUp, Star, Gem, Navigation, Clock, Zap, Info, ShieldCheck, ShieldAlert, ShieldOff, Diamond, FileText, Receipt, Award, Wrench, ShoppingBag, Store, ExternalLink } from "lucide-react";
-import { CUSTOMER_PROFILES, STORE_CITY, RETAILER_NAME, type CustomerProfile, type RetailerPurchase } from "@/data/demo";
+import { CUSTOMER_PROFILES, STORE_CITY, type CustomerProfile, type RetailerPurchase } from "@/data/demo";
+import { useStore } from "@/context/StoreContext";
 
 const DOC_ICON: Record<string, React.ElementType> = {
   warranty:    ShieldCheck,
@@ -104,6 +105,7 @@ function distanceBadge(miles: number) {
 }
 
 function CustomerCard({ c }: { c: CustomerProfile }) {
+  const { current } = useStore();
   const [expanded, setExpanded] = useState(false);
   const tier = TIER_STYLE[c.tier];
   const dist = distanceBadge(c.distanceMiles);
@@ -211,7 +213,7 @@ function CustomerCard({ c }: { c: CustomerProfile }) {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
                   <Store size={12} className="text-gray-400" />
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{RETAILER_NAME} Purchases</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{current.banner} Purchases</p>
                 </div>
                 {c.retailerPurchases.length > 0 && (
                   <span className="text-xs font-bold text-[#5B21B6]">
@@ -276,6 +278,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function CustomerProfiles() {
+  const { current } = useStore();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("distance");
   const [tierFilter, setTierFilter] = useState<"all" | CustomerProfile["tier"]>("all");

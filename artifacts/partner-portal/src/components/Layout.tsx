@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { LayoutDashboard, Users, TrendingUp, Gem, Menu, X, Bell, Contact, Send, Calendar, Star, AlertCircle, CheckCircle } from "lucide-react";
-import { RETAILER_NAME, PARENT_COMPANY } from "@/data/demo";
+import { useStore, BANNERS } from "@/context/StoreContext";
 
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -94,6 +94,7 @@ const NOTIF_BG: Record<Notif["type"], string> = {
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { current, setCurrent } = useStore();
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -136,8 +137,37 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <span className="text-white font-bold text-lg tracking-tight">DiaGe</span>
             <span className="text-[#A78BFA] text-xs font-semibold ml-1 px-1.5 py-0.5 bg-[#3B1E8E] rounded">Partner</span>
           </div>
-          <p className="text-[#C4B5FD] text-xs truncate">{RETAILER_NAME}</p>
-          <p className="text-[#7C5CBF] text-[10px] mt-0.5">A {PARENT_COMPANY} Banner</p>
+          <p className="text-[#C4B5FD] text-xs truncate">{current.banner}</p>
+          <p className="text-[#7C5CBF] text-[10px] mt-0.5">A {current.parentCompany} Banner</p>
+        </div>
+
+        {/* Banner switcher */}
+        <div className="px-4 py-3 border-b border-[#3B1E8E]">
+          <p className="text-[#7C5CBF] text-[9px] uppercase tracking-widest mb-2 font-semibold">Switch Banner</p>
+          <div className="grid grid-cols-2 gap-1.5">
+            {BANNERS.map((b) => (
+              <button
+                key={b.storeId}
+                onClick={() => setCurrent(b)}
+                style={current.storeId === b.storeId ? { borderColor: b.color } : {}}
+                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg border text-left transition-all ${
+                  current.storeId === b.storeId
+                    ? "bg-[#3B1E8E] border-opacity-100"
+                    : "border-transparent hover:bg-[#2D1175]"
+                }`}
+              >
+                <span
+                  className="w-4 h-4 rounded-full flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0"
+                  style={{ backgroundColor: b.color }}
+                >
+                  {b.initial}
+                </span>
+                <span className="text-[10px] font-medium text-[#C4B5FD] truncate">
+                  {b.banner.split(" ")[0]}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">
@@ -163,12 +193,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         <div className="px-4 py-4 border-t border-[#3B1E8E]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#5B21B6] flex items-center justify-center text-white text-xs font-bold">
-              KJ
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+              style={{ backgroundColor: current.color }}
+            >
+              {current.initial}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white text-xs font-semibold truncate">{RETAILER_NAME}</p>
-              <p className="text-[#A78BFA] text-xs truncate">{PARENT_COMPANY} · Enterprise</p>
+              <p className="text-white text-xs font-semibold truncate">{current.banner}</p>
+              <p className="text-[#A78BFA] text-xs truncate">{current.parentCompany} · Enterprise</p>
             </div>
           </div>
         </div>
