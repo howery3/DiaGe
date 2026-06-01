@@ -36,7 +36,7 @@ function storeInitial(banner: string) {
 
 export function MyStoreCard() {
   const colors = useColors();
-  const { store, saveStore } = usePreferredStore();
+  const { store, stores, saveStore } = usePreferredStore();
   const { wishlistItems } = useDiGe();
   const { profile } = useProfile();
   const { getToken } = useAuth();
@@ -44,6 +44,7 @@ export function MyStoreCard() {
   const [sharing, setSharing] = useState(false);
   const [shared, setShared] = useState(false);
 
+  const linkedCount = Object.keys(stores).length;
   const bannerColor = store ? (BANNER_COLOR[store.banner] ?? "#5B21B6") : "#5B21B6";
 
   async function handleShareWishlist() {
@@ -136,27 +137,33 @@ export function MyStoreCard() {
         <View style={[styles.iconWrap, { backgroundColor: store ? `${bannerColor}18` : colors.secondary }]}>
           <Feather name="map-pin" size={15} color={store ? bannerColor : colors.mutedForeground} />
         </View>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>My Store</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>My Stores</Text>
+          {linkedCount > 1 ? (
+            <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
+              {linkedCount} retailers linked · manage per-retailer in Wishlist
+            </Text>
+          ) : null}
+        </View>
       </View>
 
       {!store ? (
         /* No store linked */
         <View style={[styles.emptyInner, { borderTopColor: colors.border }]}>
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-            Link a nearby Signet store to send your wishlist, book appointments, and receive personalised outreach from a dedicated associate.
+            Link Signet stores to your wishlist retailers to send wishlists, book appointments, and receive personalised outreach. Set them per-retailer in your Wishlist tab.
           </Text>
           <Pressable
-            onPress={() => router.push("/store-picker" as any)}
+            onPress={() => router.push("/(tabs)/wishlist" as any)}
             style={({ pressed }) => [styles.findBtn, { backgroundColor: "#5B21B6", opacity: pressed ? 0.88 : 1 }]}
           >
-            <Feather name="search" size={14} color="#fff" />
-            <Text style={styles.findBtnText}>Find Stores Near Me</Text>
+            <Feather name="heart" size={14} color="#fff" />
+            <Text style={styles.findBtnText}>Go to Wishlist</Text>
           </Pressable>
         </View>
       ) : (
-        /* Store linked */
+        /* Show first linked store with actions */
         <View style={[styles.storeInner, { borderTopColor: colors.border }]}>
-          {/* Store info */}
           <View style={styles.storeRow}>
             <View style={[styles.storeBadge, { backgroundColor: `${bannerColor}18` }]}>
               <Text style={[styles.storeBadgeText, { color: bannerColor }]}>{storeInitial(store.banner)}</Text>
@@ -171,7 +178,7 @@ export function MyStoreCard() {
               </View>
             </View>
             <Pressable
-              onPress={() => { saveStore(null); }}
+              onPress={() => { saveStore(store.banner, null); }}
               hitSlop={12}
               style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
             >
@@ -179,7 +186,6 @@ export function MyStoreCard() {
             </Pressable>
           </View>
 
-          {/* Action buttons */}
           {shared ? (
             <View style={[styles.successBanner, { backgroundColor: `${bannerColor}12`, borderColor: `${bannerColor}30` }]}>
               <Feather name="check-circle" size={15} color={bannerColor} />
@@ -223,7 +229,7 @@ export function MyStoreCard() {
           )}
 
           <Pressable
-            onPress={() => router.push("/store-picker" as any)}
+            onPress={() => router.push(`/store-picker?retailer=${encodeURIComponent(store.banner)}` as any)}
             style={styles.changeLink}
             hitSlop={8}
           >
@@ -248,6 +254,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
   sectionTitle: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
+  sectionSub: { fontSize: 11, fontFamily: "Inter_400Regular", marginTop: 1 },
   emptyInner: { borderTopWidth: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16 },
   emptyText: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19, marginBottom: 14 },
   findBtn: {

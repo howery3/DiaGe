@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -39,7 +39,8 @@ function storeInitial(banner: string) {
 export default function StorePickerScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { store: currentStore, saveStore } = usePreferredStore();
+  const { retailer: retailerParam } = useLocalSearchParams<{ retailer?: string }>();
+  const { stores, getStore, saveStore } = usePreferredStore();
 
   const [allStores, setAllStores] = useState<PreferredStore[]>([]);
   const [query, setQuery] = useState("");
@@ -53,7 +54,11 @@ export default function StorePickerScreen() {
       .catch(() => setLoading(false));
   }, []);
 
-  const filtered = allStores.filter((s) =>
+  const baseStores = retailerParam
+    ? allStores.filter((s) => s.banner === retailerParam)
+    : allStores;
+
+  const filtered = baseStores.filter((s) =>
     !query || s.name.toLowerCase().includes(query.toLowerCase()) || s.address.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -61,10 +66,18 @@ export default function StorePickerScreen() {
     .map((banner) => ({ banner, stores: filtered.filter((s) => s.banner === banner) }))
     .filter((g) => g.stores.length > 0);
 
+  const saveKey = retailerParam ?? null;
+
+  function isSelected(store: PreferredStore) {
+    const key = saveKey ?? store.banner;
+    return getStore(key)?.id === store.id;
+  }
+
   async function handleSelect(store: PreferredStore) {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSaving(store.id);
-    await saveStore(store);
+    const key = saveKey ?? store.banner;
+    await saveStore(key, store);
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setSaving(null);
     router.back();
@@ -72,14 +85,24 @@ export default function StorePickerScreen() {
 
   const topPad = Platform.OS === "web" ? 20 : insets.top + 16;
 
+  const title = retailerParam ? `Set ${retailerParam} Store` : "Find Your Store";
+  const subtitle = retailerParam
+    ? `Choose which ${retailerParam} location to link to this part of your wishlist.`
+    : "Your wishlist leads, appointment requests, and reminders will go directly to this store.";
+
   return (
     <View style={[styles.root, { backgroundColor: colors.background, paddingTop: topPad }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Find Your Store</Text>
-        <Text style={[styles.sub, { color: colors.mutedForeground }]}>
-          Your wishlist leads, appointment requests, and reminders will go directly to this store.
-        </Text>
+        <View style={styles.headerRow}>
+          <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backBtn}>
+            <Feather name="arrow-left" size={20} color={colors.foreground} />
+          </Pressable>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>
+            <Text style={[styles.sub, { color: colors.mutedForeground }]}>{subtitle}</Text>
+          </View>
+        </View>
       </View>
 
       {/* Search */}
@@ -118,7 +141,7 @@ export default function StorePickerScreen() {
                 <Text style={[styles.bannerLabel, { color: colors.mutedForeground }]}>{group.banner.toUpperCase()}</Text>
               </View>
               {group.stores.map((store) => {
-                const isSelected = currentStore?.id === store.id;
+                const sel = isSelected(store);
                 const isSaving = saving === store.id;
                 const bannerColor = BANNER_COLOR[store.banner] ?? "#5B21B6";
                 return (
@@ -128,8 +151,8 @@ export default function StorePickerScreen() {
                     style={({ pressed }) => [
                       styles.storeCard,
                       {
-                        backgroundColor: isSelected ? `${bannerColor}12` : colors.card,
-                        borderColor: isSelected ? bannerColor : colors.border,
+                        backgroundColor: sel ? `${bannerColor}12` : colors.card,
+                        borderColor: sel ? bannerColor : colors.border,
                         opacity: pressed ? 0.88 : 1,
                       },
                     ]}
@@ -156,7 +179,7 @@ export default function StorePickerScreen() {
                     </View>
                     {isSaving ? (
                       <ActivityIndicator size="small" color={bannerColor} />
-                    ) : isSelected ? (
+                    ) : sel ? (
                       <View style={[styles.checkBubble, { backgroundColor: bannerColor }]}>
                         <Feather name="check" size={13} color="#fff" />
                       </View>
@@ -179,7 +202,9 @@ export default function StorePickerScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { paddingHorizontal: 20, paddingBottom: 16 },
-  title: { fontSize: 24, fontFamily: "Inter_700Bold", letterSpacing: -0.4 },
+  headerRow: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
+  backBtn: { marginTop: 2 },
+  title: { fontSize: 22, fontFamily: "Inter_700Bold", letterSpacing: -0.4 },
   sub: { fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 4, lineHeight: 18 },
   searchWrap: {
     flexDirection: "row", alignItems: "center", gap: 10,
