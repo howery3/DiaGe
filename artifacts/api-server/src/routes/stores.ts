@@ -51,8 +51,22 @@ const DEMO_STORES = [
   { id: "kay-orange-park",          banner: "Kay Jewelers",               name: "Kay Jewelers — Orange Park Mall",      address: "1910 Wells Rd, Orange Park, FL 32073",             distanceMi: 16.4, phone: "(904) 276-6699" },
 ];
 
-router.get("/stores", (_req, res) => {
-  res.json(DEMO_STORES);
+router.get("/stores", (req, res) => {
+  const q = (req.query.q as string | undefined)?.trim().toLowerCase();
+  const retailer = (req.query.retailer as string | undefined)?.trim().toLowerCase();
+  let results = DEMO_STORES;
+  if (q) {
+    results = results.filter(
+      (s) =>
+        s.address.toLowerCase().includes(q) ||
+        s.name.toLowerCase().includes(q) ||
+        s.banner.toLowerCase().includes(q)
+    );
+  }
+  if (retailer) {
+    results = results.filter((s) => s.banner.toLowerCase().includes(retailer));
+  }
+  res.json(results);
 });
 
 router.post("/store-share", async (req, res) => {

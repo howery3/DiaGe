@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as Location from "expo-location";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -12,6 +12,7 @@ import {
   Share,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -62,12 +63,18 @@ export default function NearestStoreScreen() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [noApiKey, setNoApiKey] = useState(false);
   const [places, setPlaces] = useState<PlaceResult[]>([]);
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
   const [loadingDetails, setLoadingDetails] = useState<string | null>(null);
+
+  const [zipInput, setZipInput] = useState("");
+  const [zipResults, setZipResults] = useState<PlaceResult[] | null>(null);
+  const [zipLoading, setZipLoading] = useState(false);
+  const zipRef = useRef<TextInput>(null);
 
   const wishlist = wishlistItems.filter(
     (w: WishlistItem) => w.retailer.trim() === retailerName
@@ -99,9 +106,7 @@ export default function NearestStoreScreen() {
 
       if (!res.ok) {
         if (res.status === 503) {
-          setError(
-            "Store finder is not yet configured. A Google Places API key is required."
-          );
+          setNoApiKey(true);
         } else {
           setError(data.error ?? "Could not find nearby stores.");
         }
@@ -119,6 +124,32 @@ export default function NearestStoreScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const searchByZip = useCallback(async (zip: string) => {
+    if (zip.length < 3) { setZipResults(null); return; }
+    setZipLoading(true);
+    try {
+      const res = await fetch(
+        `${API_BASE}/stores?q=${encodeURIComponent(zip)}&retailer=${encodeURIComponent(retailerName)}`
+      );
+      const data: { id: string; name: string; address: string; phone: string; distanceMi: number }[] = await res.json();
+      setZipResults(
+        data.map((s) => ({
+          placeId: s.id,
+          name: s.name,
+          address: s.address,
+          phone: s.phone,
+          lat: 0,
+          lng: 0,
+          detailsLoaded: true,
+        }))
+      );
+    } catch {
+      setZipResults([]);
+    } finally {
+      setZipLoading(false);
+    }
+  }, [retailerName]);
 
   async function loadDetails(place: PlaceResult) {
     if (place.detailsLoaded) return;
@@ -246,36 +277,80 @@ export default function NearestStoreScreen() {
           { paddingBottom: insets.bottom + 40 },
         ]}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
-        {loading ? (
+        {/* ── Zip code search ── */}
+        <View style={[styles.zipCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.zipRow}>
+            <Feather name="map-pin" size={15} color={PRIMARY} style={{ marginTop: 1 }} />
+            <TextInput
+              ref={zipRef}
+              style={[styles.zipInput, { color: colors.foreground }]}
+              placeholder="Search by zip code or city"
+              placeholderTextColor={colors.mutedForeground}
+              value={zipInput}
+              onChangeText={(v) => {
+                setZipInput(v);
+                searchByZip(v);
+              }}
+              keyboardType="default"
+              returnKeyType="search"
+              onSubmitEditing={() => searchByZip(zipInput)}
+              autoCorrect={false}
+            />
+            {zipLoading ? (
+              <ActivityIndicator size="small" color={PRIMARY} />
+            ) : zipInput.length > 0 ? (
+              <Pressable onPress={() => { setZipInput(""); setZipResults(null); }} hitSlop={8}>
+                <Feather name="x" size={15} color={colors.mutedForeground} />
+              </Pressable>
+            ) : null}
+          </View>
+        </View>
+
+        {/* ── Zip results ── */}
+        {zipResults !== null ? (
+          zipResults.length === 0 ? (
+            <View style={[styles.stateCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Feather name="map-pin" size={28} color={colors.mutedForeground} />
+              <Text style={[styles.stateTitle, { color: colors.foreground }]}>No locations found</Text>
+              <Text style={[styles.stateBody, { color: colors.mutedForeground }]}>
+                No {retailerName} locations match "{zipInput}". Try a nearby city or different zip.
+              </Text>
+            </View>
+          ) : (
+            zipResults.map((place, index) => (
+              <PlaceCard
+                key={place.placeId}
+                place={place}
+                index={index}
+                userLocation={null}
+                loadingDetails={loadingDetails}
+                wishlist={wishlist}
+                colors={colors}
+                onLoadDetails={() => loadDetails(place)}
+                onCall={handleCall}
+                onDirections={handleDirections}
+                onEmailWishlist={handleEmailWishlist}
+              />
+            ))
+          )
+        ) : loading ? (
           <View style={styles.center}>
             <ActivityIndicator size="large" color={PRIMARY} />
             <Text style={[styles.loadingText, { color: colors.mutedForeground }]}>
               Finding {retailerName} locations near you...
             </Text>
           </View>
-        ) : error ? (
-          <View
-            style={[
-              styles.stateCard,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
-          >
-            <Feather name="alert-circle" size={32} color="#B45309" />
+        ) : (noApiKey || error) ? (
+          <View style={[styles.stateCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Feather name="search" size={32} color={PRIMARY} />
             <Text style={[styles.stateTitle, { color: colors.foreground }]}>
-              Could not find stores
+              Search by zip or city above
             </Text>
-            <Text
-              style={[styles.stateBody, { color: colors.mutedForeground }]}
-            >
-              {error}
+            <Text style={[styles.stateBody, { color: colors.mutedForeground }]}>
+              Type your zip code or city name to find nearby {retailerName} locations.
             </Text>
-            <Pressable
-              onPress={load}
-              style={[styles.retryBtn, { backgroundColor: PRIMARY }]}
-            >
-              <Text style={styles.retryText}>Try Again</Text>
-            </Pressable>
           </View>
         ) : places.length === 0 ? (
           <View
@@ -296,171 +371,21 @@ export default function NearestStoreScreen() {
             </Text>
           </View>
         ) : (
-          places.map((place, index) => {
-            const distance =
-              userLocation !== null
-                ? haversineDistance(
-                    userLocation.lat,
-                    userLocation.lng,
-                    place.lat,
-                    place.lng
-                  )
-                : null;
-
-            return (
-              <View
-                key={place.placeId}
-                style={[
-                  styles.placeCard,
-                  { backgroundColor: colors.card, borderColor: colors.border },
-                ]}
-              >
-                <View style={styles.placeHeader}>
-                  <View
-                    style={[
-                      styles.placeIndex,
-                      {
-                        backgroundColor:
-                          index === 0 ? PRIMARY : colors.muted,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.placeIndexText,
-                        {
-                          color:
-                            index === 0 ? "#fff" : colors.mutedForeground,
-                        },
-                      ]}
-                    >
-                      {index + 1}
-                    </Text>
-                  </View>
-                  <View style={styles.placeInfo}>
-                    <Text
-                      style={[styles.placeName, { color: colors.foreground }]}
-                    >
-                      {place.name}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.placeAddress,
-                        { color: colors.mutedForeground },
-                      ]}
-                    >
-                      {place.address}
-                    </Text>
-                    <View style={styles.placeMeta}>
-                      {distance !== null && (
-                        <Text
-                          style={[
-                            styles.placeDistance,
-                            { color: colors.primary },
-                          ]}
-                        >
-                          {distance < 0.2
-                            ? `${(distance * 5280).toFixed(0)} ft away`
-                            : `${distance.toFixed(1)} mi away`}
-                        </Text>
-                      )}
-                      {place.rating ? (
-                        <Text
-                          style={[
-                            styles.placeRating,
-                            { color: colors.mutedForeground },
-                          ]}
-                        >
-                          ⭐ {place.rating}
-                        </Text>
-                      ) : null}
-                    </View>
-                  </View>
-                </View>
-
-                {!place.detailsLoaded &&
-                  loadingDetails !== place.placeId ? (
-                  <Pressable
-                    onPress={() => loadDetails(place)}
-                    style={styles.loadDetailsBtn}
-                  >
-                    <Text
-                      style={[
-                        styles.loadDetailsText,
-                        { color: colors.primary },
-                      ]}
-                    >
-                      Load phone & contact details
-                    </Text>
-                  </Pressable>
-                ) : loadingDetails === place.placeId ? (
-                  <ActivityIndicator
-                    size="small"
-                    color={PRIMARY}
-                    style={{ marginTop: 8 }}
-                  />
-                ) : null}
-
-                <View style={styles.placeActions}>
-                  {place.phone ? (
-                    <Pressable
-                      onPress={() => handleCall(place.phone!)}
-                      style={[
-                        styles.actionBtn,
-                        { backgroundColor: "#EDE8FA" },
-                      ]}
-                    >
-                      <Feather name="phone" size={15} color={PRIMARY} />
-                      <Text
-                        style={[styles.actionBtnText, { color: PRIMARY }]}
-                      >
-                        Call
-                      </Text>
-                    </Pressable>
-                  ) : null}
-                  <Pressable
-                    onPress={() => handleDirections(place)}
-                    style={[
-                      styles.actionBtn,
-                      { backgroundColor: colors.muted },
-                    ]}
-                  >
-                    <Feather
-                      name="navigation"
-                      size={15}
-                      color={colors.mutedForeground}
-                    />
-                    <Text
-                      style={[
-                        styles.actionBtnText,
-                        { color: colors.mutedForeground },
-                      ]}
-                    >
-                      Directions
-                    </Text>
-                  </Pressable>
-                  {wishlist.length > 0 && (
-                    <Pressable
-                      onPress={() => handleEmailWishlist(place)}
-                      style={[
-                        styles.actionBtn,
-                        { backgroundColor: PRIMARY, flex: 1 },
-                      ]}
-                    >
-                      <Feather name="mail" size={15} color="#fff" />
-                      <Text
-                        style={[styles.actionBtnText, { color: "#fff" }]}
-                      >
-                        {wishlist.length === 1
-                          ? "Send Wishlist"
-                          : `Send ${wishlist.length} Items`}
-                      </Text>
-                    </Pressable>
-                  )}
-                </View>
-              </View>
-            );
-          })
+          places.map((place, index) => (
+            <PlaceCard
+              key={place.placeId}
+              place={place}
+              index={index}
+              userLocation={userLocation}
+              loadingDetails={loadingDetails}
+              wishlist={wishlist}
+              colors={colors}
+              onLoadDetails={() => loadDetails(place)}
+              onCall={handleCall}
+              onDirections={handleDirections}
+              onEmailWishlist={handleEmailWishlist}
+            />
+          ))
         )}
 
         {wishlist.length > 0 && !loading ? (
@@ -482,6 +407,82 @@ export default function NearestStoreScreen() {
         ) : null}
       </ScrollView>
     </>
+  );
+}
+
+function PlaceCard({
+  place, index, userLocation, loadingDetails, wishlist, colors,
+  onLoadDetails, onCall, onDirections, onEmailWishlist,
+}: {
+  place: PlaceResult;
+  index: number;
+  userLocation: { lat: number; lng: number } | null;
+  loadingDetails: string | null;
+  wishlist: WishlistItem[];
+  colors: ReturnType<typeof import("@/hooks/useColors").useColors>;
+  onLoadDetails: () => void;
+  onCall: (phone: string) => void;
+  onDirections: (place: PlaceResult) => void;
+  onEmailWishlist: (place: PlaceResult) => void;
+}) {
+  const distance =
+    userLocation !== null && place.lat !== 0 && place.lng !== 0
+      ? haversineDistance(userLocation.lat, userLocation.lng, place.lat, place.lng)
+      : null;
+
+  return (
+    <View style={[styles.placeCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={styles.placeHeader}>
+        <View style={[styles.placeIndex, { backgroundColor: index === 0 ? PRIMARY : colors.muted }]}>
+          <Text style={[styles.placeIndexText, { color: index === 0 ? "#fff" : colors.mutedForeground }]}>
+            {index + 1}
+          </Text>
+        </View>
+        <View style={styles.placeInfo}>
+          <Text style={[styles.placeName, { color: colors.foreground }]}>{place.name}</Text>
+          <Text style={[styles.placeAddress, { color: colors.mutedForeground }]}>{place.address}</Text>
+          <View style={styles.placeMeta}>
+            {distance !== null && (
+              <Text style={[styles.placeDistance, { color: colors.primary }]}>
+                {distance < 0.2 ? `${(distance * 5280).toFixed(0)} ft away` : `${distance.toFixed(1)} mi away`}
+              </Text>
+            )}
+            {place.rating ? (
+              <Text style={[styles.placeRating, { color: colors.mutedForeground }]}>⭐ {place.rating}</Text>
+            ) : null}
+          </View>
+        </View>
+      </View>
+
+      {!place.detailsLoaded && loadingDetails !== place.placeId ? (
+        <Pressable onPress={onLoadDetails} style={styles.loadDetailsBtn}>
+          <Text style={[styles.loadDetailsText, { color: colors.primary }]}>Load phone & contact details</Text>
+        </Pressable>
+      ) : loadingDetails === place.placeId ? (
+        <ActivityIndicator size="small" color={PRIMARY} style={{ marginTop: 8 }} />
+      ) : null}
+
+      <View style={styles.placeActions}>
+        {place.phone ? (
+          <Pressable onPress={() => onCall(place.phone!)} style={[styles.actionBtn, { backgroundColor: "#EDE8FA" }]}>
+            <Feather name="phone" size={15} color={PRIMARY} />
+            <Text style={[styles.actionBtnText, { color: PRIMARY }]}>Call</Text>
+          </Pressable>
+        ) : null}
+        <Pressable onPress={() => onDirections(place)} style={[styles.actionBtn, { backgroundColor: colors.muted }]}>
+          <Feather name="navigation" size={15} color={colors.mutedForeground} />
+          <Text style={[styles.actionBtnText, { color: colors.mutedForeground }]}>Directions</Text>
+        </Pressable>
+        {wishlist.length > 0 && (
+          <Pressable onPress={() => onEmailWishlist(place)} style={[styles.actionBtn, { backgroundColor: PRIMARY, flex: 1 }]}>
+            <Feather name="mail" size={15} color="#fff" />
+            <Text style={[styles.actionBtnText, { color: "#fff" }]}>
+              {wishlist.length === 1 ? "Send Wishlist" : `Send ${wishlist.length} Items`}
+            </Text>
+          </Pressable>
+        )}
+      </View>
+    </View>
   );
 }
 
@@ -614,5 +615,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Inter_400Regular",
     lineHeight: 18,
+  },
+  zipCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+  },
+  zipRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  zipInput: {
+    flex: 1,
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
   },
 });
