@@ -187,17 +187,20 @@ export default function ProfileScreen() {
     const friendsOption = "Share with Friends & Family";
     const cancelOption = "Cancel";
 
+    const editOption = "Edit Stores…";
+
     if (Platform.OS === "ios") {
       const options =
         linkedStores.length > 0
-          ? [...storeOptions, friendsOption, cancelOption]
+          ? [...storeOptions, editOption, friendsOption, cancelOption]
           : [noStoreOption, friendsOption, cancelOption];
       ActionSheetIOS.showActionSheetWithOptions(
         { options, cancelButtonIndex: options.length - 1 },
         (idx) => {
           if (linkedStores.length > 0) {
             if (idx < linkedStores.length) handleSendToStoreDiage(linkedStores[idx].id, linkedStores[idx].name);
-            else if (idx === linkedStores.length) doShareImage();
+            else if (idx === linkedStores.length) router.push("/store-picker" as any);
+            else if (idx === linkedStores.length + 1) doShareImage();
           } else {
             if (idx === 0) router.push("/store-picker" as any);
             else if (idx === 1) doShareImage();
@@ -207,10 +210,13 @@ export default function ProfileScreen() {
     } else {
       Alert.alert("Share Profile", "Who would you like to share with?", [
         ...(linkedStores.length > 0
-          ? linkedStores.map((s) => ({
-              text: `Send to ${s.name} via DiaGe`,
-              onPress: () => handleSendToStoreDiage(s.id, s.name),
-            }))
+          ? [
+              ...linkedStores.map((s) => ({
+                text: `Send to ${s.name} via DiaGe`,
+                onPress: () => handleSendToStoreDiage(s.id, s.name),
+              })),
+              { text: editOption, onPress: () => router.push("/store-picker" as any) },
+            ]
           : [{ text: noStoreOption, onPress: () => router.push("/store-picker" as any) }]),
         { text: friendsOption, onPress: doShareImage },
         { text: cancelOption, style: "cancel" as const },
