@@ -245,7 +245,8 @@ function CustomerCard({ c }: { c: CustomerProfile }) {
       </div>
 
       <button
-        onClick={() => setExpanded(!expanded)}
+        type="button"
+        onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
         className="w-full py-2 flex items-center justify-center gap-1 text-xs text-gray-400 hover:text-[#5B21B6] hover:bg-[#F8F7FF] transition-colors border-t border-[#F0EEF8]"
       >
         {expanded
