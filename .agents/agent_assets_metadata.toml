@@ -53,3 +53,9 @@ id = "l5dVapS6con1jRkTespqJ"
 uri = "file://attached_assets/screenshots/106bca69-6442-4cbc-8beb-cf814c8cdb44-00-3w5b9irfrdrmk_worf_replit_dev_mockup_preview_vault-redesign_VariantC.png"
 type = "image"
 title = "C — Rich Gradient Header"
+
+[[outputs]]
+id = "gT9LsqxxPo46xBXrdHx5y"
+uri = "file://expo-qr.png"
+type = "image"
+title = "Expo Go QR Code"
