@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
-import { usePreferredStore } from "@/hooks/usePreferredStore";
+import { usePreferredStore, type PreferredStore } from "@/hooks/usePreferredStore";
 import { useProfile } from "@/hooks/useProfile";
 
 const API_BASE = process.env.EXPO_PUBLIC_DOMAIN
@@ -27,6 +27,10 @@ const BANNER_COLOR: Record<string, string> = {
   "Banter by Piercing Pagoda": "#B91C1C",
 };
 
+function bannerColor(banner: string) {
+  return BANNER_COLOR[banner] ?? "#5B21B6";
+}
+
 function storeInitial(banner: string) {
   if (banner.startsWith("Kay")) return "K";
   if (banner.startsWith("Jared")) return "J";
@@ -34,21 +38,21 @@ function storeInitial(banner: string) {
   return "B";
 }
 
-export function MyStoreCard() {
+function StoreRow({ store, wishlistCount }: { store: PreferredStore; wishlistCount: number }) {
   const colors = useColors();
-  const { store, stores, saveStore } = usePreferredStore();
-  const { wishlistItems } = useDiGe();
   const { profile } = useProfile();
   const { getToken } = useAuth();
+  const { saveStore } = usePreferredStore();
+  const bc = bannerColor(store.banner);
 
   const [sharing, setSharing] = useState(false);
   const [shared, setShared] = useState(false);
-
-  const linkedCount = Object.keys(stores).length;
-  const bannerColor = store ? (BANNER_COLOR[store.banner] ?? "#5B21B6") : "#5B21B6";
+  const { wishlistItems } = useDiGe();
+  const storeWishlist = wishlistItems.filter(
+    (w) => !w.retailer || w.retailer === store.banner || store.banner.toLowerCase().includes((w.retailer ?? "").toLowerCase())
+  );
 
   async function handleShareWishlist() {
-    if (!store) return;
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSharing(true);
     try {
@@ -93,7 +97,6 @@ export function MyStoreCard() {
   }
 
   async function handleBookAppointment() {
-    if (!store) return;
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSharing(true);
     try {
@@ -131,24 +134,116 @@ export function MyStoreCard() {
   }
 
   return (
+    <View style={[styles.storeBlock, { borderTopColor: colors.border }]}>
+      {/* Store info row */}
+      <View style={styles.storeRow}>
+        <View style={[styles.storeBadge, { backgroundColor: `${bc}18` }]}>
+          <Text style={[styles.storeBadgeText, { color: bc }]}>{storeInitial(store.banner)}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={[styles.storeName, { color: colors.foreground }]} numberOfLines={1}>{store.name}</Text>
+          <Text style={[styles.storeAddress, { color: colors.mutedForeground }]} numberOfLines={1}>{store.address}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 }}>
+            <Feather name="navigation" size={9} color={colors.mutedForeground} />
+            <Text style={[styles.storeMeta, { color: colors.mutedForeground }]}>{store.distanceMi} mi · {store.phone}</Text>
+          </View>
+        </View>
+        <Pressable
+          onPress={() => saveStore(store.banner, null)}
+          hitSlop={12}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+        >
+          <Feather name="x-circle" size={16} color={colors.mutedForeground} />
+        </Pressable>
+      </View>
+
+      {/* Success banner or actions */}
+      {shared ? (
+        <View style={[styles.successBanner, { backgroundColor: `${bc}12`, borderColor: `${bc}30` }]}>
+          <Feather name="check-circle" size={15} color={bc} />
+          <Text style={[styles.successText, { color: bc }]}>
+            Wishlist sent to {store.name}! An associate will reach out soon.
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.actionRow}>
+          <Pressable
+            onPress={handleShareWishlist}
+            disabled={sharing || wishlistCount === 0}
+            style={({ pressed }) => [
+              styles.actionBtn,
+              { backgroundColor: bc, opacity: (pressed || sharing || wishlistCount === 0) ? 0.7 : 1, flex: 1 },
+            ]}
+          >
+            {sharing ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <>
+                <Feather name="send" size={13} color="#fff" />
+                <Text style={styles.actionBtnText}>
+                  {wishlistCount === 0 ? "Empty Wishlist" : `Send Wishlist (${wishlistCount})`}
+                </Text>
+              </>
+            )}
+          </Pressable>
+          <Pressable
+            onPress={handleBookAppointment}
+            disabled={sharing}
+            style={({ pressed }) => [
+              styles.actionBtnOutline,
+              { borderColor: bc, opacity: (pressed || sharing) ? 0.7 : 1 },
+            ]}
+          >
+            <Feather name="calendar" size={13} color={bc} />
+            <Text style={[styles.actionBtnOutlineText, { color: bc }]}>Book Appt</Text>
+          </Pressable>
+        </View>
+      )}
+
+      <Pressable
+        onPress={() => router.push(`/store-picker?retailer=${encodeURIComponent(store.banner)}` as any)}
+        hitSlop={8}
+        style={styles.changeLink}
+      >
+        <Text style={[styles.changeLinkText, { color: colors.mutedForeground }]}>Change store</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+export function MyStoreCard() {
+  const colors = useColors();
+  const { stores } = usePreferredStore();
+  const { wishlistItems } = useDiGe();
+  const linkedStores = Object.values(stores);
+
+  return (
     <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-      {/* Header row */}
+      {/* Header */}
       <View style={styles.headerRow}>
-        <View style={[styles.iconWrap, { backgroundColor: store ? `${bannerColor}18` : colors.secondary }]}>
-          <Feather name="map-pin" size={15} color={store ? bannerColor : colors.mutedForeground} />
+        <View style={[styles.iconWrap, { backgroundColor: linkedStores.length > 0 ? "#5B21B618" : colors.secondary }]}>
+          <Feather name="map-pin" size={15} color={linkedStores.length > 0 ? "#5B21B6" : colors.mutedForeground} />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>My Stores</Text>
-          {linkedCount > 1 ? (
+          {linkedStores.length > 0 && (
             <Text style={[styles.sectionSub, { color: colors.mutedForeground }]}>
-              {linkedCount} retailers linked · manage per-retailer in Wishlist
+              {linkedStores.length} {linkedStores.length === 1 ? "retailer" : "retailers"} linked
             </Text>
-          ) : null}
+          )}
         </View>
+        {linkedStores.length > 0 && (
+          <Pressable
+            onPress={() => router.push("/(tabs)/wishlist" as any)}
+            hitSlop={8}
+            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          >
+            <Text style={[styles.addLink, { color: "#5B21B6" }]}>+ Add</Text>
+          </Pressable>
+        )}
       </View>
 
-      {!store ? (
-        /* No store linked */
+      {linkedStores.length === 0 ? (
         <View style={[styles.emptyInner, { borderTopColor: colors.border }]}>
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             Link Signet stores to your wishlist retailers to send wishlists, book appointments, and receive personalised outreach. Set them per-retailer in your Wishlist tab.
@@ -162,80 +257,13 @@ export function MyStoreCard() {
           </Pressable>
         </View>
       ) : (
-        /* Show first linked store with actions */
-        <View style={[styles.storeInner, { borderTopColor: colors.border }]}>
-          <View style={styles.storeRow}>
-            <View style={[styles.storeBadge, { backgroundColor: `${bannerColor}18` }]}>
-              <Text style={[styles.storeBadgeText, { color: bannerColor }]}>{storeInitial(store.banner)}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.storeName, { color: colors.foreground }]} numberOfLines={1}>{store.name}</Text>
-              <Text style={[styles.storeAddress, { color: colors.mutedForeground }]} numberOfLines={1}>{store.address}</Text>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 }}>
-                <Feather name="navigation" size={9} color={colors.mutedForeground} />
-                <Text style={[styles.storeDistance, { color: colors.mutedForeground }]}>{store.distanceMi} mi away</Text>
-                <Text style={[styles.storePhone, { color: colors.mutedForeground }]}> · {store.phone}</Text>
-              </View>
-            </View>
-            <Pressable
-              onPress={() => { saveStore(store.banner, null); }}
-              hitSlop={12}
-              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-            >
-              <Feather name="x-circle" size={16} color={colors.mutedForeground} />
-            </Pressable>
-          </View>
-
-          {shared ? (
-            <View style={[styles.successBanner, { backgroundColor: `${bannerColor}12`, borderColor: `${bannerColor}30` }]}>
-              <Feather name="check-circle" size={15} color={bannerColor} />
-              <Text style={[styles.successText, { color: bannerColor }]}>
-                Wishlist sent to {store.name}! An associate will reach out soon.
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.actionRow}>
-              <Pressable
-                onPress={handleShareWishlist}
-                disabled={sharing || wishlistItems.length === 0}
-                style={({ pressed }) => [
-                  styles.actionBtn,
-                  { backgroundColor: bannerColor, opacity: (pressed || sharing || wishlistItems.length === 0) ? 0.7 : 1, flex: 1 },
-                ]}
-              >
-                {sharing ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <>
-                    <Feather name="send" size={13} color="#fff" />
-                    <Text style={styles.actionBtnText}>
-                      {wishlistItems.length === 0 ? "Empty Wishlist" : `Send Wishlist (${wishlistItems.length})`}
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-              <Pressable
-                onPress={handleBookAppointment}
-                disabled={sharing}
-                style={({ pressed }) => [
-                  styles.actionBtnOutline,
-                  { borderColor: bannerColor, opacity: (pressed || sharing) ? 0.7 : 1 },
-                ]}
-              >
-                <Feather name="calendar" size={13} color={bannerColor} />
-                <Text style={[styles.actionBtnOutlineText, { color: bannerColor }]}>Book Appt</Text>
-              </Pressable>
-            </View>
-          )}
-
-          <Pressable
-            onPress={() => router.push(`/store-picker?retailer=${encodeURIComponent(store.banner)}` as any)}
-            style={styles.changeLink}
-            hitSlop={8}
-          >
-            <Text style={[styles.changeLinkText, { color: colors.mutedForeground }]}>Change store</Text>
-          </Pressable>
-        </View>
+        linkedStores.map((s) => (
+          <StoreRow
+            key={s.id}
+            store={s}
+            wishlistCount={wishlistItems.length}
+          />
+        ))
       )}
     </View>
   );
@@ -255,6 +283,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
   sectionSub: { fontSize: 11, fontFamily: "Inter_400Regular", marginTop: 1 },
+  addLink: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
   emptyInner: { borderTopWidth: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16 },
   emptyText: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19, marginBottom: 14 },
   findBtn: {
@@ -262,7 +291,7 @@ const styles = StyleSheet.create({
     height: 44, borderRadius: 12,
   },
   findBtnText: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#fff" },
-  storeInner: { borderTopWidth: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 12 },
+  storeBlock: { borderTopWidth: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 12 },
   storeRow: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
   storeBadge: {
     width: 38, height: 38, borderRadius: 11,
@@ -271,8 +300,7 @@ const styles = StyleSheet.create({
   storeBadgeText: { fontSize: 15, fontFamily: "Inter_700Bold" },
   storeName: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
   storeAddress: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 1 },
-  storeDistance: { fontSize: 11, fontFamily: "Inter_500Medium" },
-  storePhone: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  storeMeta: { fontSize: 11, fontFamily: "Inter_400Regular" },
   actionRow: { flexDirection: "row", gap: 8 },
   actionBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6,
