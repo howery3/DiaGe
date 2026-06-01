@@ -11,9 +11,11 @@ import {
   Alert,
   Image,
   LayoutAnimation,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -25,6 +27,7 @@ import { DatePickerModal } from "@/components/DatePickerModal";
 import { MyStoreCard } from "@/components/MyStoreCard";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
+import { usePreferredStore } from "@/hooks/usePreferredStore";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -52,6 +55,7 @@ export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { profile, saveProfile, initials, completionPct, hasProfile, buildShareText } = useProfile();
+  const { store: preferredStore } = usePreferredStore();
   const [openSection, setOpenSection] = useState<Section | null>("contact");
   const [activePicker, setActivePicker] = useState<DateField | null>(null);
 
@@ -119,8 +123,7 @@ export default function ProfileScreen() {
     }
   }
 
-  async function handleShare() {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  async function doShareImage() {
     try {
       const uri = await captureRef(profileShareRef, { format: "png", quality: 1, result: "tmpfile" });
       const available = await Sharing.isAvailableAsync();
@@ -130,6 +133,51 @@ export default function ProfileScreen() {
         Alert.alert("Sharing not available", "Your device doesn't support image sharing.");
       }
     } catch { }
+  }
+
+  async function handleSendToStore() {
+    if (!preferredStore) return;
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const text = buildShareText();
+    const storeText = `Hi ${preferredStore.name}!\n\nI'd like to share my jewelry profile:\n\n${text}`;
+    if (preferredStore.phone) {
+      const phone = preferredStore.phone.replace(/\D/g, "");
+      const smsUrl = Platform.OS === "ios"
+        ? `sms:${phone}&body=${encodeURIComponent(storeText)}`
+        : `sms:${phone}?body=${encodeURIComponent(storeText)}`;
+      const canOpen = await Linking.canOpenURL(smsUrl);
+      if (canOpen) {
+        await Linking.openURL(smsUrl);
+        return;
+      }
+    }
+    await Share.share({ message: storeText, title: `My Jewelry Profile — ${preferredStore.name}` });
+  }
+
+  async function handleShare() {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (preferredStore) {
+      if (Platform.OS === "ios") {
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options: [`Send to ${preferredStore.name}`, "Share with Friends & Family", "Cancel"],
+            cancelButtonIndex: 2,
+          },
+          (idx) => {
+            if (idx === 0) handleSendToStore();
+            else if (idx === 1) doShareImage();
+          }
+        );
+      } else {
+        Alert.alert("Share Profile", "Who would you like to share with?", [
+          { text: `Send to ${preferredStore.name}`, onPress: handleSendToStore },
+          { text: "Friends & Family", onPress: doShareImage },
+          { text: "Cancel", style: "cancel" },
+        ]);
+      }
+    } else {
+      doShareImage();
+    }
   }
 
   // Summary strings shown on closed accordion headers
@@ -288,7 +336,9 @@ export default function ProfileScreen() {
 
         <Pressable onPress={handleShare} style={styles.shareCta}>
           <Feather name="share-2" size={14} color="#fff" />
-          <Text style={styles.shareCtaText}>Share with friends & family</Text>
+          <Text style={styles.shareCtaText}>
+            {preferredStore ? `Share with ${preferredStore.name} or friends` : "Share with friends & family"}
+          </Text>
           <Feather name="chevron-right" size={14} color="rgba(255,255,255,0.7)" />
         </Pressable>
       </LinearGradient>
