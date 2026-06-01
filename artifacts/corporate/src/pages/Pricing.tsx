@@ -184,34 +184,6 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* ROI context */}
-      <div className="grid sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <DollarSign size={18} className="text-[#5B21B6] mb-3" />
-          <p className="text-2xl font-black text-gray-900 mb-1">{Math.round(AVG_ORDER_VALUE / PRICE_PER_LOCATION * 10) / 10}×</p>
-          <p className="text-xs font-semibold text-gray-700 mb-0.5">ROI on one DiaGe-attributed sale</p>
-          <p className="text-[11px] text-gray-400 leading-relaxed">
-            Avg Signet order for DiaGe users is ${AVG_ORDER_VALUE.toLocaleString()}. One purchase per month per store = {Math.round(AVG_ORDER_VALUE / PRICE_PER_LOCATION * 10) / 10}× cost recovery. Pilot stores are logging {Math.round(AVG_ORDER_VALUE * 415 / 30 / PRICE_PER_LOCATION)}× monthly.
-          </p>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <Shield size={18} className="text-red-500 mb-3" />
-          <p className="text-2xl font-black text-gray-900 mb-1">$13.8M</p>
-          <p className="text-xs font-semibold text-gray-700 mb-0.5">Diamond Bond value protected</p>
-          <p className="text-[11px] text-gray-400 leading-relaxed">
-            DiaGe's reminder system prevents plan lapses across the network. Each rescued Diamond Bond plan is a retained customer and recurring visit.
-          </p>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <TrendingUp size={18} className="text-emerald-600 mb-3" />
-          <p className="text-2xl font-black text-gray-900 mb-1">$290M+</p>
-          <p className="text-xs font-semibold text-gray-700 mb-0.5">Projected annual attributed revenue</p>
-          <p className="text-[11px] text-gray-400 leading-relaxed">
-            Based on pilot-store attribution rates extrapolated across all {SIGNET_STORES.toLocaleString()} Signet doors. DiaGe cost at full rollout: {fmt(SIGNET_STORES * ANNUAL_PRICE)}/yr.
-          </p>
-        </div>
-      </div>
-
       {/* Fine print */}
       <div className="text-[11px] text-gray-400 leading-relaxed border-t border-gray-100 pt-4 pb-2">
         Pricing is per active store location per calendar month. Annual pricing subject to signed agreement. Pilot pricing available for initial cohort of up to 25 locations. All revenue attribution figures are from pilot-store data and projections — actual results may vary. DiaGe retains ownership of the platform; Signet retains all customer relationship data. Custom SLA and data agreements available for enterprise contracts.
