@@ -123,6 +123,21 @@ export default function WishlistScreen() {
                   <Text style={[styles.retailerCount, { color: colors.mutedForeground }]}>
                     {items.length}
                   </Text>
+                  {retailer !== "Other" ? (
+                    <Pressable
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        router.push(`/wishlist-appointment?retailer=${encodeURIComponent(retailer)}` as any);
+                      }}
+                      style={({ pressed }) => [
+                        styles.bookBtn,
+                        { backgroundColor: colors.primary + "15", opacity: pressed ? 0.7 : 1 },
+                      ]}
+                    >
+                      <Feather name="calendar" size={11} color={colors.primary} />
+                      <Text style={[styles.bookBtnText, { color: colors.primary }]}>Book Appt</Text>
+                    </Pressable>
+                  ) : null}
                 </View>
               ) : null}
 
@@ -189,6 +204,11 @@ const styles = StyleSheet.create({
   retailerDot: { width: 6, height: 6, borderRadius: 3 },
   retailerLabel: { fontSize: 11, fontFamily: "Inter_700Bold", letterSpacing: 0.8, flex: 1 },
   retailerCount: { fontSize: 11, fontFamily: "Inter_500Medium" },
+  bookBtn: {
+    flexDirection: "row", alignItems: "center", gap: 4,
+    paddingHorizontal: 9, paddingVertical: 4, borderRadius: 20, marginLeft: 6,
+  },
+  bookBtnText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
   fab: {
     position: "absolute",
     right: 20,
