@@ -22,6 +22,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DatePickerModal } from "@/components/DatePickerModal";
+import { MyStoreCard } from "@/components/MyStoreCard";
 import { useColors } from "@/hooks/useColors";
 import { useProfile } from "@/hooks/useProfile";
 
@@ -455,6 +456,9 @@ export default function ProfileScreen() {
             </PillRow>
           </View>
         </Accordion>
+
+        {/* My Store */}
+        <MyStoreCard />
 
         {/* Share button */}
         <Pressable onPress={handleShare} style={({ pressed }) => [styles.shareButton, { opacity: pressed ? 0.85 : 1 }]}>

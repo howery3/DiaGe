@@ -1,0 +1,287 @@
+import { Feather } from "@expo/vector-icons";
+import { useAuth } from "@clerk/expo";
+import * as Haptics from "expo-haptics";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { useDiGe } from "@/context/DiGeContext";
+import { useColors } from "@/hooks/useColors";
+import { usePreferredStore } from "@/hooks/usePreferredStore";
+import { useProfile } from "@/hooks/useProfile";
+
+const API_BASE = process.env.EXPO_PUBLIC_DOMAIN
+  ? `https://${process.env.EXPO_PUBLIC_DOMAIN}/api`
+  : "http://localhost:5000/api";
+
+const BANNER_COLOR: Record<string, string> = {
+  "Kay Jewelers": "#5B21B6",
+  "Jared": "#0079F2",
+  "Zales": "#D97706",
+  "Banter by Piercing Pagoda": "#B91C1C",
+};
+
+function storeInitial(banner: string) {
+  if (banner.startsWith("Kay")) return "K";
+  if (banner.startsWith("Jared")) return "J";
+  if (banner.startsWith("Zales")) return "Z";
+  return "B";
+}
+
+export function MyStoreCard() {
+  const colors = useColors();
+  const { store, saveStore } = usePreferredStore();
+  const { wishlistItems } = useDiGe();
+  const { profile } = useProfile();
+  const { getToken } = useAuth();
+
+  const [sharing, setSharing] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  const bannerColor = store ? (BANNER_COLOR[store.banner] ?? "#5B21B6") : "#5B21B6";
+
+  async function handleShareWishlist() {
+    if (!store) return;
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSharing(true);
+    try {
+      const token = await getToken();
+      const payload = {
+        storeId: store.id,
+        type: "wishlist",
+        data: {
+          userName: profile.name || "DiaGe User",
+          userEmail: profile.email || "",
+          userPhone: profile.phone || "",
+          ringSize: profile.ringSize || null,
+          budgetRange: profile.budgetRange || null,
+          wishlistItems: wishlistItems.slice(0, 20).map((w) => ({
+            name: w.name,
+            estimatedPrice: w.estimatedPrice,
+            priority: w.priority,
+            retailer: w.retailer,
+            sku: w.sku,
+            retailerUrl: w.retailerUrl,
+          })),
+          sharedAt: new Date().toISOString(),
+        },
+      };
+      const res = await fetch(`${API_BASE}/store-share`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Share failed");
+      setShared(true);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setTimeout(() => setShared(false), 4000);
+    } catch {
+      Alert.alert("Couldn't send", "Please check your connection and try again.");
+    } finally {
+      setSharing(false);
+    }
+  }
+
+  async function handleBookAppointment() {
+    if (!store) return;
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSharing(true);
+    try {
+      const token = await getToken();
+      const payload = {
+        storeId: store.id,
+        type: "appointment",
+        data: {
+          userName: profile.name || "DiaGe User",
+          userEmail: profile.email || "",
+          userPhone: profile.phone || "",
+          message: "I'd like to schedule an appointment to discuss my wishlist.",
+          sharedAt: new Date().toISOString(),
+        },
+      };
+      await fetch(`${API_BASE}/store-share`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert(
+        "Request Sent!",
+        `${store.name} will reach out to confirm your appointment time. Expected response within 24 hours.`,
+        [{ text: "OK" }]
+      );
+    } catch {
+      Alert.alert("Couldn't send", "Please check your connection and try again.");
+    } finally {
+      setSharing(false);
+    }
+  }
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {/* Header row */}
+      <View style={styles.headerRow}>
+        <View style={[styles.iconWrap, { backgroundColor: store ? `${bannerColor}18` : colors.secondary }]}>
+          <Feather name="map-pin" size={15} color={store ? bannerColor : colors.mutedForeground} />
+        </View>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>My Store</Text>
+      </View>
+
+      {!store ? (
+        /* No store linked */
+        <View style={[styles.emptyInner, { borderTopColor: colors.border }]}>
+          <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+            Link a nearby Signet store to send your wishlist, book appointments, and receive personalised outreach from a dedicated associate.
+          </Text>
+          <Pressable
+            onPress={() => router.push("/store-picker" as any)}
+            style={({ pressed }) => [styles.findBtn, { backgroundColor: "#5B21B6", opacity: pressed ? 0.88 : 1 }]}
+          >
+            <Feather name="search" size={14} color="#fff" />
+            <Text style={styles.findBtnText}>Find Stores Near Me</Text>
+          </Pressable>
+        </View>
+      ) : (
+        /* Store linked */
+        <View style={[styles.storeInner, { borderTopColor: colors.border }]}>
+          {/* Store info */}
+          <View style={styles.storeRow}>
+            <View style={[styles.storeBadge, { backgroundColor: `${bannerColor}18` }]}>
+              <Text style={[styles.storeBadgeText, { color: bannerColor }]}>{storeInitial(store.banner)}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.storeName, { color: colors.foreground }]} numberOfLines={1}>{store.name}</Text>
+              <Text style={[styles.storeAddress, { color: colors.mutedForeground }]} numberOfLines={1}>{store.address}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 }}>
+                <Feather name="navigation" size={9} color={colors.mutedForeground} />
+                <Text style={[styles.storeDistance, { color: colors.mutedForeground }]}>{store.distanceMi} mi away</Text>
+                <Text style={[styles.storePhone, { color: colors.mutedForeground }]}> · {store.phone}</Text>
+              </View>
+            </View>
+            <Pressable
+              onPress={() => { saveStore(null); }}
+              hitSlop={12}
+              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            >
+              <Feather name="x-circle" size={16} color={colors.mutedForeground} />
+            </Pressable>
+          </View>
+
+          {/* Action buttons */}
+          {shared ? (
+            <View style={[styles.successBanner, { backgroundColor: `${bannerColor}12`, borderColor: `${bannerColor}30` }]}>
+              <Feather name="check-circle" size={15} color={bannerColor} />
+              <Text style={[styles.successText, { color: bannerColor }]}>
+                Wishlist sent to {store.name}! An associate will reach out soon.
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.actionRow}>
+              <Pressable
+                onPress={handleShareWishlist}
+                disabled={sharing || wishlistItems.length === 0}
+                style={({ pressed }) => [
+                  styles.actionBtn,
+                  { backgroundColor: bannerColor, opacity: (pressed || sharing || wishlistItems.length === 0) ? 0.7 : 1, flex: 1 },
+                ]}
+              >
+                {sharing ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <>
+                    <Feather name="send" size={13} color="#fff" />
+                    <Text style={styles.actionBtnText}>
+                      {wishlistItems.length === 0 ? "Empty Wishlist" : `Send Wishlist (${wishlistItems.length})`}
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+              <Pressable
+                onPress={handleBookAppointment}
+                disabled={sharing}
+                style={({ pressed }) => [
+                  styles.actionBtnOutline,
+                  { borderColor: bannerColor, opacity: (pressed || sharing) ? 0.7 : 1 },
+                ]}
+              >
+                <Feather name="calendar" size={13} color={bannerColor} />
+                <Text style={[styles.actionBtnOutlineText, { color: bannerColor }]}>Book Appt</Text>
+              </Pressable>
+            </View>
+          )}
+
+          <Pressable
+            onPress={() => router.push("/store-picker" as any)}
+            style={styles.changeLink}
+            hitSlop={8}
+          >
+            <Text style={[styles.changeLinkText, { color: colors.mutedForeground }]}>Change store</Text>
+          </Pressable>
+        </View>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 16, borderWidth: 1, marginBottom: 12, overflow: "hidden",
+  },
+  headerRow: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    paddingHorizontal: 16, paddingVertical: 14,
+  },
+  iconWrap: {
+    width: 30, height: 30, borderRadius: 9,
+    alignItems: "center", justifyContent: "center",
+  },
+  sectionTitle: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
+  emptyInner: { borderTopWidth: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16 },
+  emptyText: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19, marginBottom: 14 },
+  findBtn: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7,
+    height: 44, borderRadius: 12,
+  },
+  findBtnText: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#fff" },
+  storeInner: { borderTopWidth: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 12 },
+  storeRow: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
+  storeBadge: {
+    width: 38, height: 38, borderRadius: 11,
+    alignItems: "center", justifyContent: "center", flexShrink: 0,
+  },
+  storeBadgeText: { fontSize: 15, fontFamily: "Inter_700Bold" },
+  storeName: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
+  storeAddress: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 1 },
+  storeDistance: { fontSize: 11, fontFamily: "Inter_500Medium" },
+  storePhone: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  actionRow: { flexDirection: "row", gap: 8 },
+  actionBtn: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6,
+    height: 42, borderRadius: 11,
+  },
+  actionBtnText: { fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#fff" },
+  actionBtnOutline: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6,
+    height: 42, borderRadius: 11, borderWidth: 1.5, paddingHorizontal: 14,
+  },
+  actionBtnOutlineText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  successBanner: {
+    flexDirection: "row", alignItems: "flex-start", gap: 8,
+    padding: 12, borderRadius: 11, borderWidth: 1,
+  },
+  successText: { flex: 1, fontSize: 13, fontFamily: "Inter_500Medium", lineHeight: 18 },
+  changeLink: { alignSelf: "flex-start" },
+  changeLinkText: { fontSize: 12, fontFamily: "Inter_400Regular" },
+});

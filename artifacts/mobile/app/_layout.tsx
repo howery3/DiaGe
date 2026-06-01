@@ -157,6 +157,10 @@ function RootLayoutNav() {
           name="privacy"
           options={{ headerShown: true }}
         />
+        <Stack.Screen
+          name="store-picker"
+          options={{ presentation: "modal", headerShown: true, title: "Find Your Store" }}
+        />
       </Stack>
     </>
   );

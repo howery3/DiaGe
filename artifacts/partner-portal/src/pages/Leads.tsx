@@ -1,6 +1,109 @@
-import { useState } from "react";
-import { Phone, Mail, ChevronDown, ChevronUp, Gem, MapPin, Navigation } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Phone, Mail, ChevronDown, ChevronUp, Gem, MapPin, Navigation, Zap } from "lucide-react";
 import { LEADS, RETAILER_NAME, STORE_NAME, STORE_CITY, type Lead } from "@/data/demo";
+
+const PORTAL_STORE_ID = "kay-fifth-ave";
+
+interface LiveShare {
+  id: string;
+  type: string;
+  data: {
+    userName?: string;
+    userEmail?: string;
+    userPhone?: string;
+    ringSize?: string;
+    budgetRange?: string;
+    wishlistItems?: Array<{ name: string; estimatedPrice: string; priority: string; retailer: string }>;
+    message?: string;
+    sharedAt?: string;
+  };
+  createdAt: string;
+}
+
+function timeAgo(iso: string) {
+  const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  return `${Math.floor(diff / 3600)}h ago`;
+}
+
+function LiveShareCard({ share }: { share: LiveShare }) {
+  const d = share.data;
+  const isWishlist = share.type === "wishlist";
+  const items = d.wishlistItems ?? [];
+  const topItem = items[0];
+  const totalValue = items.reduce((sum, w) => {
+    const num = parseFloat(w.estimatedPrice.replace(/[^0-9.]/g, ""));
+    return sum + (isNaN(num) ? 0 : num);
+  }, 0);
+
+  return (
+    <div className="bg-white rounded-2xl border-2 border-green-300 overflow-hidden relative">
+      {/* Live badge */}
+      <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-green-50 border border-green-200 text-green-700 text-[11px] font-bold px-2 py-0.5 rounded-full">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+        LIVE
+      </div>
+
+      <div className="px-5 py-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-sm flex-shrink-0">
+            {(d.userName ?? "?").split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-gray-900 text-sm">{d.userName ?? "DiaGe User"}</p>
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
+                {isWishlist ? "Wishlist Share" : "Appt Request"}
+              </span>
+            </div>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Shared via DiaGe app · {timeAgo(share.createdAt)}
+            </p>
+          </div>
+        </div>
+
+        {isWishlist && items.length > 0 && (
+          <div className="space-y-1.5 mb-3">
+            {items.slice(0, 3).map((w, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs">
+                <Gem size={10} className="text-[#8B5CF6] flex-shrink-0" />
+                <span className="flex-1 text-gray-700 truncate">{w.name}</span>
+                <span className="font-semibold text-[#5B21B6]">{w.estimatedPrice}</span>
+              </div>
+            ))}
+            {items.length > 3 && (
+              <p className="text-xs text-gray-400">+{items.length - 3} more items</p>
+            )}
+          </div>
+        )}
+
+        {!isWishlist && d.message && (
+          <p className="text-sm text-gray-600 italic mb-3 leading-relaxed">"{d.message}"</p>
+        )}
+
+        <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+          {d.ringSize && <span>💍 Ring size {d.ringSize}</span>}
+          {d.budgetRange && <span>💰 Budget {d.budgetRange}</span>}
+          {totalValue > 0 && <span className="font-semibold text-[#5B21B6]">Total value ${totalValue.toLocaleString()}</span>}
+        </div>
+      </div>
+
+      <div className="border-t border-green-100 px-5 py-2.5 flex gap-3">
+        {d.userEmail && (
+          <a href={`mailto:${d.userEmail}`} className="flex items-center gap-1.5 text-xs font-medium text-[#5B21B6] hover:underline">
+            <Mail size={12} /> {d.userEmail}
+          </a>
+        )}
+        {d.userPhone && (
+          <a href={`tel:${d.userPhone}`} className="flex items-center gap-1.5 text-xs font-medium text-[#5B21B6] hover:underline">
+            <Phone size={12} /> {d.userPhone}
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const PRIORITY_STYLE: Record<Lead["priority"], string> = {
   high: "bg-red-50 text-red-700 border-red-200",
@@ -141,6 +244,22 @@ function LeadCard({ lead }: { lead: Lead }) {
 export default function Leads() {
   const [priorityFilter, setPriorityFilter] = useState<"all" | Lead["priority"]>("all");
   const [rangeKey, setRangeKey] = useState("100");
+  const [liveShares, setLiveShares] = useState<LiveShare[]>([]);
+
+  useEffect(() => {
+    async function fetchShares() {
+      try {
+        const res = await fetch(`/api/store-shares?storeId=${PORTAL_STORE_ID}`);
+        if (res.ok) {
+          const data = await res.json();
+          setLiveShares(data);
+        }
+      } catch { /* network error — fail silently */ }
+    }
+    fetchShares();
+    const id = setInterval(fetchShares, 6000);
+    return () => clearInterval(id);
+  }, []);
 
   const maxMiles = RANGE_OPTIONS.find((r) => r.key === rangeKey)?.max ?? Infinity;
 
@@ -164,6 +283,27 @@ export default function Leads() {
           </p>
         </div>
       </div>
+
+      {/* Live shares from DiaGe app */}
+      {liveShares.length > 0 && (
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Zap size={14} className="text-green-700" />
+            <p className="text-sm font-bold text-green-800">
+              {liveShares.length} live share{liveShares.length !== 1 ? "s" : ""} from the DiaGe app
+            </p>
+            <span className="ml-auto flex items-center gap-1.5 text-[11px] font-semibold text-green-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+              Updating every 6s
+            </span>
+          </div>
+          <div className="grid md:grid-cols-2 gap-3">
+            {liveShares.map((share) => (
+              <LiveShareCard key={share.id} share={share} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Geo callout */}
       <div className="rounded-xl bg-[#F3F0FF] border border-[#DDD6FE] px-4 py-3 flex items-center gap-3">

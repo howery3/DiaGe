@@ -8,12 +8,14 @@ import { EmptyState } from "@/components/EmptyState";
 import { WishlistCard } from "@/components/WishlistCard";
 import { useDiGe } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { usePreferredStore } from "@/hooks/usePreferredStore";
 import { capture } from "@/utils/posthog";
 
 export default function WishlistScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { wishlistItems, deleteWishlistItem } = useDiGe();
+  const { store } = usePreferredStore();
 
   async function handleAdd() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -30,6 +32,23 @@ export default function WishlistScreen() {
           {wishlistItems.length} {wishlistItems.length === 1 ? "item" : "items"}
         </Text>
       </View>
+
+      {store && wishlistItems.length > 0 && (
+        <Pressable
+          onPress={() => router.push("/(tabs)/profile" as any)}
+          style={({ pressed }) => [
+            styles.storeBanner,
+            { backgroundColor: "#F3F0FF", borderColor: "#DDD6FE", opacity: pressed ? 0.88 : 1 },
+          ]}
+        >
+          <View style={[styles.storeDot, { backgroundColor: "#5B21B6" }]} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.storeBannerTitle}>{store.name}</Text>
+            <Text style={styles.storeBannerSub}>Tap Profile → Send Wishlist to share your {wishlistItems.length} item{wishlistItems.length !== 1 ? "s" : ""} directly with this store</Text>
+          </View>
+          <Feather name="send" size={14} color="#5B21B6" />
+        </Pressable>
+      )}
 
       <FlatList
         data={wishlistItems}
@@ -79,6 +98,14 @@ export default function WishlistScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { paddingHorizontal: 20, paddingBottom: 16 },
+  storeBanner: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    marginHorizontal: 20, marginBottom: 8,
+    padding: 12, borderRadius: 14, borderWidth: 1,
+  },
+  storeDot: { width: 8, height: 8, borderRadius: 4, flexShrink: 0 },
+  storeBannerTitle: { fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#3B0764", marginBottom: 1 },
+  storeBannerSub: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#6D28D9", lineHeight: 15 },
   title: { fontSize: 28, fontFamily: "Inter_700Bold", letterSpacing: -0.5 },
   subtitle: { fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 },
   list: { paddingHorizontal: 20, flexGrow: 1 },
