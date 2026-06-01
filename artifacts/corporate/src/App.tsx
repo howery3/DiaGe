@@ -5,6 +5,7 @@ import Overview from "@/pages/Overview";
 import Metrics from "@/pages/Metrics";
 import Retailers from "@/pages/Retailers";
 import GeoSku from "@/pages/GeoSku";
+import Roadmap from "@/pages/Roadmap";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false } },
@@ -18,6 +19,7 @@ function Router() {
         <Route path="/metrics" component={Metrics} />
         <Route path="/retailers" component={Retailers} />
         <Route path="/geography" component={GeoSku} />
+        <Route path="/roadmap" component={Roadmap} />
       </Switch>
     </Layout>
   );

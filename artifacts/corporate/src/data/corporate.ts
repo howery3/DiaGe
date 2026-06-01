@@ -105,6 +105,93 @@ export const WEEKLY_SESSIONS = [
   { week: "W4 Mar", sessions: 3.2 },
 ];
 
+export const ROLLOUT_PHASES = [
+  {
+    phase: 1,
+    name: "Pilot Launch",
+    timeline: "Day 1",
+    itRequired: "None" as const,
+    description: "Store manager receives an email invite and logs into the Partner Portal. No software installation, no IT ticket — live in one afternoon.",
+    steps: [
+      "DiaGe configures store (name, address, coordinates)",
+      "Manager receives email invite + login credentials",
+      "Portal immediately surfaces live wishlist leads",
+      "Associates begin contacting high-priority leads",
+    ],
+    signetAction: "Provide store manager email address",
+    color: "#009118",
+    lightBg: "hsl(142 76% 94%)",
+    textColor: "hsl(142 76% 25%)",
+  },
+  {
+    phase: 2,
+    name: "In-Store Touchpoints",
+    timeline: "Week 2",
+    itRequired: "None" as const,
+    description: "Physical QR signage drives attributed traffic. Every scan auto-routes the customer's wishlist to the correct store — no app required to scan.",
+    steps: [
+      "DiaGe delivers print-ready QR code files",
+      "Store places countertop cards + window clings",
+      "QR scans tie customers to that store location",
+      "In-store browse sessions flow into the Lead pipeline",
+    ],
+    signetAction: "Print and place the provided signage",
+    color: "#0079F2",
+    lightBg: "hsl(211 100% 94%)",
+    textColor: "#0055a5",
+  },
+  {
+    phase: 3,
+    name: "Catalog & Attribution",
+    timeline: "Weeks 4–8",
+    itRequired: "Minimal" as const,
+    description: "A nightly SKU feed makes DiaGe's in-app browser show live Signet pricing and availability. POS attribution closes the conversion loop automatically.",
+    steps: [
+      "Nightly SKU/price feed from Signet catalog (SFTP or REST)",
+      "DiaGe retailer browser surfaces live Signet inventory",
+      "Associates mark leads 'closed' in the portal",
+      "Optional: POS webhook auto-closes attributed purchases",
+    ],
+    signetAction: "One-time catalog API or SFTP feed setup",
+    color: "#D97706",
+    lightBg: "hsl(38 92% 94%)",
+    textColor: "hsl(38 92% 30%)",
+  },
+  {
+    phase: 4,
+    name: "Enterprise Integration",
+    timeline: "Months 3–6",
+    itRequired: "Standard" as const,
+    description: "SSO, CRM sync, and loyalty linking make DiaGe a native part of Signet's tech stack — ready to scale to all 2,800+ US stores.",
+    steps: [
+      "Single sign-on via Okta / Active Directory",
+      "Lead pipeline synced to Salesforce / Signet CRM",
+      "Kay Rewards / Jared Rewards loyalty ID linking",
+      "DiaGe first-party data tied to existing loyalty profiles",
+    ],
+    signetAction: "SSO credentials + CRM API access",
+    color: "#5B21B6",
+    lightBg: "hsl(262 40% 94%)",
+    textColor: "hsl(262 80% 30%)",
+  },
+];
+
+export const INTEGRATION_POINTS = [
+  { name: "Partner Portal",            phase: 1, type: "Web App",     description: "Store-facing leads & customer dashboard — browser only",  status: "live"    },
+  { name: "In-Store QR Signage",       phase: 2, type: "Physical",    description: "Print-ready files; no IT required",                       status: "ready"   },
+  { name: "SKU Catalog Feed",          phase: 3, type: "API / SFTP",  description: "Nightly product + price sync from Signet catalog",        status: "planned" },
+  { name: "POS Purchase Attribution",  phase: 3, type: "Webhook",     description: "Auto-closes leads when a purchase is recorded",          status: "planned" },
+  { name: "Signet SSO (Okta / AD)",    phase: 4, type: "Auth",        description: "One login for all store associate tools",                 status: "planned" },
+  { name: "CRM Sync (Salesforce)",     phase: 4, type: "Integration", description: "Leads and conversion data flow into existing CRM",        status: "planned" },
+  { name: "Loyalty Program Link",      phase: 4, type: "Integration", description: "Kay Rewards / Jared Rewards ID pairing for 1P data",      status: "planned" },
+];
+
+export const ROLLOUT_SCALE = [
+  { milestone: "Pilot",           stores: 5,    banners: 1, associates: 20,    timeframe: "Now",      pct: 0.2 },
+  { milestone: "Banner Rollout",  stores: 250,  banners: 2, associates: 1000,  timeframe: "Month 3",  pct: 9   },
+  { milestone: "Full Signet",     stores: 2800, banners: 4, associates: 11200, timeframe: "Month 12", pct: 100 },
+];
+
 export const SIGNET_PROJECTION = {
   addressableCustomers: 9300000,
   projectedAdoptionPct: 18,
