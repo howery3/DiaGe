@@ -14,6 +14,47 @@ export const KPI = {
   itemsSharedToStore: 2391,
 };
 
+export const KPI_DELTAS = {
+  customersReached: +16,
+  activeWishlists: +14,
+  totalWishlistValue: +21,
+  avgItemsPerCustomer: +0.4,
+  quoteRequests: +25,
+  itemsSharedToStore: +32,
+};
+
+export const RISING_SKUS = [
+  { name: "Vera Wang LOVE Eternity Band", sku: "VW-ETB-012", savesThisMonth: 67, savesLastMonth: 31, avgPrice: 1899 },
+  { name: "Le Vian Chocolate Diamond Ring", sku: "LV-CDR-088", savesThisMonth: 54, savesLastMonth: 28, avgPrice: 3299 },
+  { name: "Sapphire Three-Stone Ring", sku: "19067234", savesThisMonth: 87, savesLastMonth: 49, avgPrice: 2799 },
+];
+
+export const OCCASION_BREAKDOWN = [
+  { occasion: "Engagement",  count: 312, pct: 38, color: "#5B21B6" },
+  { occasion: "Anniversary", count: 188, pct: 23, color: "#7C3AED" },
+  { occasion: "Self-purchase", count: 147, pct: 18, color: "#8B5CF6" },
+  { occasion: "Gift",        count: 98,  pct: 12, color: "#A78BFA" },
+  { occasion: "Inspection",  count: 57,  pct: 7,  color: "#C4B5FD" },
+  { occasion: "Other",       count: 10,  pct: 2,  color: "#DDD6FE" },
+];
+
+export const DAY_OF_WEEK_ACTIVITY = [
+  { day: "Mon", saves: 284, shares: 128 },
+  { day: "Tue", saves: 312, shares: 141 },
+  { day: "Wed", saves: 298, shares: 134 },
+  { day: "Thu", saves: 341, shares: 158 },
+  { day: "Fri", saves: 487, shares: 231 },
+  { day: "Sat", saves: 621, shares: 298 },
+  { day: "Sun", saves: 448, shares: 201 },
+];
+
+export const ACTIONABLE_NOW = {
+  hotLeads: 7,
+  pendingVisitRequests: 4,
+  expiringWarranties: 3,
+  optInsWithWishlist: 23,
+};
+
 export const MONTHLY_ACTIVITY = [
   { month: "Dec", wishlists: 198, shares: 541, quoteRequests: 22 },
   { month: "Jan", wishlists: 274, shares: 734, quoteRequests: 41 },
