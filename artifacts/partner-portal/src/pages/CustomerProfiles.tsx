@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search, Phone, Mail, MapPin, ChevronDown, ChevronUp, Star, Gem, Navigation, Clock, Zap, Info, ShieldCheck, ShieldAlert, ShieldOff, Diamond, FileText, Receipt, Award, Wrench, ShoppingBag, Store } from "lucide-react";
+import { Search, Phone, Mail, MapPin, ChevronDown, ChevronUp, Star, Gem, Navigation, Clock, Zap, Info, ShieldCheck, ShieldAlert, ShieldOff, Diamond, FileText, Receipt, Award, Wrench, ShoppingBag, Store, ExternalLink } from "lucide-react";
 import { CUSTOMER_PROFILES, STORE_CITY, RETAILER_NAME, type CustomerProfile, type RetailerPurchase } from "@/data/demo";
 
 const DOC_ICON: Record<string, React.ElementType> = {
@@ -57,14 +57,26 @@ function PurchaseCard({ p }: { p: RetailerPurchase }) {
 
       {/* Uploaded docs */}
       {p.docs.length > 0 && (
-        <div className="border-t border-[#F0EEF8] px-3 py-2 flex flex-col gap-1">
+        <div className="border-t border-[#F0EEF8] px-3 pt-2 pb-1.5 flex flex-col gap-1">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Uploaded Documents</p>
+            <span className="text-[9px] font-bold bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full border border-gray-200">
+              DEMO — links live in production
+            </span>
+          </div>
           {p.docs.map((doc) => {
             const DIcon = DOC_ICON[doc.type] ?? FileText;
             return (
-              <div key={doc.name} className="flex items-center gap-2">
+              <div
+                key={doc.name}
+                title="In production, this opens the customer-uploaded file directly from secure storage"
+                className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-[#F3F0FF] group cursor-not-allowed transition-colors"
+              >
                 <DIcon size={11} className="text-[#8B5CF6] flex-shrink-0" />
-                <span className="text-[11px] text-gray-600 truncate">{doc.name}</span>
-                <span className="ml-auto text-[10px] text-gray-400 flex-shrink-0 capitalize">{doc.type}</span>
+                <span className="text-[11px] text-[#5B21B6] underline decoration-dotted underline-offset-2 truncate group-hover:decoration-solid">
+                  {doc.name}
+                </span>
+                <ExternalLink size={9} className="ml-auto text-gray-300 group-hover:text-[#8B5CF6] flex-shrink-0 transition-colors" />
               </div>
             );
           })}
