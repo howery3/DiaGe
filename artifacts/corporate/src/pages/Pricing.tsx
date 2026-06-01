@@ -88,12 +88,12 @@ export default function Pricing() {
               <div className="text-white/50 text-xl font-light">→</div>
               <div className="text-center px-4 py-2 bg-white/20 rounded-xl ring-2 ring-white/30">
                 <p className="text-2xl font-black">${BRIDAL_WARRANTY}</p>
-                <p className="text-xs text-white/70 mt-0.5">Diamond Bond warranty</p>
+                <p className="text-xs text-white/70 mt-0.5">lifetime protection plan</p>
               </div>
               <div className="text-white/50 text-xl font-light">=</div>
               <div className="flex-1 min-w-[160px]">
                 <p className="text-sm font-bold leading-snug">One warranty sold pays for DiaGe for the entire month.</p>
-                <p className="text-xs text-white/60 mt-1">The cost of DiaGe is literally the price of one protection plan on one average bridal sale — every other sale is pure upside.</p>
+                <p className="text-xs text-white/60 mt-1">The cost of DiaGe is exactly the price of one lifetime protection plan on one average bridal sale — every other sale is pure upside.</p>
               </div>
             </div>
           </div>
