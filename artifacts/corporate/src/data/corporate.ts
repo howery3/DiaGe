@@ -162,7 +162,7 @@ export const ROLLOUT_PHASES = [
     name: "Enterprise Integration",
     timeline: "Months 3–6",
     itRequired: "Standard" as const,
-    description: "SSO, CRM sync, and loyalty linking make DiaGe a native part of Signet's tech stack — ready to scale to all 2,800+ US stores.",
+    description: "SSO, CRM sync, and loyalty linking make DiaGe a native part of Signet's tech stack — ready to scale to all 2,500 US stores.",
     steps: [
       "Single sign-on via Okta / Active Directory",
       "Lead pipeline synced to Salesforce / Signet CRM",
@@ -187,9 +187,9 @@ export const INTEGRATION_POINTS = [
 ];
 
 export const ROLLOUT_SCALE = [
-  { milestone: "Pilot",           stores: 5,    banners: 1, associates: 20,    timeframe: "Now",      pct: 0.2 },
-  { milestone: "Banner Rollout",  stores: 250,  banners: 2, associates: 1000,  timeframe: "Month 3",  pct: 9   },
-  { milestone: "Full Signet",     stores: 2800, banners: 4, associates: 11200, timeframe: "Month 12", pct: 100 },
+  { milestone: "Pilot",           stores: 25,   banners: 2, associates: 100,   timeframe: "Now",      pct: 1   },
+  { milestone: "Banner Rollout",  stores: 250,  banners: 3, associates: 1000,  timeframe: "Month 3",  pct: 10  },
+  { milestone: "Full Signet",     stores: 2500, banners: 4, associates: 10000, timeframe: "Month 12", pct: 100 },
 ];
 
 export const SIGNET_PROJECTION = {
@@ -199,7 +199,7 @@ export const SIGNET_PROJECTION = {
   projectedWishlistValue: 6800000000,
   projectedQuoteRequests: 214000,
   bannerCount: 4,
-  locationCount: 2800,
+  locationCount: 2500,
   timeframeYears: 3,
 };
 

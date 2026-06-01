@@ -27,7 +27,7 @@ export default function Roadmap() {
           <h1 className="text-2xl font-bold text-foreground">Integration Roadmap</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          How DiaGe rolls out across Signet stores — from a one-afternoon pilot to 2,800+ locations
+          How DiaGe rolls out across Signet stores — from a one-afternoon pilot to 2,500 locations
         </p>
       </div>
 
@@ -113,7 +113,7 @@ export default function Roadmap() {
       {/* Scale progression */}
       <div className="bg-card border border-card-border rounded-xl p-6 mb-6">
         <div className="font-semibold text-sm text-foreground mb-1">Network Scale Over Time</div>
-        <div className="text-xs text-muted-foreground mb-6">From 5 pilot stores to the full Signet US network</div>
+        <div className="text-xs text-muted-foreground mb-6">From 25 pilot stores to the full Signet US network</div>
 
         <div className="grid grid-cols-3 gap-0 relative">
           {/* Progress bar backdrop */}
