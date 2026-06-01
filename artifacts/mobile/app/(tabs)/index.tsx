@@ -83,8 +83,17 @@ export default function VaultScreen() {
 
   const recentPieces = useMemo(() => {
     const sorted = [...pieces].reverse();
-    return typeFilter === "all" ? sorted : sorted.filter((p) => p.type === typeFilter);
-  }, [pieces, typeFilter]);
+    const byType = typeFilter === "all" ? sorted : sorted.filter((p) => p.type === typeFilter);
+    if (!query.trim()) return byType;
+    const q = query.toLowerCase();
+    return byType.filter(
+      (p) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.brand?.toLowerCase().includes(q) ||
+        p.retailer?.toLowerCase().includes(q) ||
+        p.type?.toLowerCase().includes(q)
+    );
+  }, [pieces, typeFilter, query]);
 
   const presentTypes = useMemo<JewelryType[]>(() => {
     const seen = new Set<JewelryType>();
@@ -250,25 +259,7 @@ export default function VaultScreen() {
         </Pressable>
       </View>
 
-      {/* Search */}
-      <View style={[styles.searchWrap, { backgroundColor: colors.muted, borderColor: colors.border }]}>
-        <Feather name="search" size={16} color={colors.mutedForeground} />
-        <TextInput
-          style={[styles.search, { color: colors.foreground }]}
-          placeholder="Search by retailer..."
-          placeholderTextColor={colors.mutedForeground}
-          value={query}
-          onChangeText={setQuery}
-          returnKeyType="search"
-        />
-        {query ? (
-          <Pressable onPress={() => setQuery("")} hitSlop={8}>
-            <Feather name="x" size={16} color={colors.mutedForeground} />
-          </Pressable>
-        ) : null}
-      </View>
-
-      {filteredRetailers.length > 0 ? (
+      {filteredRetailers.length > 0 || query.trim() ? (
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground, paddingHorizontal: 20, marginBottom: 8 }]}>BY RETAILER</Text>
       ) : null}
     </>
@@ -293,7 +284,9 @@ export default function VaultScreen() {
           <View>
             <Text style={[styles.logo, { color: colors.primary }]}>DiaGe</Text>
             <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-              {`${pieces.length} ${pieces.length === 1 ? "piece" : "pieces"} · ${retailers.length} ${retailers.length === 1 ? "retailer" : "retailers"}`}
+              {query.trim()
+                ? `${recentPieces.length} piece${recentPieces.length !== 1 ? "s" : ""} · ${filteredRetailers.length} retailer${filteredRetailers.length !== 1 ? "s" : ""}`
+                : `${pieces.length} ${pieces.length === 1 ? "piece" : "pieces"} · ${retailers.length} ${retailers.length === 1 ? "retailer" : "retailers"}`}
             </Text>
           </View>
           <View style={styles.headerActions}>
@@ -313,6 +306,23 @@ export default function VaultScreen() {
               <Feather name="settings" size={18} color={colors.mutedForeground} />
             </Pressable>
           </View>
+        </View>
+        <View style={[styles.searchWrap, { backgroundColor: colors.muted, borderColor: colors.border }]}>
+          <Feather name="search" size={15} color={colors.mutedForeground} />
+          <TextInput
+            style={[styles.search, { color: colors.foreground }]}
+            placeholder="Search pieces, brands, retailers…"
+            placeholderTextColor={colors.mutedForeground}
+            value={query}
+            onChangeText={setQuery}
+            returnKeyType="search"
+            clearButtonMode="while-editing"
+          />
+          {query ? (
+            <Pressable onPress={() => setQuery("")} hitSlop={8}>
+              <Feather name="x" size={15} color={colors.mutedForeground} />
+            </Pressable>
+          ) : null}
         </View>
       </View>
 
@@ -552,8 +562,8 @@ const styles = StyleSheet.create({
   addPieceBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 14, borderRadius: 14, shadowColor: "#5B21B6", shadowOpacity: 0.3, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
   addPieceBtnText: { color: "#fff", fontSize: 15, fontFamily: "Inter_700Bold" },
 
-  searchWrap: { flexDirection: "row", alignItems: "center", marginHorizontal: 20, marginBottom: 12, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, borderWidth: 1, gap: 10 },
-  search: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
+  searchWrap: { flexDirection: "row", alignItems: "center", marginTop: 10, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 12, borderWidth: 1, gap: 8 },
+  search: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular", paddingVertical: 0 },
 
   sectionLabel: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 0.8, textTransform: "uppercase" },
 
