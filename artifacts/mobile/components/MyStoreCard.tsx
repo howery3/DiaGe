@@ -189,7 +189,7 @@ function StoreRow({ store, storeItems, saveStore }: StoreRowProps) {
         )}
 
         <Pressable
-          onPress={() => router.push(`/store-picker?retailer=${encodeURIComponent(store.banner)}` as any)}
+          onPress={() => router.push("/store-picker" as any)}
           hitSlop={8}
           style={styles.changeLink}
         >

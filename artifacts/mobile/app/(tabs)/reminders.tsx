@@ -143,14 +143,7 @@ export default function RemindersScreen() {
     if (!store) {
       closeMenu();
       await new Promise((r) => setTimeout(r, 120));
-      Alert.alert(
-        "No Store Linked",
-        "Link a Signet store from your Profile first, then you can book appointments directly from here.",
-        [
-          { text: "Go to Profile", onPress: () => router.push("/(tabs)/profile") },
-          { text: "Cancel", style: "cancel" },
-        ]
-      );
+      router.push("/store-picker" as any);
       return;
     }
 
