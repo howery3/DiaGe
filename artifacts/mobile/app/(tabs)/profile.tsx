@@ -182,32 +182,38 @@ export default function ProfileScreen() {
 
   async function handleShare() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    if (linkedStores.length === 0) {
-      doShareImage();
-      return;
-    }
     const storeOptions = linkedStores.map((s) => `Send to ${s.name} via DiaGe`);
-    const allOptions = [...storeOptions, "Share with Friends & Family", "Cancel"];
+    const noStoreOption = "Send to a Store via DiaGe";
+    const friendsOption = "Share with Friends & Family";
+    const cancelOption = "Cancel";
+
     if (Platform.OS === "ios") {
+      const options =
+        linkedStores.length > 0
+          ? [...storeOptions, friendsOption, cancelOption]
+          : [noStoreOption, friendsOption, cancelOption];
       ActionSheetIOS.showActionSheetWithOptions(
-        { options: allOptions, cancelButtonIndex: allOptions.length - 1 },
+        { options, cancelButtonIndex: options.length - 1 },
         (idx) => {
-          if (idx < linkedStores.length) {
-            const s = linkedStores[idx];
-            handleSendToStoreDiage(s.id, s.name);
-          } else if (idx === linkedStores.length) {
-            doShareImage();
+          if (linkedStores.length > 0) {
+            if (idx < linkedStores.length) handleSendToStoreDiage(linkedStores[idx].id, linkedStores[idx].name);
+            else if (idx === linkedStores.length) doShareImage();
+          } else {
+            if (idx === 0) router.push("/store-picker" as any);
+            else if (idx === 1) doShareImage();
           }
         }
       );
     } else {
       Alert.alert("Share Profile", "Who would you like to share with?", [
-        ...linkedStores.map((s) => ({
-          text: `Send to ${s.name} via DiaGe`,
-          onPress: () => handleSendToStoreDiage(s.id, s.name),
-        })),
-        { text: "Share with Friends & Family", onPress: doShareImage },
-        { text: "Cancel", style: "cancel" },
+        ...(linkedStores.length > 0
+          ? linkedStores.map((s) => ({
+              text: `Send to ${s.name} via DiaGe`,
+              onPress: () => handleSendToStoreDiage(s.id, s.name),
+            }))
+          : [{ text: noStoreOption, onPress: () => router.push("/store-picker" as any) }]),
+        { text: friendsOption, onPress: doShareImage },
+        { text: cancelOption, style: "cancel" as const },
       ]);
     }
   }
