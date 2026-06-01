@@ -4,6 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
+import { useAuth } from "@clerk/expo";
 import React, { useRef, useState } from "react";
 import { captureRef } from "react-native-view-shot";
 import {
@@ -11,11 +12,9 @@ import {
   Alert,
   Image,
   LayoutAnimation,
-  Linking,
   Platform,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -53,8 +52,15 @@ function formatDate(iso: string): string {
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { profile, saveProfile, initials, completionPct, hasProfile, buildShareText } = useProfile();
-  const { store: preferredStore } = usePreferredStore();
+  const { profile, saveProfile, initials, completionPct, hasProfile } = useProfile();
+  const { stores } = usePreferredStore();
+  const { getToken } = useAuth();
+
+  const API_BASE = process.env.EXPO_PUBLIC_DOMAIN
+    ? `https://${process.env.EXPO_PUBLIC_DOMAIN}/api`
+    : "http://localhost:5000/api";
+
+  const linkedStores = Object.values(stores);
   const [openSection, setOpenSection] = useState<Section | null>("contact");
   const [activePicker, setActivePicker] = useState<DateField | null>(null);
 
@@ -134,48 +140,75 @@ export default function ProfileScreen() {
     } catch { }
   }
 
-  async function handleSendToStore() {
-    if (!preferredStore) return;
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const text = buildShareText();
-    const storeText = `Hi ${preferredStore.name}!\n\nI'd like to share my jewelry profile:\n\n${text}`;
-    if (preferredStore.phone) {
-      const phone = preferredStore.phone.replace(/\D/g, "");
-      const smsUrl = Platform.OS === "ios"
-        ? `sms:${phone}&body=${encodeURIComponent(storeText)}`
-        : `sms:${phone}?body=${encodeURIComponent(storeText)}`;
-      const canOpen = await Linking.canOpenURL(smsUrl);
-      if (canOpen) {
-        await Linking.openURL(smsUrl);
-        return;
+  async function handleSendToStoreDiage(storeId: string, storeName: string) {
+    try {
+      const token = await getToken();
+      const res = await fetch(`${API_BASE}/store-share`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          storeId,
+          type: "customer_linked",
+          data: {
+            userName: profile.name || "",
+            userEmail: profile.email || "",
+            userPhone: profile.phone || "",
+            ringSize: profile.ringSize || null,
+            braceletSize: profile.braceletSize || null,
+            necklaceLength: profile.necklaceLength || null,
+            birthday: profile.birthday || null,
+            anniversary: profile.anniversary || null,
+            preferredGoldColor: profile.preferredGoldColor || null,
+            preferredMetals: profile.preferredMetals ?? [],
+            preferredStones: profile.preferredStones ?? [],
+            budgetRange: profile.budgetRange || null,
+            sharedAt: new Date().toISOString(),
+          },
+        }),
+      });
+      if (res.ok) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        Alert.alert("Profile shared!", `${storeName} can now view your jewelry profile in their Partner Portal.`);
+      } else {
+        Alert.alert("Couldn't share", "Please check your connection and try again.");
       }
+    } catch {
+      Alert.alert("Couldn't share", "Please check your connection and try again.");
     }
-    await Share.share({ message: storeText, title: `My Jewelry Profile — ${preferredStore.name}` });
   }
 
   async function handleShare() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    if (preferredStore) {
-      if (Platform.OS === "ios") {
-        ActionSheetIOS.showActionSheetWithOptions(
-          {
-            options: [`Send to ${preferredStore.name}`, "Share with Friends & Family", "Cancel"],
-            cancelButtonIndex: 2,
-          },
-          (idx) => {
-            if (idx === 0) handleSendToStore();
-            else if (idx === 1) doShareImage();
-          }
-        );
-      } else {
-        Alert.alert("Share Profile", "Who would you like to share with?", [
-          { text: `Send to ${preferredStore.name}`, onPress: handleSendToStore },
-          { text: "Friends & Family", onPress: doShareImage },
-          { text: "Cancel", style: "cancel" },
-        ]);
-      }
-    } else {
+    if (linkedStores.length === 0) {
       doShareImage();
+      return;
+    }
+    const storeOptions = linkedStores.map((s) => `Send to ${s.name} via DiaGe`);
+    const allOptions = [...storeOptions, "Share with Friends & Family", "Cancel"];
+    if (Platform.OS === "ios") {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: allOptions, cancelButtonIndex: allOptions.length - 1 },
+        (idx) => {
+          if (idx < linkedStores.length) {
+            const s = linkedStores[idx];
+            handleSendToStoreDiage(s.id, s.name);
+          } else if (idx === linkedStores.length) {
+            doShareImage();
+          }
+        }
+      );
+    } else {
+      Alert.alert("Share Profile", "Who would you like to share with?", [
+        ...linkedStores.map((s) => ({
+          text: `Send to ${s.name} via DiaGe`,
+          onPress: () => handleSendToStoreDiage(s.id, s.name),
+        })),
+        { text: "Share with Friends & Family", onPress: doShareImage },
+        { text: "Cancel", style: "cancel" },
+      ]);
     }
   }
 
@@ -336,7 +369,7 @@ export default function ProfileScreen() {
         <Pressable onPress={handleShare} style={styles.shareCta}>
           <Feather name="share-2" size={14} color="#fff" />
           <Text style={styles.shareCtaText}>
-            {preferredStore ? `Share with ${preferredStore.name} or friends` : "Share with friends & family"}
+            {linkedStores.length > 0 ? "Share with a store or friends & family" : "Share with friends & family"}
           </Text>
           <Feather name="chevron-right" size={14} color="rgba(255,255,255,0.7)" />
         </Pressable>
