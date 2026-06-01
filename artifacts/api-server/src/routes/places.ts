@@ -1,17 +1,52 @@
 import { Router } from "express";
+import { DEMO_STORES, haversineDistance } from "../lib/storeData.js";
 
 const router = Router();
+
+const RADIUS_MI = 30;
 
 router.get("/places/nearby", async (req, res) => {
   const { query, lat, lng } = req.query as Record<string, string>;
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
 
-  if (!apiKey) {
-    res.status(503).json({ error: "Places API not configured" });
-    return;
-  }
   if (!query || !lat || !lng) {
     res.status(400).json({ error: "query, lat, and lng are required" });
+    return;
+  }
+
+  const userLat = parseFloat(lat);
+  const userLng = parseFloat(lng);
+  if (isNaN(userLat) || isNaN(userLng)) {
+    res.status(400).json({ error: "lat and lng must be numbers" });
+    return;
+  }
+
+  // No Google API key — use static store list with real GPS distance calculation
+  if (!apiKey) {
+    const q = query.toLowerCase();
+    const nearby = DEMO_STORES
+      .filter((s) =>
+        s.banner.toLowerCase().includes(q) ||
+        s.name.toLowerCase().includes(q)
+      )
+      .map((s) => ({
+        ...s,
+        distanceMi: haversineDistance(userLat, userLng, s.lat, s.lng),
+      }))
+      .filter((s) => s.distanceMi <= RADIUS_MI)
+      .sort((a, b) => a.distanceMi - b.distanceMi)
+      .slice(0, 5)
+      .map((s) => ({
+        placeId: s.id,
+        name: s.name,
+        address: s.address,
+        phone: s.phone,
+        lat: s.lat,
+        lng: s.lng,
+        detailsLoaded: true,
+      }));
+
+    res.json({ places: nearby });
     return;
   }
 
