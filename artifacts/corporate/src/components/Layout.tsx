@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Building2, MapPin, Lock, TrendingUp, Rocket, ShieldAlert } from "lucide-react";
+import { LayoutDashboard, Building2, MapPin, Lock, TrendingUp, Rocket, ShieldAlert, DollarSign } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "Platform Overview", icon: LayoutDashboard },
@@ -8,6 +8,7 @@ const NAV = [
   { href: "/geography", label: "SKU Geography", icon: MapPin },
   { href: "/protection", label: "Revenue & Protection", icon: ShieldAlert },
   { href: "/roadmap", label: "Integration Roadmap", icon: Rocket },
+  { href: "/pricing", label: "Pricing", icon: DollarSign },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {

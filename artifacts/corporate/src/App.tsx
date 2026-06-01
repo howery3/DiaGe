@@ -7,6 +7,7 @@ import Retailers from "@/pages/Retailers";
 import GeoSku from "@/pages/GeoSku";
 import Roadmap from "@/pages/Roadmap";
 import Protection from "@/pages/Protection";
+import Pricing from "@/pages/Pricing";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false } },
@@ -22,6 +23,7 @@ function Router() {
         <Route path="/geography" component={GeoSku} />
         <Route path="/roadmap" component={Roadmap} />
         <Route path="/protection" component={Protection} />
+        <Route path="/pricing" component={Pricing} />
       </Switch>
     </Layout>
   );
