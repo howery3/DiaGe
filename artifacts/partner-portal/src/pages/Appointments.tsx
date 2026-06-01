@@ -1,6 +1,61 @@
-import { useState } from "react";
-import { CalendarClock, MapPin, Navigation, Gem, Clock, MessageSquare, UserPlus, CheckCircle2, ArrowRight, Star, Wrench, Gift, Heart, Eye, ExternalLink } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { CalendarClock, MapPin, Navigation, Gem, Clock, MessageSquare, UserPlus, CheckCircle2, ArrowRight, Star, Wrench, Gift, Heart, Eye, ExternalLink, RefreshCw } from "lucide-react";
 import { APPOINTMENT_REQUESTS, RETAILER_NAME, type AppointmentRequest } from "@/data/demo";
+
+const PORTAL_STORE_ID = "kay-fifth-ave";
+
+interface LiveShare {
+  id: string;
+  userId: string;
+  storeId: string;
+  type: string;
+  data: {
+    userName?: string;
+    userEmail?: string;
+    userPhone?: string;
+    timePref?: string;
+    datePref?: string;
+    itemCount?: number;
+    message?: string;
+    retailer?: string;
+    ringSize?: string;
+    budgetRange?: string;
+    wishlistItems?: Array<{ name?: string; estimatedPrice?: number }>;
+  };
+  createdAt: string;
+}
+
+function timeAgo(iso: string): string {
+  const ms = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+function liveShareToRequest(s: LiveShare): AppointmentRequest {
+  const items = s.data.wishlistItems ?? [];
+  return {
+    id: s.id,
+    customerName: s.data.userName || "DiaGe Customer",
+    location: "Linked via DiaGe",
+    distanceMiles: 0,
+    requestedAt: timeAgo(s.createdAt),
+    preferredWindow: [s.data.timePref, s.data.datePref].filter(Boolean).join(" · ") || "Flexible",
+    occasion: "Appointment Request",
+    occasionType: "browse",
+    wishlistPreview: items.map((w) => w.name ?? "").filter(Boolean),
+    totalWishlistValue: items.reduce((sum, w) => sum + (w.estimatedPrice ?? 0), 0),
+    ringSize: s.data.ringSize || undefined,
+    budget: s.data.budgetRange || undefined,
+    note: s.data.message || undefined,
+    status: "new",
+    isOptIn: true,
+    urgency: "high",
+  };
+}
 
 const OCCASION_CONFIG: Record<AppointmentRequest["occasionType"], { icon: React.ElementType; bg: string; text: string; border: string }> = {
   engagement:  { icon: Gem,           bg: "bg-rose-50",   text: "text-rose-700",   border: "border-rose-200"   },
@@ -282,25 +337,75 @@ const STATUS_TABS = [
 ] as const;
 
 export default function Appointments() {
-  const [requests, setRequests] = useState(APPOINTMENT_REQUESTS);
-  const [tab, setTab]           = useState<"all" | AppointmentRequest["status"]>("all");
+  const [demoRequests, setDemoRequests] = useState(APPOINTMENT_REQUESTS);
+  const [liveRequests, setLiveRequests] = useState<AppointmentRequest[]>([]);
+  const [liveLoading, setLiveLoading] = useState(true);
+  const [tab, setTab] = useState<"all" | AppointmentRequest["status"]>("all");
+
+  const fetchLive = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/store-shares?storeId=${PORTAL_STORE_ID}`);
+      if (!res.ok) return;
+      const all: LiveShare[] = await res.json();
+      const appts = all
+        .filter((s) => s.type === "appointment")
+        .map(liveShareToRequest);
+      setLiveRequests(appts);
+    } catch { /* silently ignore */ } finally {
+      setLiveLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLive();
+    const interval = setInterval(fetchLive, 10000);
+    return () => clearInterval(interval);
+  }, [fetchLive]);
+
+  // Live requests lead, demo fills in below
+  const requests = [...liveRequests, ...demoRequests];
 
   function handleStatusChange(id: string, next: AppointmentRequest["status"]) {
-    setRequests((prev) => prev.map((r) => r.id === id ? { ...r, status: next } : r));
+    if (liveRequests.find((r) => r.id === id)) {
+      setLiveRequests((prev) => prev.map((r) => r.id === id ? { ...r, status: next } : r));
+    } else {
+      setDemoRequests((prev) => prev.map((r) => r.id === id ? { ...r, status: next } : r));
+    }
   }
 
-  const displayed  = tab === "all" ? requests : requests.filter((r) => r.status === tab);
-  const newCount   = requests.filter((r) => r.status === "new").length;
-  const highCount  = requests.filter((r) => r.urgency === "high").length;
-  const loggedPct  = Math.round((requests.filter((r) => r.status === "logged" || r.status === "completed").length / requests.length) * 100);
+  const displayed = tab === "all" ? requests : requests.filter((r) => r.status === tab);
+  const newCount  = requests.filter((r) => r.status === "new").length;
+  const highCount = requests.filter((r) => r.urgency === "high").length;
+  const loggedPct = requests.length > 0
+    ? Math.round((requests.filter((r) => r.status === "logged" || r.status === "completed").length / requests.length) * 100)
+    : 0;
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-xl font-bold text-gray-900">Appointment Requests</h1>
-        <p className="text-sm text-gray-500 mt-0.5">
-          Customer-initiated visit requests from the DiaGe app — not a scheduling tool
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-gray-900">Appointment Requests</h1>
+            {liveRequests.length > 0 && (
+              <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                {liveRequests.length} live
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Customer-initiated visit requests from the DiaGe app — not a scheduling tool
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={fetchLive}
+          disabled={liveLoading}
+          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#5B21B6] transition-colors mt-1"
+        >
+          <RefreshCw size={12} className={liveLoading ? "animate-spin" : ""} />
+          Refresh
+        </button>
       </div>
 
       {/* Positioning callout */}

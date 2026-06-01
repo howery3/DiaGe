@@ -98,9 +98,9 @@ export function AppointmentSheet({ visible, store, retailer, items, onClose, onS
       onClose();
       onSent();
       Alert.alert(
-        "Request Sent!",
-        `${store.name} will reach out to confirm your appointment.\n\n${timeLabel} · ${dateLabel}`,
-        [{ text: "OK" }]
+        "Request Received",
+        `Your request is now visible in ${store.name}'s DiaGe Partner Portal — they can see your timing preference and wishlist to prepare.\n\n${timeLabel} · ${dateLabel}`,
+        [{ text: "Got it" }]
       );
     } catch {
       Alert.alert("Couldn't send", "Please check your connection and try again.");

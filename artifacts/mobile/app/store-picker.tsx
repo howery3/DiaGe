@@ -14,8 +14,10 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAuth } from "@clerk/expo";
 import { useColors } from "@/hooks/useColors";
 import { usePreferredStore, type PreferredStore } from "@/hooks/usePreferredStore";
+import { useProfile } from "@/hooks/useProfile";
 
 const API_BASE = process.env.EXPO_PUBLIC_DOMAIN
   ? `https://${process.env.EXPO_PUBLIC_DOMAIN}/api`
@@ -42,6 +44,8 @@ export default function StorePickerScreen() {
   const insets = useSafeAreaInsets();
   const { retailer: retailerParam } = useLocalSearchParams<{ retailer?: string }>();
   const { stores, getStore, saveStore } = usePreferredStore();
+  const { getToken } = useAuth();
+  const { profile } = useProfile();
 
   const [allStores, setAllStores] = useState<PreferredStore[]>([]);
   const [query, setQuery] = useState("");
@@ -94,6 +98,31 @@ export default function StorePickerScreen() {
     setSaving(store.id);
     const key = saveKey ?? store.banner;
     await saveStore(key, store);
+
+    // Fire-and-forget: notify the partner portal this customer has linked their profile
+    getToken().then((token) => {
+      fetch(`${API_BASE}/store-share`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          storeId: store.id,
+          type: "customer_linked",
+          data: {
+            userName: profile.name || "DiaGe Customer",
+            userEmail: profile.email || "",
+            userPhone: profile.phone || "",
+            ringSize: profile.ringSize || "",
+            budgetRange: profile.budgetRange || "",
+            retailer: key,
+            linkedAt: new Date().toISOString(),
+          },
+        }),
+      }).catch(() => { /* non-blocking — link still saves locally */ });
+    }).catch(() => {});
+
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setSaving(null);
     router.back();
