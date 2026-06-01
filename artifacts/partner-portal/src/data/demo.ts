@@ -247,6 +247,164 @@ export const LEADS: Lead[] = [
   },
 ];
 
+export interface AppointmentRequest {
+  id: string;
+  customerName: string;
+  location: string;
+  distanceMiles: number;
+  requestedAt: string;
+  preferredWindow: string;
+  occasion: string;
+  occasionType: "engagement" | "anniversary" | "inspection" | "gift" | "browse";
+  wishlistPreview: string[];
+  totalWishlistValue: number;
+  ringSize?: string;
+  budget?: string;
+  note?: string;
+  status: "new" | "acknowledged" | "logged" | "completed";
+  isOptIn: boolean;
+  urgency: "high" | "medium" | "low";
+}
+
+export const APPOINTMENT_REQUESTS: AppointmentRequest[] = [
+  {
+    id: "ar1",
+    customerName: "Michael Chen",
+    location: "Midtown, NY",
+    distanceMiles: 1,
+    requestedAt: "1 hour ago",
+    preferredWindow: "This weekend",
+    occasion: "Engagement ring selection",
+    occasionType: "engagement",
+    wishlistPreview: ["Leo Diamond® Engagement Ring 1½ ctw", "Neil Lane Halo Ring"],
+    totalWishlistValue: 19800,
+    ringSize: "6½",
+    budget: "$8,000–$12,000",
+    note: "Planning to propose next month. Would love to see the Leo Diamond in person and compare with Neil Lane.",
+    status: "new",
+    isOptIn: true,
+    urgency: "high",
+  },
+  {
+    id: "ar2",
+    customerName: "Sophia Kim",
+    location: "Upper West Side, NY",
+    distanceMiles: 4,
+    requestedAt: "3 hours ago",
+    preferredWindow: "Weekday morning (this week)",
+    occasion: "Anniversary gift",
+    occasionType: "anniversary",
+    wishlistPreview: ["Diamond Tennis Bracelet 3 ctw", "Open Hearts Necklace"],
+    totalWishlistValue: 11400,
+    budget: "$3,000–$5,000",
+    note: "20th anniversary coming up. My wife saved the tennis bracelet — want to surprise her.",
+    status: "new",
+    isOptIn: false,
+    urgency: "high",
+  },
+  {
+    id: "ar3",
+    customerName: "Rachel Goldstein",
+    location: "Upper East Side, NY",
+    distanceMiles: 3,
+    requestedAt: "Yesterday",
+    preferredWindow: "Any weekday afternoon",
+    occasion: "Warranty inspection due",
+    occasionType: "inspection",
+    wishlistPreview: ["Diamond Eternity Band 1 ctw (owned — Kay Gold warranty)"],
+    totalWishlistValue: 0,
+    note: "Kay Gold warranty on my eternity band expires in June. Wanted to get it inspected before it lapses.",
+    status: "acknowledged",
+    isOptIn: true,
+    urgency: "medium",
+  },
+  {
+    id: "ar4",
+    customerName: "David Park",
+    location: "Chelsea, NY",
+    distanceMiles: 2,
+    requestedAt: "2 days ago",
+    preferredWindow: "Saturday afternoon",
+    occasion: "Browse — upgrade wishlist items",
+    occasionType: "browse",
+    wishlistPreview: ["Sapphire Three-Stone Ring", "Diamond Tennis Bracelet 5 ctw"],
+    totalWishlistValue: 41800,
+    budget: "$5,000–$8,000",
+    note: "Want to see the sapphire ring in person. Open to other options if you have something similar.",
+    status: "logged",
+    isOptIn: true,
+    urgency: "medium",
+  },
+  {
+    id: "ar5",
+    customerName: "Danielle Brooks",
+    location: "Park Slope, Brooklyn",
+    distanceMiles: 10,
+    requestedAt: "3 days ago",
+    preferredWindow: "Weekend — either day",
+    occasion: "Birthday gift for partner",
+    occasionType: "gift",
+    wishlistPreview: ["Vera Wang LOVE Ring", "Diamond Drop Necklace"],
+    totalWishlistValue: 14600,
+    ringSize: "7",
+    budget: "$2,000–$4,000",
+    status: "new",
+    isOptIn: true,
+    urgency: "medium",
+  },
+  {
+    id: "ar6",
+    customerName: "James Whitfield",
+    location: "Hoboken, NJ",
+    distanceMiles: 7,
+    requestedAt: "4 days ago",
+    preferredWindow: "As soon as possible",
+    occasion: "Engagement ring — need advice",
+    occasionType: "engagement",
+    wishlistPreview: ["Neil Lane Halo Ring", "Le Vian Chocolate Diamond Ring"],
+    totalWishlistValue: 22100,
+    ringSize: "6",
+    budget: "$6,000–$10,000",
+    note: "First time buying an engagement ring. Would love some guidance from a specialist.",
+    status: "new",
+    isOptIn: false,
+    urgency: "high",
+  },
+  {
+    id: "ar7",
+    customerName: "Amara Osei",
+    location: "Harlem, NY",
+    distanceMiles: 6,
+    requestedAt: "5 days ago",
+    preferredWindow: "No preference — flexible",
+    occasion: "Ring sizing & service",
+    occasionType: "inspection",
+    wishlistPreview: ["Open Hearts Necklace (owned — service needed)"],
+    totalWishlistValue: 0,
+    note: "Clasp on my Open Hearts necklace feels loose. Would like it checked out.",
+    status: "completed",
+    isOptIn: true,
+    urgency: "low",
+  },
+  {
+    id: "ar8",
+    customerName: "Tyler Bennett",
+    location: "Montclair, NJ",
+    distanceMiles: 19,
+    requestedAt: "1 week ago",
+    preferredWindow: "Weekday evening",
+    occasion: "Wedding band selection",
+    occasionType: "engagement",
+    wishlistPreview: ["Vera Wang LOVE™ Diamond Wedding Band", "Leo Diamond® Band"],
+    totalWishlistValue: 8200,
+    budget: "$3,000–$5,000",
+    note: "Finalising wedding band to pair with the Leo Diamond ring I bought in October.",
+    status: "acknowledged",
+    isOptIn: true,
+    urgency: "medium",
+  },
+];
+
 export interface RetailerPurchaseDoc {
   name: string;
   type: "warranty" | "receipt" | "certificate" | "appraisal" | "repair";

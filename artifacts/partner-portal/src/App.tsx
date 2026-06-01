@@ -5,6 +5,7 @@ import Dashboard from "@/pages/Dashboard";
 import Leads from "@/pages/Leads";
 import Trends from "@/pages/Trends";
 import CustomerProfiles from "@/pages/CustomerProfiles";
+import Appointments from "@/pages/Appointments";
 
 const queryClient = new QueryClient();
 
@@ -14,8 +15,9 @@ function Router() {
       <Switch>
         <Route path="/" component={Dashboard} />
         <Route path="/leads" component={Leads} />
-        <Route path="/trends" component={Trends} />
+        <Route path="/appointments" component={Appointments} />
         <Route path="/customers" component={CustomerProfiles} />
+        <Route path="/trends" component={Trends} />
       </Switch>
     </Layout>
   );
