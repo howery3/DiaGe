@@ -3,25 +3,44 @@ import { getAuth } from "@clerk/express";
 import { db, storeSharesTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
-import { DEMO_STORES } from "../lib/storeData.js";
+import { DEMO_STORES, haversineDistance } from "../lib/storeData.js";
 
 const router = Router();
 
 router.get("/stores", (req, res) => {
   const q = (req.query.q as string | undefined)?.trim().toLowerCase();
   const retailer = (req.query.retailer as string | undefined)?.trim().toLowerCase();
+  const lat = parseFloat(req.query.lat as string);
+  const lng = parseFloat(req.query.lng as string);
+  const hasGps = !isNaN(lat) && !isNaN(lng);
+
   let results = DEMO_STORES;
-  if (q) {
-    results = results.filter(
-      (s) =>
-        s.address.toLowerCase().includes(q) ||
-        s.name.toLowerCase().includes(q) ||
-        s.banner.toLowerCase().includes(q)
-    );
-  }
+
   if (retailer) {
     results = results.filter((s) => s.banner.toLowerCase().includes(retailer));
   }
+
+  if (q) {
+    const isZipOrNumeric = /^\d+$/.test(q);
+    const matchesAddress = results.some(
+      (s) => s.address.toLowerCase().includes(q) || s.name.toLowerCase().includes(q)
+    );
+    if (!isZipOrNumeric && matchesAddress) {
+      results = results.filter(
+        (s) =>
+          s.address.toLowerCase().includes(q) ||
+          s.name.toLowerCase().includes(q) ||
+          s.banner.toLowerCase().includes(q)
+      );
+    }
+  }
+
+  if (hasGps) {
+    results = results
+      .map((s) => ({ ...s, distanceMi: Math.round(haversineDistance(lat, lng, s.lat, s.lng) * 10) / 10 }))
+      .sort((a, b) => a.distanceMi - b.distanceMi);
+  }
+
   res.json(results);
 });
 

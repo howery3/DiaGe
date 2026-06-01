@@ -129,18 +129,21 @@ export default function NearestStoreScreen() {
     if (zip.length < 3) { setZipResults(null); return; }
     setZipLoading(true);
     try {
+      const locParams = userLocation
+        ? `&lat=${userLocation.lat}&lng=${userLocation.lng}`
+        : "";
       const res = await fetch(
-        `${API_BASE}/stores?q=${encodeURIComponent(zip)}&retailer=${encodeURIComponent(retailerName)}`
+        `${API_BASE}/stores?q=${encodeURIComponent(zip)}&retailer=${encodeURIComponent(retailerName)}${locParams}`
       );
-      const data: { id: string; name: string; address: string; phone: string; distanceMi: number }[] = await res.json();
+      const data: { id: string; name: string; address: string; phone: string; distanceMi: number; lat: number; lng: number }[] = await res.json();
       setZipResults(
-        data.map((s) => ({
+        data.slice(0, 8).map((s) => ({
           placeId: s.id,
           name: s.name,
           address: s.address,
           phone: s.phone,
-          lat: 0,
-          lng: 0,
+          lat: s.lat ?? 0,
+          lng: s.lng ?? 0,
           detailsLoaded: true,
         }))
       );
@@ -149,7 +152,7 @@ export default function NearestStoreScreen() {
     } finally {
       setZipLoading(false);
     }
-  }, [retailerName]);
+  }, [retailerName, userLocation]);
 
   async function loadDetails(place: PlaceResult) {
     if (place.detailsLoaded) return;
