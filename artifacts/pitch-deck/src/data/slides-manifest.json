@@ -61,7 +61,7 @@
     "filepath": "src/pages/slides/S08CorporateDashboard.tsx",
     "title": "Corporate Dashboard",
     "description": "Enterprise cross-banner visibility that no individual store system can produce",
-    "speakerNotes": "This is for the executive in the room. Say: 'At the corporate level, DiaGe shows us something no store system can — because it sits across all four banners. We can see which revenue came from DiaGe. We can see which customers are shopping multiple banners at once. We can see Diamond Bond risk before it becomes a claim. And we can measure how quickly customers are coming in after sharing a wishlist — which right now is three to six days, versus the fourteen to twenty-one day industry baseline.'"
+    "speakerNotes": "This is for the executive in the room. Say: 'At the corporate level, DiaGe shows us something no store system can — because it sits across all four banners. We can see which revenue came from DiaGe. We can see which customers are shopping multiple banners at once. We can see Diamond Bond risk before it becomes a claim. And we can measure how quickly customers are coming in after sharing a wishlist — which right now is three to six days, versus the fourteen to twenty-one day baseline.'"
   },
   {
     "id": "b2c3d4e5-0009-4000-8000-000000000009",
@@ -74,30 +74,38 @@
   {
     "id": "b2c3d4e5-0010-4000-8000-000000000010",
     "position": 10,
+    "filepath": "src/pages/slides/S10HowYouMakeMoney.tsx",
+    "title": "The Revenue Mechanism",
+    "description": "The exact path from wishlist to Signet sale — 100 leads generate $116K at pilot rates",
+    "speakerNotes": "This is the most important slide in the deck. Speak slowly and point to each step. 'A customer saves a wishlist item. Your associate reaches out. Sixty-eight percent of them come in. Sixty percent of those buy. Average order: twenty-eight forty-seven.' Then point to the black bar at the bottom. 'Every hundred wishlist leads your stores receive generates a hundred and sixteen thousand dollars in sales at the rates we're seeing in the pilot.' Then stop. Don't explain anything else. Let them ask the follow-up."
+  },
+  {
+    "id": "b2c3d4e5-0011-4000-8000-000000000011",
+    "position": 11,
     "filepath": "src/pages/slides/S10KPIs.tsx",
     "title": "KPIs vs. Industry",
     "description": "DiaGe users spend 2.3× more and convert at 5× the industry rate",
     "speakerNotes": "Walk through the table row by row. 'DiaGe users are spending $2,847 on average versus $1,240 for a typical Signet customer — that's more than double. Thirty-one percent of wishlist leads turn into a purchase, versus one to four percent for a typical retail app. Sixty-eight percent of customers we contact come in. And thirty-day retention is sixty-eight percent, versus thirty-two for the average consumer app.' If they ask where the numbers come from: 'These are from our pilot — twenty-three partner retail locations, January through May of this year.'"
   },
   {
-    "id": "b2c3d4e5-0011-4000-8000-000000000011",
-    "position": 11,
+    "id": "b2c3d4e5-0012-4000-8000-000000000012",
+    "position": 12,
     "filepath": "src/pages/slides/S11PilotRevenue.tsx",
     "title": "Pilot Revenue Results",
     "description": "$2.84M in attributed revenue across 4 Signet banners in the pilot period",
-    "speakerNotes": "This is the most important slide in the deck. Speak slowly. 'In five months, across twenty-three pilot locations, DiaGe has already generated two point eight four million dollars in sales we can directly tie back to the app. And the monthly number grew by one hundred seventy-one percent month over month.' Gesture at the bar chart. 'You can see the curve. If we extrapolate that to all twenty-eight hundred Signet locations with eighteen percent user adoption, that's two hundred ninety million dollars in attributed revenue per year.' Pause. Let the number sit."
+    "speakerNotes": "Build on the previous slide. 'And this isn't a projection — this is real. In five months, across twenty-three pilot locations, DiaGe has already generated two point eight four million dollars in sales we can directly tie back to the app. And the monthly number grew by one hundred seventy-one percent month over month.' Gesture at the bar chart. 'At full Signet scale with two thousand eight hundred locations, that's two hundred ninety million dollars in attributed revenue per year.' Pause. Let the number sit."
   },
   {
-    "id": "b2c3d4e5-0012-4000-8000-000000000012",
-    "position": 12,
+    "id": "b2c3d4e5-0013-4000-8000-000000000013",
+    "position": 13,
     "filepath": "src/pages/slides/S12Pricing.tsx",
     "title": "Pricing & ROI",
     "description": "At $369/month per location, payback is sub-30 days — 28× return at full rollout",
     "speakerNotes": "Keep this one light — the numbers tell the story. 'The cost is three sixty-nine a month per store. Break-even is one bridal sale with a protection plan attached. At pilot conversion rates, that happens in less than thirty days. At full Signet rollout — twenty-eight hundred locations — DiaGe costs twelve point four million a year and projects two hundred ninety million in attributed revenue. That's roughly a twenty-eight times return on what you're spending on the platform.' If anyone asks about the annual discount: 'Three fourteen a month if you commit annually — fifteen percent off.'"
   },
   {
-    "id": "b2c3d4e5-0013-4000-8000-000000000013",
-    "position": 13,
+    "id": "b2c3d4e5-0014-4000-8000-000000000014",
+    "position": 14,
     "filepath": "src/pages/slides/S13NextSteps.tsx",
     "title": "Next Steps",
     "description": "90-day pilot agreement across 10 Kay and Zales locations",

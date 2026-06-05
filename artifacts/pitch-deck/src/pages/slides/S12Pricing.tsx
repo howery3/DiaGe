@@ -69,7 +69,7 @@ export default function S12Pricing() {
 
         <div className="flex justify-between items-end mt-[2vh] pt-[2vh] border-t border-[#E5E7EB]">
           <p className="text-[1.3vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.3vw] text-[#9CA3AF]">12 / 13</p>
+          <p className="text-[1.3vw] text-[#9CA3AF]">13 / 14</p>
         </div>
       </div>
     </div>
