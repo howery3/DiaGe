@@ -1,82 +1,106 @@
 [
   {
-    "id": "a1b2c3d4-0001-4000-8000-000000000001",
+    "id": "b2c3d4e5-0001-4000-8000-000000000001",
     "position": 1,
-    "filepath": "src/pages/slides/Slide01Cover.tsx",
+    "filepath": "src/pages/slides/S01Cover.tsx",
     "title": "Cover",
-    "description": "DiaGe × Signet Jewelers Partnership — title and confidentiality slide",
-    "speakerNotes": ""
+    "description": "DiaGe partnership proposal for Signet Jewelers",
+    "speakerNotes": "Start here. Take a breath. You can say something like: 'I appreciate you taking the time. I'm [name] — I manage [your team] at Signet. Tonight I want to share an idea I've been working on that I think could change how we think about keeping our customers connected to us between purchases.' Then click to advance."
   },
   {
-    "id": "a1b2c3d4-0002-4000-8000-000000000002",
+    "id": "b2c3d4e5-0002-4000-8000-000000000002",
     "position": 2,
-    "filepath": "src/pages/slides/Slide02CoreArgument.tsx",
-    "title": "Core Argument",
-    "description": "DiaGe turns passive jewelry owners into active Signet customers",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S02ActI.tsx",
+    "title": "Act I — The Problem",
+    "description": "Section divider: Act I — The Problem",
+    "speakerNotes": "This is just a transition. You can simply say: 'Let me start with the problem.' Then click. The problem slide is next."
   },
   {
-    "id": "a1b2c3d4-0003-4000-8000-000000000003",
+    "id": "b2c3d4e5-0003-4000-8000-000000000003",
     "position": 3,
-    "filepath": "src/pages/slides/Slide03Problem.tsx",
-    "title": "The Problem",
-    "description": "Signet stores have no view of customer intent between purchase events",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S03CustomersSilent.tsx",
+    "title": "Customers Go Silent",
+    "description": "Jewelry customers have no touchpoint with Signet between purchases",
+    "speakerNotes": "This is the core insight. Walk through each bullet simply: 'Our customers buy from us, and then we don't hear from them for two or three years. We have no way to reach them. And the Diamond Bond situation — we only find out a plan has lapsed when they walk in to make a claim. By then it's too late.' Pause here. Let it land."
   },
   {
-    "id": "a1b2c3d4-0004-4000-8000-000000000004",
+    "id": "b2c3d4e5-0004-4000-8000-000000000004",
     "position": 4,
-    "filepath": "src/pages/slides/Slide04Product.tsx",
-    "title": "The Product",
-    "description": "DiaGe is a jewelry management app that keeps Signet customers engaged year-round",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S04ThreeGaps.tsx",
+    "title": "Three Gaps",
+    "description": "Three specific, measurable problems that compound each other",
+    "speakerNotes": "Point to each column as you speak. 'This shows up in three specific ways. First, we have no engagement layer — customer intent is invisible until they walk in. Second, right now today, 847 customers across our four banners have missed their Diamond Bond inspection window. That's $12.8 million in plan value that could lapse. Third, we have 1,847 customers actively shopping Kay, Zales, Jared, and Banter at the same time — and no single banner sees the full picture.' The $12.8M number tends to get a reaction. Give it a moment."
   },
   {
-    "id": "a1b2c3d4-0005-4000-8000-000000000005",
+    "id": "b2c3d4e5-0005-4000-8000-000000000005",
     "position": 5,
-    "filepath": "src/pages/slides/Slide05PartnerPortal.tsx",
-    "title": "Partner Portal",
-    "description": "Associates receive live purchase-intent signals before high-intent customers arrive",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S05ActII.tsx",
+    "title": "Act II — The Solution",
+    "description": "Section divider: Act II — The Solution",
+    "speakerNotes": "Another transition. Say: 'So here's what solves it.' Click. The product slide is next."
   },
   {
-    "id": "a1b2c3d4-0006-4000-8000-000000000006",
+    "id": "b2c3d4e5-0006-4000-8000-000000000006",
     "position": 6,
-    "filepath": "src/pages/slides/Slide06Corporate.tsx",
-    "title": "Corporate Dashboard",
-    "description": "Signet's corporate team sees a cross-banner customer view no individual banner can produce",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S06Product.tsx",
+    "title": "The Product",
+    "description": "DiaGe — three core features that keep customers engaged between purchases",
+    "speakerNotes": "Keep this one conversational. 'DiaGe is an app — but think of it as the loyalty layer we've never had. Customers use it to track the jewelry they own, build a wishlist of what they want next, and get reminded before their Diamond Bond inspection is due. The key thing is: by the time they walk into our store, they've already told us exactly what they want.' You don't need to go through every detail — the slide does that."
   },
   {
-    "id": "a1b2c3d4-0007-4000-8000-000000000007",
+    "id": "b2c3d4e5-0007-4000-8000-000000000007",
     "position": 7,
-    "filepath": "src/pages/slides/Slide07DiamondBond.tsx",
-    "title": "Diamond Bond Risk",
-    "description": "Diamond Bond compliance is a retention risk that scales with store count",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S07PartnerPortal.tsx",
+    "title": "Partner Portal",
+    "description": "Store associates receive three types of live purchase-intent signals",
+    "speakerNotes": "This one is about the store experience. Say: 'On the store side, associates see three things: who has a wishlist saved and hasn't come in yet, who has booked an appointment and what they want, and who is overdue for a Diamond Bond inspection. All of that shows up in a simple web tool — nothing to install, no IT required. And every lead comes from the customer themselves. We don't cold-contact anyone.' The last sentence matters — it answers the privacy question before they ask it."
   },
   {
-    "id": "a1b2c3d4-0008-4000-8000-000000000008",
+    "id": "b2c3d4e5-0008-4000-8000-000000000008",
     "position": 8,
-    "filepath": "src/pages/slides/Slide08Pricing.tsx",
-    "title": "Pricing",
-    "description": "The monthly cost equals one lifetime protection plan sale per location",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S08CorporateDashboard.tsx",
+    "title": "Corporate Dashboard",
+    "description": "Enterprise cross-banner visibility that no individual store system can produce",
+    "speakerNotes": "This is for the executive in the room. Say: 'At the corporate level, DiaGe shows us something no store system can — because it sits across all four banners. We can see which revenue came from DiaGe. We can see which customers are shopping multiple banners at once. We can see Diamond Bond risk before it becomes a claim. And we can measure how quickly customers are coming in after sharing a wishlist — which right now is three to six days, versus the fourteen to twenty-one day industry baseline.'"
   },
   {
-    "id": "a1b2c3d4-0009-4000-8000-000000000009",
+    "id": "b2c3d4e5-0009-4000-8000-000000000009",
     "position": 9,
-    "filepath": "src/pages/slides/Slide09Pilot.tsx",
-    "title": "Pilot Structure",
-    "description": "A 10-store pilot tests the model with three measurable success metrics",
-    "speakerNotes": ""
+    "filepath": "src/pages/slides/S09ActIII.tsx",
+    "title": "Act III — The Financial Case",
+    "description": "Section divider: Act III — The Financial Case",
+    "speakerNotes": "Last section. Say: 'Now let's talk about what this is worth.' Click."
   },
   {
-    "id": "a1b2c3d4-0010-4000-8000-000000000010",
+    "id": "b2c3d4e5-0010-4000-8000-000000000010",
     "position": 10,
-    "filepath": "src/pages/slides/Slide10NextSteps.tsx",
+    "filepath": "src/pages/slides/S10KPIs.tsx",
+    "title": "KPIs vs. Industry",
+    "description": "DiaGe users spend 2.3× more and convert at 5× the industry rate",
+    "speakerNotes": "Walk through the table row by row. 'DiaGe users are spending $2,847 on average versus $1,240 for a typical Signet customer — that's more than double. Thirty-one percent of wishlist leads turn into a purchase, versus one to four percent for a typical retail app. Sixty-eight percent of customers we contact come in. And thirty-day retention is sixty-eight percent, versus thirty-two for the average consumer app.' If they ask where the numbers come from: 'These are from our pilot — twenty-three partner retail locations, January through May of this year.'"
+  },
+  {
+    "id": "b2c3d4e5-0011-4000-8000-000000000011",
+    "position": 11,
+    "filepath": "src/pages/slides/S11PilotRevenue.tsx",
+    "title": "Pilot Revenue Results",
+    "description": "$2.84M in attributed revenue across 4 Signet banners in the pilot period",
+    "speakerNotes": "This is the most important slide in the deck. Speak slowly. 'In five months, across twenty-three pilot locations, DiaGe has already generated two point eight four million dollars in sales we can directly tie back to the app. And the monthly number grew by one hundred seventy-one percent month over month.' Gesture at the bar chart. 'You can see the curve. If we extrapolate that to all twenty-eight hundred Signet locations with eighteen percent user adoption, that's two hundred ninety million dollars in attributed revenue per year.' Pause. Let the number sit."
+  },
+  {
+    "id": "b2c3d4e5-0012-4000-8000-000000000012",
+    "position": 12,
+    "filepath": "src/pages/slides/S12Pricing.tsx",
+    "title": "Pricing & ROI",
+    "description": "At $369/month per location, payback is sub-30 days — 28× return at full rollout",
+    "speakerNotes": "Keep this one light — the numbers tell the story. 'The cost is three sixty-nine a month per store. Break-even is one bridal sale with a protection plan attached. At pilot conversion rates, that happens in less than thirty days. At full Signet rollout — twenty-eight hundred locations — DiaGe costs twelve point four million a year and projects two hundred ninety million in attributed revenue. That's roughly a twenty-eight times return on what you're spending on the platform.' If anyone asks about the annual discount: 'Three fourteen a month if you commit annually — fifteen percent off.'"
+  },
+  {
+    "id": "b2c3d4e5-0013-4000-8000-000000000013",
+    "position": 13,
+    "filepath": "src/pages/slides/S13NextSteps.tsx",
     "title": "Next Steps",
-    "description": "The proposed next step is a signed 90-day pilot agreement",
-    "speakerNotes": ""
+    "description": "90-day pilot agreement across 10 Kay and Zales locations",
+    "speakerNotes": "This is your ask. Be direct. 'Here's what I'm asking for: a signed pilot agreement for ten locations across Kay and Zales. We'd be fully onboarded within two weeks. We'd report weekly against metrics we agree on together — Diamond Bond compliance rate, attributed transaction count, and time-to-appointment. At sixty days I'll bring a rollout recommendation.' Then stop. Don't fill the silence. The ask is on the slide — let them respond to it."
   }
 ]
