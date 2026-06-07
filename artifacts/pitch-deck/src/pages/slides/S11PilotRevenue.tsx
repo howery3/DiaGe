@@ -1,50 +1,69 @@
 export default function S11PilotRevenue() {
-  // Model: 1,000 calls/store/month × 10% conversion = 100 purchases
-  // Revenue per 100 purchases: 42 × $2,000 + 58 × $900 = $136,200
-  // Blended ATV: $1,362 (42.0% credit mix, Signet FY2026 AR)
+  // Realistic ramp model — purchases per store constrained by DiaGe user base growth
+  // Pilot: 180 DiaGe users/store → 15% share wishlists → 27 leads → 10% close → 3 purchases/mo
+  // Year 1: 400 users/store → 60 leads → 8 purchases/mo
+  // Mature: 1,500 users/store → 225 leads → 20 purchases/mo (not 100 — conservative)
 
   const scenarios = [
     {
       label: "Pilot phase",
       sublabel: "25 stores · 90 days",
-      color: "#1D4ED8",
+      stageColor: "#1D4ED8",
       bg: "#EFF6FF",
       border: "#BFDBFE",
       dark: false,
-      stores: "25",
-      period: "90 days",
-      revenue: "$10.2M",
+      rows: [
+        { label: "DiaGe users / store", value: "~180", note: "Associates actively promoting" },
+        { label: "Active wishlist shares / mo", value: "~27", note: "15% of users share monthly" },
+        { label: "Call → purchase rate", value: "10%", note: "Warm outreach benchmark" },
+        { label: "DiaGe purchases / store / mo", value: "~3", note: "" },
+        { label: "Blended ATV", value: "$1,362", note: "42% credit · FY2026 AR" },
+      ],
       revenueLabel: "90-day pilot revenue",
-      runRate: "$40.9M / yr",
-      note: "Pilot validates the real call → purchase rate before scale commitment.",
+      revenue: "$306K",
+      subRevenue: "$1.2M / yr run rate · 25 stores",
+      math: "25 × 3 × 3 months × $1,362",
+      note: "Pilot goal: confirm that DiaGe-powered calls outperform cold outreach (2–3%) at 10%.",
     },
     {
-      label: "Phase 2 rollout",
+      label: "Year 1 rollout",
       sublabel: "500 stores · full year",
-      color: "#5B21B6",
+      stageColor: "#5B21B6",
       bg: "#F3F0FF",
       border: "#C4B5FD",
       dark: false,
-      stores: "500",
-      period: "12 months",
-      revenue: "$817M",
+      rows: [
+        { label: "DiaGe users / store", value: "~400", note: "6 months of active promotion" },
+        { label: "Active wishlist shares / mo", value: "~60", note: "15% of users share monthly" },
+        { label: "Call → purchase rate", value: "10%", note: "Proven at pilot" },
+        { label: "DiaGe purchases / store / mo", value: "~8", note: "" },
+        { label: "Blended ATV", value: "$1,362", note: "42% credit · FY2026 AR" },
+      ],
       revenueLabel: "Annual attributed revenue",
-      runRate: "~19% of Signet NA stores",
-      note: "Associates fully trained on DiaGe-powered outreach.",
+      revenue: "$65M",
+      subRevenue: "500 stores at avg 8 purchases / mo",
+      math: "500 × 8 × 12 × $1,362",
+      note: "~19% of NA network. Associates trained, DiaGe embedded in daily outreach routine.",
     },
     {
-      label: "Full adoption",
+      label: "Mature rollout",
       sublabel: "2,582 stores · full year",
-      color: "#8B5CF6",
+      stageColor: "#8B5CF6",
       bg: "#111827",
       border: "#374151",
       dark: true,
-      stores: "2,582",
-      period: "12 months",
-      revenue: "$4.2B",
+      rows: [
+        { label: "DiaGe users / store", value: "~1,500", note: "3+ yrs of cumulative signups" },
+        { label: "Active wishlist shares / mo", value: "~225", note: "15% of users share monthly" },
+        { label: "Call → purchase rate", value: "10%", note: "Conservative vs. intent benchmark" },
+        { label: "DiaGe purchases / store / mo", value: "~20", note: "(not 100 — conservative)" },
+        { label: "Blended ATV", value: "$1,362", note: "42% credit · FY2026 AR" },
+      ],
       revenueLabel: "Annual attributed revenue",
-      runRate: "All NA locations · mature state",
-      note: "100 purchases/store/month sustained across full network.",
+      revenue: "$845M",
+      subRevenue: "All 2,582 NA locations at mature state",
+      math: "2,582 × 20 × 12 × $1,362",
+      note: "DiaGe embedded in CRM. 20 purchases/store/month is 20% of slide 10's ceiling — conservative.",
     },
   ];
 
@@ -52,61 +71,101 @@ export default function S11PilotRevenue() {
     <div className="relative w-screen h-screen overflow-hidden bg-[#FAFAFA] font-body">
       <div className="absolute top-0 left-0 h-[0.6vh] w-full bg-[#5B21B6]" />
 
-      <div className="relative z-10 flex flex-col h-full px-[8vw] pt-[7vh] pb-[6vh]">
+      <div className="relative z-10 flex flex-col h-full px-[8vw] pt-[6vh] pb-[5vh]">
         <p className="text-[1.2vw] font-bold tracking-[0.18em] uppercase text-[#5B21B6]">
-          Revenue model · direct from slide 10 mechanism
+          Revenue model · realistic ramp
         </p>
-        <h1 className="mt-[1vh] text-[2.8vw] font-bold text-[#111827] leading-[1.1]">
-          Scaling the per-store model to the full Signet network
+        <h1 className="mt-[0.8vh] text-[2.6vw] font-bold text-[#111827] leading-[1.15]">
+          Purchases per store grow as the DiaGe user base builds — modeled conservatively
         </h1>
-        <p className="mt-[1vh] text-[1.4vw] text-[#6B7280]">
-          Formula: stores × 100 purchases/mo × 12 mo × $1,362 blended ATV · 42.0% credit mix from Signet FY2026 Annual Report
+        <p className="mt-[0.8vh] text-[1.35vw] text-[#6B7280]">
+          Constraint: how many customers in each store's pool have downloaded DiaGe and shared a wishlist · 15% monthly share rate · 10% call-to-purchase
         </p>
 
-        <div className="mt-[3vh] grid grid-cols-3 gap-[2vw] flex-1">
+        <div className="mt-[2.5vh] grid grid-cols-3 gap-[2vw] flex-1">
           {scenarios.map((s) => {
             const textMuted = s.dark ? "#9CA3AF" : "#6B7280";
             const textMain = s.dark ? "#F9FAFB" : "#111827";
             const divider = s.dark ? "#374151" : "#E5E7EB";
+            const noteColor = s.dark ? "#6B7280" : "#9CA3AF";
+
             return (
               <div
                 key={s.label}
-                className="flex flex-col rounded-sm border p-[2.5vh_1.5vw]"
+                className="flex flex-col rounded-sm border"
                 style={{ background: s.bg, borderColor: s.border }}
               >
-                <p className="text-[1.3vw] font-bold tracking-[0.1em] uppercase" style={{ color: s.color }}>
-                  {s.label}
-                </p>
-                <p className="text-[1.25vw] mt-[0.3vh]" style={{ color: textMuted }}>
-                  {s.sublabel}
-                </p>
-
-                <div className="mt-[2vh] flex flex-col gap-[1.1vh] flex-1" style={{ borderTop: `1px solid ${divider}` }}>
-                  <div className="pt-[1.2vh] flex justify-between items-baseline border-b pb-[1vh]" style={{ borderColor: divider }}>
-                    <p className="text-[1.4vw]" style={{ color: textMuted }}>Stores in program</p>
-                    <p className="text-[1.5vw] font-bold" style={{ color: textMain }}>{s.stores}</p>
-                  </div>
-                  <div className="flex justify-between items-baseline border-b pb-[1vh]" style={{ borderColor: divider }}>
-                    <p className="text-[1.4vw]" style={{ color: textMuted }}>Purchases / store / month</p>
-                    <p className="text-[1.5vw] font-bold" style={{ color: textMain }}>100</p>
-                  </div>
-                  <div className="flex justify-between items-baseline border-b pb-[1vh]" style={{ borderColor: divider }}>
-                    <p className="text-[1.4vw]" style={{ color: textMuted }}>Blended ATV</p>
-                    <p className="text-[1.5vw] font-bold" style={{ color: textMain }}>$1,362</p>
-                  </div>
-                  <div className="flex justify-between items-baseline border-b pb-[1vh]" style={{ borderColor: divider }}>
-                    <p className="text-[1.4vw]" style={{ color: textMuted }}>Period</p>
-                    <p className="text-[1.5vw] font-bold" style={{ color: textMain }}>{s.period}</p>
-                  </div>
+                {/* Header */}
+                <div className="px-[1.5vw] pt-[1.8vh] pb-[1.2vh]" style={{ borderBottom: `1px solid ${divider}` }}>
+                  <p className="text-[1.25vw] font-bold tracking-[0.1em] uppercase" style={{ color: s.stageColor }}>
+                    {s.label}
+                  </p>
+                  <p className="text-[1.15vw] mt-[0.2vh]" style={{ color: textMuted }}>{s.sublabel}</p>
                 </div>
 
-                <div className="mt-[2vh] pt-[1.5vh]" style={{ borderTop: `1px solid ${divider}` }}>
-                  <p className="text-[1.25vw]" style={{ color: textMuted }}>{s.revenueLabel}</p>
-                  <p className="text-[3.4vw] font-bold leading-none mt-[0.5vh]" style={{ color: s.dark ? "white" : s.color }}>
+                {/* Rows */}
+                <div className="px-[1.5vw] py-[1.2vh] flex flex-col gap-[0.9vh] flex-1">
+                  {s.rows.map((row, i) => {
+                    const isKeyRow = row.label.includes("purchases / store");
+                    return (
+                      <div
+                        key={i}
+                        className="flex justify-between items-baseline pb-[0.9vh]"
+                        style={{
+                          borderBottom: i < s.rows.length - 1 ? `1px solid ${divider}` : "none",
+                          background: isKeyRow
+                            ? s.dark ? "rgba(139,92,246,0.12)" : "rgba(91,33,182,0.06)"
+                            : "transparent",
+                          borderRadius: isKeyRow ? "0.3vw" : 0,
+                          padding: isKeyRow ? "0.4vh 0.3vw" : undefined,
+                          marginLeft: isKeyRow ? "-0.3vw" : 0,
+                          marginRight: isKeyRow ? "-0.3vw" : 0,
+                        }}
+                      >
+                        <div>
+                          <p
+                            className="text-[1.3vw] leading-tight"
+                            style={{
+                              color: isKeyRow ? (s.dark ? "#E9D5FF" : "#5B21B6") : textMuted,
+                              fontWeight: isKeyRow ? 700 : 400,
+                            }}
+                          >
+                            {row.label}
+                          </p>
+                          {row.note && (
+                            <p className="text-[1.05vw]" style={{ color: noteColor }}>{row.note}</p>
+                          )}
+                        </div>
+                        <p
+                          className="text-[1.4vw] font-bold ml-[0.5vw] shrink-0"
+                          style={{ color: isKeyRow ? (s.dark ? "white" : s.stageColor) : textMain }}
+                        >
+                          {row.value}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Revenue */}
+                <div
+                  className="px-[1.5vw] py-[1.5vh]"
+                  style={{ borderTop: `1px solid ${divider}` }}
+                >
+                  <p className="text-[1.15vw]" style={{ color: textMuted }}>{s.revenueLabel}</p>
+                  <p className="text-[3vw] font-bold leading-none mt-[0.4vh]"
+                    style={{ color: s.dark ? "white" : s.stageColor }}>
                     {s.revenue}
                   </p>
-                  <p className="text-[1.2vw] font-semibold mt-[0.5vh]" style={{ color: s.color }}>{s.runRate}</p>
-                  <p className="text-[1.2vw] mt-[0.8vh] leading-[1.4]" style={{ color: textMuted }}>{s.note}</p>
+                  <p className="text-[1.1vw] font-semibold mt-[0.3vh]" style={{ color: s.stageColor }}>
+                    {s.subRevenue}
+                  </p>
+                  <p className="text-[1.05vw] mt-[0.5vh] font-mono" style={{ color: noteColor }}>
+                    {s.math}
+                  </p>
+                  <p className="text-[1.1vw] mt-[0.8vh] leading-[1.35]" style={{ color: textMuted }}>
+                    {s.note}
+                  </p>
                 </div>
               </div>
             );
@@ -114,14 +173,14 @@ export default function S11PilotRevenue() {
         </div>
 
         <div
-          className="mt-[2vh] rounded-sm px-[1.5vw] py-[1.2vh] text-[1.3vw] text-[#374151] leading-[1.5]"
+          className="mt-[1.5vh] rounded-sm px-[1.5vw] py-[1vh] text-[1.2vw] text-[#374151] leading-[1.5]"
           style={{ background: "#FEF3C7", border: "1px solid #FCD34D" }}
         >
-          <span className="font-bold">Every input is traceable: </span>
-          1,000 calls = 5 associates × 10 calls × 20 days (Signet outreach standard) · 10% = conservative warm-outreach benchmark (McKinsey / NRF: 8–15%) · $1,362 blended ATV = 42.0% credit at $2,000 + 58.0% cash at $900 (Signet FY2026 AR, NA payment participation table) · 100 purchases = 1,000 × 10%. The pilot replaces every assumption with measured data.
+          <span className="font-bold">Key assumption: </span>
+          Associates promote DiaGe to in-store visitors + outreach calls, adding ~85 new DiaGe users/store/month · 15% share wishlists in any given month · 10% of wishlist-led calls close (McKinsey/NRF warm-outreach benchmark: 8–15%) · $1,362 blended ATV from 42.0% credit mix (Signet FY2026 Annual Report).
         </div>
 
-        <div className="flex justify-between items-end mt-[2vh] pt-[1.5vh] border-t border-[#E5E7EB]">
+        <div className="flex justify-between items-end mt-[1.5vh] pt-[1.5vh] border-t border-[#E5E7EB]">
           <p className="text-[1.2vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
           <p className="text-[1.2vw] text-[#9CA3AF]">12 / 14</p>
         </div>
