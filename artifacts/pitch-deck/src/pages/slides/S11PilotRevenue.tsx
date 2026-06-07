@@ -6,11 +6,11 @@ export default function S11PilotRevenue() {
       bg: "#F9FAFB",
       border: "#E5E7EB",
       adoption: "10%",
-      users: "930K",
+      users: "~760K",
       visitRate: "25%",
       closeRate: "40%",
       atvLift: "10%",
-      revenue: "$294M",
+      revenue: "$240M",
       highlight: false,
     },
     {
@@ -19,11 +19,11 @@ export default function S11PilotRevenue() {
       bg: "#F3F0FF",
       border: "#C4B5FD",
       adoption: "18%",
-      users: "1.7M",
+      users: "~1.4M",
       visitRate: "35%",
       closeRate: "43%",
       atvLift: "20%",
-      revenue: "$688M",
+      revenue: "$560M",
       highlight: true,
     },
     {
@@ -32,11 +32,11 @@ export default function S11PilotRevenue() {
       bg: "#F9FAFB",
       border: "#E5E7EB",
       adoption: "25%",
-      users: "2.3M",
+      users: "~1.9M",
       visitRate: "45%",
       closeRate: "50%",
       atvLift: "30%",
-      revenue: "$1.4B",
+      revenue: "$1.1B",
       highlight: false,
     },
   ];
@@ -53,7 +53,7 @@ export default function S11PilotRevenue() {
           The financial model across three adoption scenarios
         </h1>
         <p className="mt-[1.5vh] text-[1.5vw] text-[#6B7280]">
-          Forward projection · no pilot data claimed · assumptions shown explicitly · Signet addressable base: 9.3M customers
+          Forward projection · no pilot data claimed · assumptions shown explicitly · Signet addressable base: ~7.6M annual transactions · est. from FY2026 Annual Report
         </p>
 
         <div className="mt-[4vh] grid grid-cols-3 gap-[2vw] flex-1">
@@ -111,7 +111,7 @@ export default function S11PilotRevenue() {
             className="flex-shrink-0 rounded-sm px-[1vw] py-[1vh] text-[1.35vw] text-[#374151] leading-[1.45]"
             style={{ background: "#FEF3C7", border: "1px solid #FCD34D" }}
           >
-            <span className="font-bold">Baseline: </span>Signet ATV ~$900, estimated from publicly reported FY2024 revenue and transaction volume.
+            <span className="font-bold">Baseline: </span>Signet ATV ~$900, estimated from publicly reported FY2026 Annual Report ($6.81B revenue, 2,582 locations).
             All conversion rates are model assumptions — not measured DiaGe data.
             The pilot is the mechanism to replace model assumptions with real numbers.
           </div>

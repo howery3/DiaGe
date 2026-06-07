@@ -73,7 +73,7 @@ export default function S10HowYouMakeMoney() {
         >
           <div>
             <p className="text-[1.5vw] text-[#9CA3AF]">
-              Conservative model · Signet ATV ~$900 (est. from public filings) · 20% intent-driven lift
+              Conservative model · Signet ATV ~$900 (est. from FY2026 Annual Report, $6.81B revenue) · 20% intent-driven lift
             </p>
           </div>
           <div className="flex items-baseline gap-[1vw]">

@@ -38,7 +38,7 @@ export default function S12Pricing() {
               5 DiaGe-attributed sales per location per year — less than one per month — covers the full annual fee. Every sale beyond that is unencumbered margin.
             </p>
             <p className="text-[1.3vw] text-[#9CA3AF] mt-auto">
-              Signet ATV ~$900 estimated from publicly reported FY2024 financials. Break-even assumes no margin adjustment.
+              Signet ATV ~$900 estimated from Signet FY2026 Annual Report (SIG-FY26-AR). Break-even assumes no margin adjustment.
             </p>
           </div>
 
@@ -46,27 +46,27 @@ export default function S12Pricing() {
 
           <div className="flex flex-col gap-[2.5vh] w-[40%] flex-shrink-0">
             <p className="text-[1.3vw] font-bold tracking-[0.12em] uppercase text-[#6B7280]">
-              Full Signet rollout · 2,800 locations
+              Full Signet rollout · 2,582 locations
             </p>
 
             <div className="flex flex-col gap-[2.5vh] mt-[1vh]">
               <div>
                 <p className="text-[1.5vw] text-[#6B7280]">Annual DiaGe investment</p>
-                <p className="text-[2.8vw] font-bold text-[#111827]">$12.4M / yr</p>
-                <p className="text-[1.3vw] text-[#9CA3AF]">$369/mo × 2,800 locations × 12</p>
+                <p className="text-[2.8vw] font-bold text-[#111827]">$11.4M / yr</p>
+                <p className="text-[1.3vw] text-[#9CA3AF]">$369/mo × 2,582 locations × 12</p>
               </div>
 
               <div className="pt-[2vh] border-t border-[#E5E7EB]">
                 <p className="text-[1.5vw] text-[#6B7280]">Projected revenue (base case model)</p>
-                <p className="text-[2.8vw] font-bold text-[#5B21B6]">$688M / yr</p>
+                <p className="text-[2.8vw] font-bold text-[#5B21B6]">$560M / yr</p>
                 <p className="text-[1.3vw] text-[#9CA3AF]">18% adoption · 35% visit · 43% close · 20% ATV lift</p>
               </div>
 
               <div className="pt-[2vh] border-t border-[#E5E7EB]">
                 <p className="text-[1.5vw] text-[#6B7280]">Implied return on investment</p>
-                <p className="text-[3.8vw] font-bold text-[#5B21B6]">~56×</p>
+                <p className="text-[3.8vw] font-bold text-[#5B21B6]">~49×</p>
                 <p className="text-[1.3vw] text-[#9CA3AF]">
-                  Base case model · conservative scenario implies ~24×
+                  Base case model · conservative scenario implies ~21×
                 </p>
               </div>
             </div>

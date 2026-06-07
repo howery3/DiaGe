@@ -54,7 +54,7 @@ export default function S10KPIs() {
 
         <div className="mt-[1.5vh] flex items-center gap-[1.5vw]">
           <p className="text-[1.3vw] text-[#9CA3AF]">
-            Sources: Signet FY2024 public filings (ATV) · NRF Retail Horizons · McKinsey "The Value of Getting Personalization Right" · JCK Industry Intelligence · Insider Intelligence retail app benchmarks
+            Sources: Signet FY2026 Annual Report (SIG-FY26-AR) · NRF Retail Horizons · McKinsey "The Value of Getting Personalization Right" · JCK Industry Intelligence · Insider Intelligence retail app benchmarks
           </p>
         </div>
 
