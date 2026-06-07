@@ -11,7 +11,7 @@ export default function S13NextSteps() {
           className="text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
           style={{ textWrap: "balance" }}
         >
-          The proposed next step is a signed 90-day pilot agreement across 10 locations
+          The proposed next step is a signed 90-day pilot agreement across 25 locations
         </h1>
 
         <div className="mt-[4.5vh] flex gap-[5vw] flex-1">
@@ -23,7 +23,7 @@ export default function S13NextSteps() {
               <div className="flex gap-[1.5vw] items-start">
                 <div className="w-[0.4vw] h-[0.4vw] rounded-full bg-[#5B21B6] flex-shrink-0 mt-[0.9vh]" style={{ minWidth: "0.4vw" }} />
                 <p className="text-[1.9vw] text-[#374151] leading-[1.45]">
-                  A signed pilot agreement for 10 store locations across Kay and Zales
+                  A signed pilot agreement for 25 store locations across Kay and Zales
                 </p>
               </div>
               <div className="flex gap-[1.5vw] items-start">
