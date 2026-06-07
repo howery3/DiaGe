@@ -1,10 +1,44 @@
 export default function S11PilotRevenue() {
-  const months = [
-    { month: "Jan", revenue: 284, height: 16 },
-    { month: "Feb", revenue: 412, height: 23 },
-    { month: "Mar", revenue: 581, height: 33 },
-    { month: "Apr", revenue: 798, height: 45 },
-    { month: "May", revenue: 767, height: 43 },
+  const scenarios = [
+    {
+      label: "Conservative",
+      color: "#6B7280",
+      bg: "#F9FAFB",
+      border: "#E5E7EB",
+      adoption: "10%",
+      users: "930K",
+      visitRate: "25%",
+      closeRate: "40%",
+      atvLift: "10%",
+      revenue: "$294M",
+      highlight: false,
+    },
+    {
+      label: "Base case",
+      color: "#5B21B6",
+      bg: "#F3F0FF",
+      border: "#C4B5FD",
+      adoption: "18%",
+      users: "1.7M",
+      visitRate: "35%",
+      closeRate: "43%",
+      atvLift: "20%",
+      revenue: "$688M",
+      highlight: true,
+    },
+    {
+      label: "Optimistic",
+      color: "#374151",
+      bg: "#F9FAFB",
+      border: "#E5E7EB",
+      adoption: "25%",
+      users: "2.3M",
+      visitRate: "45%",
+      closeRate: "50%",
+      atvLift: "30%",
+      revenue: "$1.4B",
+      highlight: false,
+    },
   ];
 
   return (
@@ -16,60 +50,70 @@ export default function S11PilotRevenue() {
           className="text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
           style={{ textWrap: "balance" }}
         >
-          The pilot has already generated $2.84M in attributed revenue across 4 Signet banners
+          The financial model across three adoption scenarios
         </h1>
         <p className="mt-[1.5vh] text-[1.5vw] text-[#6B7280]">
-          Jan–May 2026 · 23 pilot locations · revenue figures represent confirmed in-store purchases from DiaGe-referred leads
+          Forward projection · no pilot data claimed · assumptions shown explicitly · Signet addressable base: 9.3M customers
         </p>
 
-        <div className="mt-[3.5vh] flex gap-[4vw] flex-1">
-          <div className="flex flex-col gap-[2.5vh] flex-1">
-            <div className="flex flex-col gap-[2vh]">
-              <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1.5vh]">
-                <p className="text-[1.85vw] text-[#374151]">Total DiaGe-attributed revenue</p>
-                <p className="text-[2.4vw] font-bold text-[#5B21B6]">$2.84M</p>
-              </div>
-              <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1.5vh]">
-                <p className="text-[1.85vw] text-[#374151]">Monthly run rate growth</p>
-                <p className="text-[2.4vw] font-bold text-[#009118]">+171% MoM</p>
-              </div>
-              <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1.5vh]">
-                <p className="text-[1.85vw] text-[#374151]">Orders attributed (Kay, Jared, Zales, Banter)</p>
-                <p className="text-[2.4vw] font-bold text-[#111827]">1,343</p>
-              </div>
-              <div className="flex justify-between items-baseline">
-                <p className="text-[1.85vw] text-[#374151]">Diamond Bond value at risk — network-wide</p>
-                <p className="text-[2.4vw] font-bold text-[#DC2626]">$12.8M</p>
-              </div>
-            </div>
-
-            <div className="mt-auto p-[1.5vh_1.5vw] rounded-sm" style={{ background: "#F3F0FF" }}>
-              <p className="text-[1.6vw] font-bold text-[#5B21B6]">Full Signet projection</p>
-              <p className="text-[1.6vw] text-[#374151] mt-[0.4vh]">
-                18% adoption · 2,800 locations → <span className="font-bold">$290M+ attributed revenue / year</span>
+        <div className="mt-[4vh] grid grid-cols-3 gap-[2vw] flex-1">
+          {scenarios.map((s) => (
+            <div
+              key={s.label}
+              className="flex flex-col rounded-sm border p-[2vh_1.5vw] gap-[2vh]"
+              style={{ background: s.bg, borderColor: s.border }}
+            >
+              <p
+                className="text-[1.3vw] font-bold tracking-[0.12em] uppercase"
+                style={{ color: s.color }}
+              >
+                {s.label}
               </p>
-            </div>
-          </div>
 
-          <div className="w-[0.5px] bg-[#E5E7EB] flex-shrink-0" />
-
-          <div className="flex flex-col gap-[1.5vh] w-[36%] flex-shrink-0">
-            <p className="text-[1.3vw] font-bold tracking-[0.12em] uppercase text-[#6B7280]">
-              Monthly attributed revenue ($K)
-            </p>
-            <div className="flex-1 flex items-end gap-[1.2vw] pt-[2vh]">
-              {months.map((m) => (
-                <div key={m.month} className="flex flex-col items-center gap-[0.8vh] flex-1">
-                  <p className="text-[1.3vw] font-bold text-[#5B21B6]">${m.revenue}K</p>
-                  <div
-                    className="w-full rounded-t-sm"
-                    style={{ height: `${m.height}vh`, background: "#5B21B6", opacity: m.month === "Apr" ? 1 : 0.65 }}
-                  />
-                  <p className="text-[1.3vw] text-[#6B7280]">{m.month}</p>
+              <div className="flex flex-col gap-[1.2vh]">
+                <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1vh]">
+                  <p className="text-[1.5vw] text-[#6B7280]">User adoption</p>
+                  <p className="text-[1.6vw] font-bold text-[#111827]">{s.adoption}</p>
                 </div>
-              ))}
+                <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1vh]">
+                  <p className="text-[1.5vw] text-[#6B7280]">Projected users</p>
+                  <p className="text-[1.6vw] font-bold text-[#111827]">{s.users}</p>
+                </div>
+                <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1vh]">
+                  <p className="text-[1.5vw] text-[#6B7280]">Lead → visit rate</p>
+                  <p className="text-[1.6vw] font-bold text-[#111827]">{s.visitRate}</p>
+                </div>
+                <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1vh]">
+                  <p className="text-[1.5vw] text-[#6B7280]">Visit → close rate</p>
+                  <p className="text-[1.6vw] font-bold text-[#111827]">{s.closeRate}</p>
+                </div>
+                <div className="flex justify-between items-baseline border-b border-[#E5E7EB] pb-[1vh]">
+                  <p className="text-[1.5vw] text-[#6B7280]">ATV lift (intent premium)</p>
+                  <p className="text-[1.6vw] font-bold text-[#111827]">{s.atvLift}</p>
+                </div>
+              </div>
+
+              <div className="mt-auto">
+                <p className="text-[1.3vw] text-[#6B7280]">Modeled attributed revenue / yr</p>
+                <p
+                  className="text-[2.8vw] font-bold leading-none mt-[0.5vh]"
+                  style={{ color: s.color }}
+                >
+                  {s.revenue}
+                </p>
+              </div>
             </div>
-            <p className="text-[1.2vw] text-[#9CA3AF]">May is a partial month</p>
+          ))}
+        </div>
+
+        <div className="mt-[2.5vh] flex items-start gap-[1.5vw]">
+          <div
+            className="flex-shrink-0 rounded-sm px-[1vw] py-[1vh] text-[1.35vw] text-[#374151] leading-[1.45]"
+            style={{ background: "#FEF3C7", border: "1px solid #FCD34D" }}
+          >
+            <span className="font-bold">Baseline: </span>Signet ATV ~$900, estimated from publicly reported FY2024 revenue and transaction volume.
+            All conversion rates are model assumptions — not measured DiaGe data.
+            The pilot is the mechanism to replace model assumptions with real numbers.
           </div>
         </div>
 
