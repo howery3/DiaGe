@@ -47,13 +47,24 @@ export default function S10HowYouMakeMoney() {
 
           {/* Box 2: Conversion */}
           <div className="flex flex-col gap-[1.5vh] flex-1 rounded-sm p-[2vh_1.5vw]" style={{ background: "#EEF2FF" }}>
-            <p className="text-[1.2vw] font-bold tracking-[0.12em] uppercase text-[#5B21B6]">Conservative pilot conversion</p>
-            <div className="flex flex-col items-center justify-center flex-1 gap-[1vh]">
+            <p className="text-[1.2vw] font-bold tracking-[0.12em] uppercase text-[#5B21B6]">Conversion · derived from slide 11</p>
+            <div className="flex flex-col items-center justify-center flex-1 gap-[0.8vh]">
               <p className="text-[5.5vw] font-bold text-[#5B21B6] leading-none">10%</p>
               <p className="text-[1.65vw] font-bold text-[#374151] text-center">call → purchase</p>
-              <p className="text-[1.35vw] text-[#6B7280] text-center leading-[1.4]">
-                Intent-based warm outreach benchmarks: 8–15%. These customers already shared what they want — 10% is the conservative floor.
-              </p>
+              <div className="flex flex-col gap-[0.6vh] mt-[0.5vh] text-left w-full px-[0.5vw]">
+                <p className="text-[1.25vw] text-[#6B7280] leading-[1.35]">
+                  Signet cold outreach: <span className="font-semibold text-[#374151]">5–10%</span> call → store visit
+                </p>
+                <p className="text-[1.25vw] text-[#6B7280] leading-[1.35]">
+                  DiaGe customers are intent-aware: <span className="font-semibold text-[#374151]">2–4× lift</span> → 10–40% visit rate
+                </p>
+                <p className="text-[1.25vw] text-[#6B7280] leading-[1.35]">
+                  Consultative close (in-store): <span className="font-semibold text-[#374151]">~50%</span>
+                </p>
+                <p className="text-[1.25vw] font-bold text-[#5B21B6] leading-[1.35] border-t border-[#C7D2FE] pt-[0.6vh] mt-[0.3vh]">
+                  10% visit × 50% close = <span className="text-[#374151]">min 2× lift scenario</span>
+                </p>
+              </div>
             </div>
             <div className="flex justify-between items-baseline pt-[1.5vh] border-t border-[#C7D2FE]">
               <p className="text-[1.45vw] font-bold text-[#374151]">DiaGe purchases / store / month</p>
