@@ -8,7 +8,7 @@ export default function S12Pricing() {
           className="text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
           style={{ textWrap: "balance" }}
         >
-          At $369/month per location, break-even is one incremental sale — the rest is upside
+          At $369/month per location, 4 incremental sales per year covers the fee — the rest is upside
         </h1>
 
         <div className="mt-[4vh] flex gap-[5vw] flex-1">
@@ -30,15 +30,15 @@ export default function S12Pricing() {
                 <p className="text-[2.2vw] font-bold text-[#111827]">$4,428</p>
               </div>
               <div className="flex justify-between items-baseline">
-                <p className="text-[1.85vw] text-[#374151]">Break-even (at ~$900 Signet ATV)</p>
-                <p className="text-[1.85vw] font-bold text-[#009118]">5 incremental sales / year</p>
+                <p className="text-[1.85vw] text-[#374151]">Break-even (at $1,362 blended ATV)</p>
+                <p className="text-[1.85vw] font-bold text-[#009118]">4 incremental sales / year</p>
               </div>
             </div>
             <p className="text-[1.6vw] text-[#6B7280] leading-[1.45] mt-[1vh]">
-              5 DiaGe-attributed sales per location per year — less than one per month — covers the full annual fee. Every sale beyond that is unencumbered margin.
+              4 DiaGe-attributed sales per location per year — one per quarter — covers the full annual fee. Every sale beyond that is unencumbered margin.
             </p>
             <p className="text-[1.3vw] text-[#9CA3AF] mt-auto">
-              Signet ATV ~$900 estimated from Signet FY2026 Annual Report (SIG-FY26-AR). Break-even assumes no margin adjustment.
+              $1,362 blended ATV: 42.0% Zales credit (~$2,000) + 58.0% bank card (~$900) · credit mix from Signet FY2026 Annual Report. Break-even assumes no margin adjustment.
             </p>
           </div>
 
@@ -57,16 +57,16 @@ export default function S12Pricing() {
               </div>
 
               <div className="pt-[2vh] border-t border-[#E5E7EB]">
-                <p className="text-[1.5vw] text-[#6B7280]">Projected revenue (base case model)</p>
-                <p className="text-[2.8vw] font-bold text-[#5B21B6]">$560M / yr</p>
-                <p className="text-[1.3vw] text-[#9CA3AF]">18% adoption · 35% visit · 43% close · 20% ATV lift</p>
+                <p className="text-[1.5vw] text-[#6B7280]">Projected revenue · mature rollout</p>
+                <p className="text-[2.8vw] font-bold text-[#5B21B6]">$845M / yr</p>
+                <p className="text-[1.3vw] text-[#9CA3AF]">2,582 stores · 20 purchases/store/mo · $1,362 ATV · slide 12</p>
               </div>
 
               <div className="pt-[2vh] border-t border-[#E5E7EB]">
                 <p className="text-[1.5vw] text-[#6B7280]">Implied return on investment</p>
-                <p className="text-[3.8vw] font-bold text-[#5B21B6]">~49×</p>
+                <p className="text-[3.8vw] font-bold text-[#5B21B6]">~74×</p>
                 <p className="text-[1.3vw] text-[#9CA3AF]">
-                  Base case model · conservative scenario implies ~21×
+                  $845M attributed revenue ÷ $11.4M DiaGe investment · Year 1 rollout implies ~30×
                 </p>
               </div>
             </div>
