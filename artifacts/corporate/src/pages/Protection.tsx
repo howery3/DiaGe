@@ -174,7 +174,7 @@ export default function Protection() {
             <TrendingUp size={12} className="text-[#5B21B6] flex-shrink-0 mt-0.5" />
             <p className="text-[11px] text-[#6D28D9] leading-relaxed">
               <span className="font-semibold">+171% MoM growth</span> in attributed revenue across pilot stores (Jan–Apr). 
-              May is partial-month. Projection at full Signet rollout: <span className="font-semibold">$290M+/yr</span>.
+              May is partial-month. Mature rollout projection (2,582 stores · 20 purchases/store/mo · $1,362 ATV): <span className="font-semibold">$845M/yr</span>.
             </p>
           </div>
         </div>
