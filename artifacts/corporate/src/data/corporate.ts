@@ -45,9 +45,9 @@ export const FUNNEL_STAGES = [
 ];
 
 export const ATV_COMPARISON = [
-  { label: "DiaGe Users",         value: 2847, highlight: true },
-  { label: "Signet Avg Customer", value: 1240, highlight: false },
-  { label: "Jewelry Retail Avg",  value: 890,  highlight: false },
+  { label: "Zales Credit Purchase", value: 2000, highlight: false },
+  { label: "Blended ATV",           value: 1362, highlight: true  },
+  { label: "Bank Card Purchase",    value: 900,  highlight: false },
 ];
 
 export const ATV_BY_CATEGORY = [
@@ -459,7 +459,7 @@ export const TIME_TO_APPT = [
 
 export const REVENUE_ATTRIBUTION = {
   totalAttributed: 2842000,
-  avgOrderValue: 2847,
+  avgOrderValue: 1362,
   conversionRate: 60.2,
   byBanner: [
     { banner: "Kay Jewelers",              attributed: 1184000, orders: 415, color: "#5B21B6" },

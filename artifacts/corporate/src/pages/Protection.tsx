@@ -81,9 +81,9 @@ export default function Protection() {
           accent
         />
         <KpiCard
-          title="Avg DiaGe Order Value"
+          title="Blended ATV · DiaGe Purchases"
           value={`$${REVENUE_ATTRIBUTION.avgOrderValue.toLocaleString()}`}
-          sub="vs $1,240 Signet avg customer"
+          sub="42% credit × $2,000 + 58% bank × $900 · FY2026 AR"
           icon={TrendingUp}
         />
         <KpiCard

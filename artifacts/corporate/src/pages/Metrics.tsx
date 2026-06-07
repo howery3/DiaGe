@@ -52,9 +52,9 @@ export default function Metrics() {
         {[
           {
             icon: ShoppingBag,
-            headline: "2.3×",
-            label: "Average Transaction Value Lift",
-            sub: "DiaGe users spend $2,847 vs $1,240 avg Signet customer",
+            headline: "$1,362",
+            label: "Blended ATV · DiaGe-attributed purchases",
+            sub: "42% Zales credit × $2,000 + 58% bank card × $900 · FY2026 AR sourced",
             color: PURPLE,
             light: "hsl(262 40% 94%)",
             textLight: "hsl(262 80% 30%)",
@@ -148,8 +148,8 @@ export default function Metrics() {
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* ATV Comparison */}
         <div className="bg-card border border-card-border rounded-xl p-5">
-          <div className="font-semibold text-sm text-foreground mb-1">Average Transaction Value</div>
-          <div className="text-xs text-muted-foreground mb-4">DiaGe users vs benchmarks — attributed purchases</div>
+          <div className="font-semibold text-sm text-foreground mb-1">Blended ATV · Credit Mix Breakdown</div>
+          <div className="text-xs text-muted-foreground mb-4">42.0% NA credit participation · Signet FY2026 Annual Report, p. 1391</div>
           <ResponsiveContainer width="100%" height={200} debounce={0}>
             <BarChart data={ATV_COMPARISON} margin={{ top: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
@@ -178,7 +178,7 @@ export default function Metrics() {
             </BarChart>
           </ResponsiveContainer>
           <div className="mt-3 rounded-lg px-3 py-2.5 text-xs" style={{ background: "hsl(262 40% 94%)", color: "hsl(262 80% 30%)" }}>
-            DiaGe users spend <strong>$1,607 more per transaction</strong> on average — a 2.3× lift over the Signet baseline.
+            Blended ATV of <strong>$1,362</strong> reflects Signet's 42.0% NA credit participation rate — sourced from FY2026 Annual Report, p. 1391.
           </div>
         </div>
 
