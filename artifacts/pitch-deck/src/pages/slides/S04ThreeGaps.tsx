@@ -20,11 +20,11 @@ export default function S04ThreeGaps() {
               No engagement layer
             </p>
             <p className="text-[1.75vw] text-[#374151] leading-[1.5]">
-              Zero touchpoints between purchase events. Customer intent is invisible until they walk in.
+              Zero touchpoints between purchase events. When customers are ready to buy again, they research online, visit competitors, and may never return to Signet — and we have no way to know until the sale is already lost.
             </p>
             <div className="mt-auto pt-[2vh]">
               <p className="text-[1.5vw] font-bold text-[#111827]">2–3 years</p>
-              <p className="text-[1.35vw] text-[#6B7280]">avg gap between store visits</p>
+              <p className="text-[1.35vw] text-[#6B7280]">avg gap between store visits in jewelry retail</p>
             </div>
           </div>
 
@@ -36,11 +36,11 @@ export default function S04ThreeGaps() {
               Diamond Bond lapse risk
             </p>
             <p className="text-[1.75vw] text-[#374151] leading-[1.5]">
-              847 customers across 4 banners have missed their inspection window. Coverage may lapse without outreach.
+              Customers forget the 6-month inspection requirement. There's no automated reminder and no visibility into who is approaching their window — until they arrive to file a replacement claim that can no longer be honored.
             </p>
             <div className="mt-auto pt-[2vh]">
-              <p className="text-[1.5vw] font-bold text-[#DC2626]">$12.8M</p>
-              <p className="text-[1.35vw] text-[#6B7280]">in plan value at risk today</p>
+              <p className="text-[1.5vw] font-bold text-[#111827]">6 months</p>
+              <p className="text-[1.35vw] text-[#6B7280]">inspection window · no automated outreach exists today</p>
             </div>
           </div>
 
@@ -52,18 +52,18 @@ export default function S04ThreeGaps() {
               No cross-banner visibility
             </p>
             <p className="text-[1.75vw] text-[#374151] leading-[1.5]">
-              1,847 customers are actively shopping Kay, Zales, Jared, and Banter simultaneously. No individual banner sees the full picture.
+              A customer shopping Kay, Zales, Jared, and Banter simultaneously looks like four separate strangers to four separate systems. Signet cannot see or serve that customer as one relationship.
             </p>
             <div className="mt-auto pt-[2vh]">
-              <p className="text-[1.5vw] font-bold text-[#111827]">14.4%</p>
-              <p className="text-[1.35vw] text-[#6B7280]">of DiaGe users cross-shopping today</p>
+              <p className="text-[1.5vw] font-bold text-[#111827]">4 banners</p>
+              <p className="text-[1.35vw] text-[#6B7280]">zero shared customer view across any of them</p>
             </div>
           </div>
         </div>
 
         <div className="flex justify-between items-end mt-[2.5vh] pt-[2vh] border-t border-[#E5E7EB]">
           <p className="text-[1.3vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.3vw] text-[#9CA3AF]">4 / 13</p>
+          <p className="text-[1.3vw] text-[#9CA3AF]">4 / 14</p>
         </div>
       </div>
     </div>

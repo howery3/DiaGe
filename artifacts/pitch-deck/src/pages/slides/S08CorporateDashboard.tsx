@@ -20,7 +20,7 @@ export default function S08CorporateDashboard() {
               Revenue attribution
             </p>
             <p className="text-[1.85vw] text-[#374151] leading-[1.45]">
-              Tracks DiaGe-referred visits that convert to sales, by banner — a direct line between the app and the register. Corporate can see exactly what the platform is generating.
+              Tracks DiaGe-referred visits that convert to sales, by banner — a direct line between the app and the register. Corporate can see exactly what the platform is generating, without asking individual stores.
             </p>
           </div>
 
@@ -29,7 +29,7 @@ export default function S08CorporateDashboard() {
               Cross-banner intelligence
             </p>
             <p className="text-[1.85vw] text-[#374151] leading-[1.45]">
-              Identifies customers actively shopping Kay, Zales, Jared, and Banter simultaneously. Only DiaGe has this view — no individual store or banner system can see across the portfolio.
+              Identifies customers shopping Kay, Zales, Jared, and Banter at the same time. No individual banner system can see this — it only becomes visible when a single app layer sits above all four.
             </p>
           </div>
 
@@ -38,7 +38,7 @@ export default function S08CorporateDashboard() {
               Diamond Bond risk monitoring
             </p>
             <p className="text-[1.85vw] text-[#374151] leading-[1.45]">
-              A real-time view of every customer approaching or past their inspection deadline, across all locations — before plans lapse and the relationship is lost.
+              A real-time view of every customer approaching or past their inspection deadline, across all locations — before plans lapse and the relationship is lost. This view does not exist anywhere in Signet's current reporting stack.
             </p>
           </div>
 
@@ -47,16 +47,14 @@ export default function S08CorporateDashboard() {
               Time-to-appointment
             </p>
             <p className="text-[1.85vw] text-[#374151] leading-[1.45]">
-              Measures days from wishlist share to confirmed in-store visit. DiaGe customers arrive in{" "}
-              <span className="font-bold text-[#111827]">3–6 days</span>
-              {" "}vs. the 14–21 day industry baseline — with full purchase context already in the associate's hands.
+              Measures days from wishlist share to confirmed in-store visit — a metric that does not exist anywhere in Signet's current reporting. The pilot will produce the first real benchmark for how quickly intent converts to an appointment.
             </p>
           </div>
         </div>
 
         <div className="flex justify-between items-end mt-auto pt-[2vh] border-t border-[#E5E7EB]">
           <p className="text-[1.3vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.3vw] text-[#9CA3AF]">8 / 13</p>
+          <p className="text-[1.3vw] text-[#9CA3AF]">8 / 14</p>
         </div>
       </div>
     </div>
