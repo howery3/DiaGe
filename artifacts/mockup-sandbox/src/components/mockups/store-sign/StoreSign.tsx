@@ -84,7 +84,7 @@ export function StoreSign() {
               no further! It's time to say GOODBYE to your paperwork, and HELLO
               to DiaGe, your virtual jewelry vault. Track purchases, save
               important details, build wishlists, and share your favorite styles
-              with friends and family, right from your phone.
+              with friends and family, right from your pocket.
             </p>
             <p className="text-[0.9rem] font-semibold text-[#8B5CF6] tracking-wide">
               diage.app
