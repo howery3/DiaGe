@@ -64,7 +64,7 @@ export function StoreSignLight() {
           {/* Description box */}
           <div style={{ width: "100%", background: "#f3f0ff", border: "1px solid rgba(91,33,182,0.15)", borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
             <p style={{ fontSize: "0.68rem", color: "#4B5563", lineHeight: 1.6, margin: 0, marginBottom: 6 }}>
-              Download DiaGe to store your jewelry photos, warranties, and receipts — and build wishlists your loved ones can actually find.
+              Download DiaGe to store your jewelry photos, warranties, and receipts. Build wishlists your loved ones can actually find.
             </p>
             <p style={{ fontSize: "0.8rem", fontWeight: 600, color: "#5B21B6", letterSpacing: "0.05em", margin: 0 }}>
               Free download · diage.app
