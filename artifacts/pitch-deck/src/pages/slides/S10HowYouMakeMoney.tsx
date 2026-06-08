@@ -117,7 +117,7 @@ export default function S10HowYouMakeMoney() {
 
         <div className="mt-[2vh] flex justify-between items-end pt-[1.5vh] border-t border-[#E5E7EB]">
           <p className="text-[1.2vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.2vw] text-[#9CA3AF]">10 / 14</p>
+          <p className="text-[1.2vw] text-[#9CA3AF]">10 / 15</p>
         </div>
       </div>
     </div>

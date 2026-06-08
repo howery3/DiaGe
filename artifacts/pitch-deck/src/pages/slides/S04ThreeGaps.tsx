@@ -63,7 +63,7 @@ export default function S04ThreeGaps() {
 
         <div className="flex justify-between items-end mt-[2.5vh] pt-[2vh] border-t border-[#E5E7EB]">
           <p className="text-[1.3vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.3vw] text-[#9CA3AF]">4 / 14</p>
+          <p className="text-[1.3vw] text-[#9CA3AF]">4 / 15</p>
         </div>
       </div>
     </div>

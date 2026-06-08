@@ -11,7 +11,7 @@ export default function S12Pricing() {
           At $369/month per location, 4 incremental sales per year covers the fee. The rest is upside.
         </h1>
 
-        <div className="mt-[4vh] flex gap-[5vw] flex-1">
+        <div className="mt-[2.5vh] flex gap-[5vw] flex-1">
           <div className="flex flex-col gap-[2.5vh] flex-1">
             <p className="text-[1.3vw] font-bold tracking-[0.12em] uppercase text-[#6B7280]">
               Per-location pricing
@@ -37,46 +37,46 @@ export default function S12Pricing() {
             <p className="text-[1.6vw] text-[#6B7280] leading-[1.45] mt-[1vh]">
               4 DiaGe-attributed sales per location per year, one per quarter, covers the full annual fee. Every sale beyond that is unencumbered margin.
             </p>
-            <p className="text-[1.3vw] text-[#9CA3AF] mt-auto">
-              $1,362 blended ATV: 42.0% Zales credit (~$2,000) + 58.0% bank card (~$900) · credit mix from Signet FY2026 Annual Report. Break-even assumes no margin adjustment.
+            <p className="text-[1.15vw] text-[#9CA3AF] mt-[1.5vh]">
+              $1,362 blended ATV: 42.0% Zales credit (~$2,000) + 58.0% bank card (~$900). Credit mix from Signet FY2026 Annual Report. Break-even assumes no margin adjustment.
             </p>
           </div>
 
           <div className="w-[0.5px] bg-[#E5E7EB] flex-shrink-0" />
 
-          <div className="flex flex-col gap-[2.5vh] w-[40%] flex-shrink-0">
+          <div className="flex flex-col gap-[1.5vh] w-[40%] flex-shrink-0">
             <p className="text-[1.3vw] font-bold tracking-[0.12em] uppercase text-[#6B7280]">
               Full Signet rollout · 2,582 locations
             </p>
 
-            <div className="flex flex-col gap-[2.5vh] mt-[1vh]">
+            <div className="flex flex-col gap-[1.5vh]">
               <div>
-                <p className="text-[1.5vw] text-[#6B7280]">Annual DiaGe investment</p>
-                <p className="text-[2.8vw] font-bold text-[#111827]">$11.4M / yr</p>
-                <p className="text-[1.3vw] text-[#9CA3AF]">$369/mo × 2,582 locations × 12</p>
+                <p className="text-[1.4vw] text-[#6B7280]">Annual DiaGe investment</p>
+                <p className="text-[2.5vw] font-bold text-[#111827]">$11.4M / yr</p>
+                <p className="text-[1.15vw] text-[#9CA3AF]">$369/mo × 2,582 locations × 12</p>
               </div>
 
-              <div className="pt-[2vh] border-t border-[#E5E7EB]">
-                <p className="text-[1.5vw] text-[#6B7280]">Projected revenue · mature rollout</p>
-                <p className="text-[2.8vw] font-bold text-[#5B21B6]">$845M / yr</p>
-                <p className="text-[1.3vw] text-[#9CA3AF]">2,582 stores · 20 purchases/store/mo · $1,362 ATV · slide 12</p>
+              <div className="pt-[1.5vh] border-t border-[#E5E7EB]">
+                <p className="text-[1.4vw] text-[#6B7280]">Projected revenue · mature rollout</p>
+                <p className="text-[2.5vw] font-bold text-[#5B21B6]">$845M / yr</p>
+                <p className="text-[1.15vw] text-[#9CA3AF]">2,582 stores · 20 purchases/store/mo · $1,362 ATV · slide 12</p>
               </div>
 
-              <div className="pt-[2vh] border-t border-[#E5E7EB]">
-                <p className="text-[1.5vw] text-[#6B7280]">Implied return on investment</p>
-                <p className="text-[3.8vw] font-bold text-[#5B21B6]">~74×</p>
-                <p className="text-[1.3vw] text-[#9CA3AF]">
+              <div className="pt-[1.5vh] border-t border-[#E5E7EB]">
+                <p className="text-[1.4vw] text-[#6B7280]">Implied return on investment</p>
+                <p className="text-[3.2vw] font-bold text-[#5B21B6]">~74×</p>
+                <p className="text-[1.15vw] text-[#9CA3AF]">
                   $845M attributed revenue ÷ $11.4M DiaGe investment · Year 1 rollout implies ~30×
                 </p>
               </div>
             </div>
 
             <div
-              className="mt-auto rounded-sm px-[1vw] py-[1.5vh] text-[1.3vw] leading-[1.45]"
+              className="rounded-sm px-[1vw] py-[1vh] text-[1.2vw] leading-[1.4]"
               style={{ background: "#FEF3C7", border: "1px solid #FCD34D" }}
             >
               <span className="font-bold text-[#92400E]">These are projections, not results.</span>
-              <span className="text-[#92400E]"> The pilot is specifically designed to replace these model assumptions with real Signet data.</span>
+              <span className="text-[#92400E]"> The pilot is designed to replace these model assumptions with real Signet data.</span>
             </div>
           </div>
         </div>

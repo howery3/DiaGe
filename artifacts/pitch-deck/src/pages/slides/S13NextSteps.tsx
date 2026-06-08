@@ -6,7 +6,7 @@ export default function S13NextSteps() {
     >
       <div className="absolute top-0 left-0 h-[0.6vh] w-full bg-[#5B21B6]" />
 
-      <div className="relative z-10 flex flex-col h-full px-[8vw] pt-[7vh] pb-[6vh]">
+      <div className="relative z-10 flex flex-col h-full px-[8vw] pt-[4vh] pb-[3vh]">
         <h1
           className="text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
           style={{ textWrap: "balance" }}
@@ -14,7 +14,7 @@ export default function S13NextSteps() {
           The proposed next step is a signed 90-day pilot agreement across 25 locations
         </h1>
 
-        <div className="mt-[4.5vh] flex gap-[5vw] flex-1">
+        <div className="mt-[3vh] flex gap-[5vw] flex-1">
           <div className="flex flex-col gap-[2.5vh] flex-1">
             <p className="text-[1.3vw] font-bold tracking-[0.12em] uppercase text-[#6B7280]">
               What we are asking for
@@ -40,14 +40,14 @@ export default function S13NextSteps() {
               </div>
             </div>
 
-            <div className="mt-[2vh]">
-              <p className="text-[1.3vw] font-bold tracking-[0.12em] uppercase text-[#6B7280] mb-[1.5vh]">
+            <div className="mt-[1.5vh]">
+              <p className="text-[1.15vw] font-bold tracking-[0.12em] uppercase text-[#6B7280] mb-[1vh]">
                 Success metrics
               </p>
-              <div className="flex flex-col gap-[1vh]">
-                <p className="text-[1.7vw] text-[#374151] leading-[1.4]">Diamond Bond inspection compliance rate vs. control stores</p>
-                <p className="text-[1.7vw] text-[#374151] leading-[1.4]">DiaGe-attributed transaction count and average order value</p>
-                <p className="text-[1.7vw] text-[#374151] leading-[1.4]">Time-to-appointment for wishlist-sharing customers</p>
+              <div className="flex flex-col gap-[0.5vh]">
+                <p className="text-[1.5vw] text-[#374151] leading-[1.35]">Diamond Bond inspection compliance rate vs. control stores</p>
+                <p className="text-[1.5vw] text-[#374151] leading-[1.35]">DiaGe-attributed transaction count and average order value</p>
+                <p className="text-[1.5vw] text-[#374151] leading-[1.35]">Time-to-appointment for wishlist-sharing customers</p>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function S13NextSteps() {
           </div>
         </div>
 
-        <div className="mt-[3vh] pt-[2.5vh] border-t border-[#D1D5DB]">
+        <div className="mt-[2vh] pt-[1.5vh] border-t border-[#D1D5DB]">
           <div className="flex justify-between items-end">
             <div>
               <p className="text-[1.4vw] font-bold text-[#5B21B6]">DiaGe Inc.</p>
