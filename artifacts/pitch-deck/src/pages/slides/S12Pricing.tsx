@@ -8,7 +8,7 @@ export default function S12Pricing() {
           className="text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
           style={{ textWrap: "balance" }}
         >
-          At $369/month per location, 4 incremental sales per year covers the fee — the rest is upside
+          At $369/month per location, 4 incremental sales per year covers the fee. The rest is upside.
         </h1>
 
         <div className="mt-[4vh] flex gap-[5vw] flex-1">
@@ -35,7 +35,7 @@ export default function S12Pricing() {
               </div>
             </div>
             <p className="text-[1.6vw] text-[#6B7280] leading-[1.45] mt-[1vh]">
-              4 DiaGe-attributed sales per location per year — one per quarter — covers the full annual fee. Every sale beyond that is unencumbered margin.
+              4 DiaGe-attributed sales per location per year, one per quarter, covers the full annual fee. Every sale beyond that is unencumbered margin.
             </p>
             <p className="text-[1.3vw] text-[#9CA3AF] mt-auto">
               $1,362 blended ATV: 42.0% Zales credit (~$2,000) + 58.0% bank card (~$900) · credit mix from Signet FY2026 Annual Report. Break-even assumes no margin adjustment.

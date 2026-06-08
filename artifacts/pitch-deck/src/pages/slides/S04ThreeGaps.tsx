@@ -17,10 +17,10 @@ export default function S04ThreeGaps() {
               Gap 1
             </p>
             <p className="text-[1.9vw] font-bold text-[#111827] leading-[1.25]">
-              No engagement layer
+              Outreach without intent
             </p>
             <p className="text-[1.75vw] text-[#374151] leading-[1.5]">
-              Zero touchpoints between purchase events. When customers are ready to buy again, they research online, visit competitors, and may never return to Signet — and we have no way to know until the sale is already lost.
+              The clienteling platform lets associates call or email returning guests. But the outreach is unqualified. There is no view into what the customer is shopping for, what price range they are considering, or whether they are close to a purchase. Every contact is a cold read.
             </p>
             <div className="mt-auto pt-[2vh]">
               <p className="text-[1.5vw] font-bold text-[#111827]">2–3 years</p>
@@ -36,7 +36,7 @@ export default function S04ThreeGaps() {
               Diamond Bond lapse risk
             </p>
             <p className="text-[1.75vw] text-[#374151] leading-[1.5]">
-              Customers forget the 6-month inspection requirement. There's no automated reminder and no visibility into who is approaching their window — until they arrive to file a replacement claim that can no longer be honored.
+              Customers forget the 6-month inspection requirement. There is no automated reminder and no visibility into who is approaching their window until they arrive to file a replacement claim that can no longer be honored.
             </p>
             <div className="mt-auto pt-[2vh]">
               <p className="text-[1.5vw] font-bold text-[#111827]">6 months</p>

@@ -15,7 +15,7 @@ export default function S05ActII() {
         </h1>
         <div className="mt-[3vh] h-[1px] w-[8vw] bg-[#8B5CF6] opacity-50" />
         <p className="mt-[2.5vh] text-[2vw] text-[#C4B5FD] leading-[1.5]" style={{ textWrap: "balance" }}>
-          DiaGe closes the loop — from customer intent to in-store transaction
+          DiaGe closes the loop, from customer intent to in-store transaction
         </p>
       </div>
     </div>

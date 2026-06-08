@@ -11,7 +11,7 @@ export default function S06Product() {
           DiaGe is a jewelry management app that keeps customers engaged between purchases
         </h1>
         <p className="mt-[1.5vh] text-[1.8vw] text-[#6B7280]">
-          Three capabilities — one reason to stay in the Signet ecosystem
+          Three capabilities, one reason to stay in the Signet ecosystem
         </p>
 
         <div className="mt-[4.5vh] flex flex-col gap-[3.5vh] flex-1">
@@ -23,7 +23,7 @@ export default function S06Product() {
             </div>
             <div className="h-[4vh] w-[1px] bg-[#D1D5DB] flex-shrink-0 mt-[0.2vh]" />
             <p className="text-[1.9vw] text-[#374151] leading-[1.45]">
-              Customers photograph and catalog every piece they own — with warranty dates, gemstone details, and purchase records stored in one place, across phone changes. Their jewelry history lives in the app, not on a paper receipt in a drawer.
+              Customers photograph and catalog every piece they own, with warranty dates, gemstone details, and purchase records stored in one place, across phone changes. Their jewelry history lives in the app, not on a paper receipt in a drawer.
             </p>
           </div>
 
@@ -35,7 +35,7 @@ export default function S06Product() {
             </div>
             <div className="h-[4vh] w-[1px] bg-[#D1D5DB] flex-shrink-0 mt-[0.2vh]" />
             <p className="text-[1.9vw] text-[#374151] leading-[1.45]">
-              Customers save items from any retailer website and share their wishlist directly with a preferred Signet store. Associates receive full purchase context — item, price, ring size, priority — before the customer ever calls or walks in.
+              Customers save items from any retailer website and share their wishlist directly with a preferred Signet store. Associates receive full purchase context (item, price, ring size, priority) before the customer ever calls or walks in.
             </p>
           </div>
 
@@ -47,7 +47,7 @@ export default function S06Product() {
             </div>
             <div className="h-[4vh] w-[1px] bg-[#D1D5DB] flex-shrink-0 mt-[0.2vh]" />
             <p className="text-[1.9vw] text-[#374151] leading-[1.45]">
-              Automated push notifications 30 days before each Diamond Bond inspection window closes. Customers tap once to request an appointment at their preferred store — no call, no friction, no lapse.
+              Automated push notifications 30 days before each Diamond Bond inspection window closes. Customers tap once to request an appointment at their preferred store. No call, no friction, no lapse.
             </p>
           </div>
         </div>

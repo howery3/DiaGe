@@ -22,7 +22,7 @@ export default function S07PartnerPortal() {
             <div>
               <p className="text-[2vw] font-bold text-[#111827]">Wishlist leads</p>
               <p className="mt-[0.5vh] text-[1.85vw] text-[#374151] leading-[1.45]">
-                Customers who shared a specific item with the store. Associates see the product, estimated value, and days since the wishlist was saved — before the customer calls or walks in.
+                Customers who shared a specific item with the store. Associates see the product, estimated value, and days since the wishlist was saved, before the customer calls or walks in.
               </p>
             </div>
           </div>
@@ -46,7 +46,7 @@ export default function S07PartnerPortal() {
             <div>
               <p className="text-[2vw] font-bold text-[#111827]">Diamond Bond alerts</p>
               <p className="mt-[0.5vh] text-[1.85vw] text-[#374151] leading-[1.45]">
-                Customers with overdue inspections. One-click outreach message templates let associates reschedule before the plan lapses — turning a compliance risk into a booked visit.
+                Customers with overdue inspections. One-click outreach message templates let associates reschedule before the plan lapses, turning a compliance risk into a booked visit.
               </p>
             </div>
           </div>

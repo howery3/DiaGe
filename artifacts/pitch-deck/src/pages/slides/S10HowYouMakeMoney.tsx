@@ -34,7 +34,7 @@ export default function S10HowYouMakeMoney() {
               </div>
             </div>
             <p className="text-[1.35vw] text-[#6B7280] leading-[1.45] mt-auto pt-[1.5vh] border-t border-[#E0D9F7]">
-              DiaGe makes each call warm — associate sees item, price, and ring size before dialing. No cold outreach.
+              DiaGe makes each call warm: associate sees item, price, and ring size before dialing. No cold outreach.
             </p>
           </div>
 

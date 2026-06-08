@@ -56,14 +56,14 @@ export default function S11PilotRevenue() {
         { label: "DiaGe users / store", value: "~1,500", note: "3+ yrs of cumulative signups" },
         { label: "Active wishlist shares / mo", value: "~225", note: "15% of users share monthly" },
         { label: "Call → purchase rate", value: "10%", note: "Conservative vs. intent benchmark" },
-        { label: "DiaGe purchases / store / mo", value: "~20", note: "(not 100 — conservative)" },
+        { label: "DiaGe purchases / store / mo", value: "~20", note: "(not 100, conservative)" },
         { label: "Blended ATV", value: "$1,362", note: "42% credit · FY2026 AR" },
       ],
       revenueLabel: "Annual attributed revenue",
       revenue: "$845M",
       subRevenue: "All 2,582 NA locations at mature state",
       math: "2,582 × 20 × 12 × $1,362",
-      note: "DiaGe embedded in CRM. 20 purchases/store/month is 20% of slide 10's ceiling — conservative.",
+      note: "DiaGe embedded in CRM. 20 purchases/store/month is 20% of slide 10's ceiling, conservative.",
     },
   ];
 
@@ -76,7 +76,7 @@ export default function S11PilotRevenue() {
           Revenue model · realistic ramp
         </p>
         <h1 className="mt-[0.8vh] text-[2.6vw] font-bold text-[#111827] leading-[1.15]">
-          Purchases per store grow as the DiaGe user base builds — modeled conservatively
+          Purchases per store grow as the DiaGe user base builds, modeled conservatively
         </h1>
         <p className="mt-[0.8vh] text-[1.35vw] text-[#6B7280]">
           Constraint: how many customers in each store's pool have downloaded DiaGe and shared a wishlist · 15% monthly share rate · 10% call-to-purchase
