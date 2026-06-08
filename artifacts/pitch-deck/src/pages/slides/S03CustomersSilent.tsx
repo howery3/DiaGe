@@ -8,7 +8,7 @@ export default function S03CustomersSilent() {
           className="text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
           style={{ textWrap: "balance" }}
         >
-          Signet can contact guests after the sale, but the wishlists stay in the store.
+          Signet can contact guests after the sale, but the wishlist's stay in the store.
         </h1>
 
         <div className="mt-[5vh] flex flex-col gap-[3.2vh] flex-1">
