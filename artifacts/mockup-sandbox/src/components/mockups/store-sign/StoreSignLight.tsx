@@ -58,16 +58,16 @@ export function StoreSignLight() {
 
           {/* Subheadline */}
           <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", color: "#5B21B6", textTransform: "uppercase", margin: 0, marginBottom: 12, textAlign: "center" }}>
-            &amp; SAY GOODBYE TO YOUR PAPERWORK!
+            YOUR JEWELRY. YOUR STORY. ALL IN ONE PLACE.
           </p>
 
           {/* Description box */}
           <div style={{ width: "100%", background: "#f3f0ff", border: "1px solid rgba(91,33,182,0.15)", borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
-            <p style={{ fontSize: "0.65rem", color: "#4B5563", lineHeight: 1.55, margin: 0, marginBottom: 6 }}>
-              Are you tired of lugging around your paperwork, digging through your folders, and trying to decipher worn away receipts? Well look no further! It's time to say GOODBYE to your paperwork, and HELLO to DiaGe, your virtual jewelry vault. Track purchases, save important details, build wishlists, and share your favorite styles with friends and family, right from your pocket.
+            <p style={{ fontSize: "0.68rem", color: "#4B5563", lineHeight: 1.6, margin: 0, marginBottom: 6 }}>
+              Download DiaGe to store your jewelry photos, warranties, and receipts — and build wishlists your loved ones can actually find.
             </p>
             <p style={{ fontSize: "0.8rem", fontWeight: 600, color: "#5B21B6", letterSpacing: "0.05em", margin: 0 }}>
-              diage.app
+              Free download · diage.app
             </p>
           </div>
         </div>
