@@ -100,15 +100,23 @@
     "position": 13,
     "filepath": "src/pages/slides/S12Pricing.tsx",
     "title": "Pricing & ROI",
-    "description": "At $369/month per location, payback is sub-30 days — 28× return at full rollout",
-    "speakerNotes": "Keep this one light — the numbers tell the story. 'The cost is three sixty-nine a month per store. Break-even is one bridal sale with a protection plan attached. At pilot conversion rates, that happens in less than thirty days. At full Signet rollout — twenty-eight hundred locations — DiaGe costs twelve point four million a year and projects two hundred ninety million in attributed revenue. That's roughly a twenty-eight times return on what you're spending on the platform.' If anyone asks about the annual discount: 'Three fourteen a month if you commit annually — fifteen percent off.'"
+    "description": "At $369/month per location, break-even is 4 incremental sales per year — ~74× ROI at full rollout",
+    "speakerNotes": "Keep this one light — the numbers tell the story. 'The cost is three sixty-nine a month per store. Break-even is four incremental sales per year at a fourteen hundred dollar average ticket — roughly one per quarter. At full Signet rollout across twenty-five hundred eighty-two locations, DiaGe costs eleven point four million a year and projects eight hundred forty-five million in attributed revenue. That's a seventy-four times return.' If anyone asks about the annual discount: 'Three fourteen a month if you commit annually — fifteen percent off.'"
   },
   {
     "id": "b2c3d4e5-0014-4000-8000-000000000014",
     "position": 14,
+    "filepath": "src/pages/slides/S14FullCircle.tsx",
+    "title": "Full Circle",
+    "description": "Every problem raised ties back to a measurable outcome — three gaps, one platform",
+    "speakerNotes": "This is the moment to land it. Walk each column slowly. 'We started with three specific problems. Gap one — no shopping signal. DiaGe surfaces intent before the customer ever calls. Gap two — Diamond Bond lapses and lost paperwork. Automated reminders prevent the lapse, and the digital vault eliminates the denied-claim conversation entirely. Gap three — no cross-banner view. For the first time, corporate can see one customer across all four banners. And every one of those outcomes has a metric we'll measure together in the pilot.' Then advance to the ask."
+  },
+  {
+    "id": "b2c3d4e5-0015-4000-8000-000000000015",
+    "position": 15,
     "filepath": "src/pages/slides/S13NextSteps.tsx",
     "title": "Next Steps",
-    "description": "90-day pilot agreement across 10 Kay and Zales locations",
-    "speakerNotes": "This is your ask. Be direct. 'Here's what I'm asking for: a signed pilot agreement for ten locations across Kay and Zales. We'd be fully onboarded within two weeks. We'd report weekly against metrics we agree on together — Diamond Bond compliance rate, attributed transaction count, and time-to-appointment. At sixty days I'll bring a rollout recommendation.' Then stop. Don't fill the silence. The ask is on the slide — let them respond to it."
+    "description": "90-day pilot agreement across 25 Kay and Zales locations",
+    "speakerNotes": "This is your ask. Be direct. 'Here's what I'm asking for: a signed pilot agreement for twenty-five locations across Kay and Zales. We'd be fully onboarded within two weeks. We'd report weekly against metrics we agree on together — Diamond Bond compliance rate, attributed transaction count, and time-to-appointment. At sixty days I'll bring a rollout recommendation.' Then stop. Don't fill the silence. The ask is on the slide — let them respond to it."
   }
 ]
