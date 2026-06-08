@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDiGe, type JewelryType } from "@/context/DiGeContext";
 import { useColors } from "@/hooks/useColors";
+import { usePreferredStore } from "@/hooks/usePreferredStore";
 
 interface RetailerSummary {
   name: string;
@@ -53,6 +54,8 @@ export default function VaultScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { pieces, wishlistItems, upcomingReminderCount } = useDiGe();
+  const { stores } = usePreferredStore();
+  const linkedStores = Object.values(stores);
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<JewelryType | "all">("all");
   const flatListRef = React.useRef<FlatList<RetailerSummary>>(null);
@@ -166,6 +169,18 @@ export default function VaultScreen() {
           ))}
         </View>
       ) : null}
+
+      {/* Store shortcut */}
+      <Pressable
+        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push("/store-picker" as any); }}
+        style={({ pressed }) => [styles.storeChip, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.75 : 1 }]}
+      >
+        <Feather name="map-pin" size={14} color={linkedStores.length > 0 ? "#5B21B6" : colors.mutedForeground} />
+        <Text style={[styles.storeChipText, { color: linkedStores.length > 0 ? colors.foreground : colors.mutedForeground }]} numberOfLines={1}>
+          {linkedStores.length > 0 ? linkedStores.map(s => s.name).join(" · ") : "Link a store"}
+        </Text>
+        <Feather name="chevron-right" size={14} color={colors.mutedForeground} style={{ marginLeft: "auto" }} />
+      </Pressable>
 
       {/* Collection value banner */}
       {collectionValue > 0 ? (
@@ -528,7 +543,9 @@ const styles = StyleSheet.create({
   headerBtnText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
   settingsBtn: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
 
-  statsRow: { flexDirection: "row", gap: 8, paddingHorizontal: 20, marginBottom: 14 },
+  statsRow: { flexDirection: "row", gap: 8, paddingHorizontal: 20, marginBottom: 10 },
+  storeChip: { flexDirection: "row", alignItems: "center", gap: 8, marginHorizontal: 20, marginBottom: 10, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, borderWidth: 1 },
+  storeChipText: { fontSize: 13, fontFamily: "Inter_500Medium", flex: 1 },
   statChip: { flex: 1, borderRadius: 14, borderWidth: 1, paddingVertical: 10, alignItems: "center", gap: 4 },
   statValue: { fontSize: 18, fontFamily: "Inter_700Bold", lineHeight: 22 },
   statLabel: { fontSize: 9, fontFamily: "Inter_600SemiBold", letterSpacing: 0.3, textTransform: "uppercase" },
