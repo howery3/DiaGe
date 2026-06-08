@@ -17,10 +17,10 @@ export default function S04ThreeGaps() {
               Gap 1
             </p>
             <p className="text-[1.9vw] font-bold text-[#111827] leading-[1.25]">
-              Outreach without intent
+              A contact record is not a shopping signal
             </p>
             <p className="text-[1.75vw] text-[#374151] leading-[1.5]">
-              The clienteling platform lets associates call or email returning guests. But the outreach is unqualified. There is no view into what the customer is shopping for, what price range they are considering, or whether they are close to a purchase. Every contact is a cold read.
+              The clienteling system holds a guest's contact info and a wishlist built from their last in-store conversation. When customers go home and start shopping, the associate has no view. They can call, but they are working from a stale note, not current intent.
             </p>
             <div className="mt-auto pt-[2vh]">
               <p className="text-[1.5vw] font-bold text-[#111827]">2–3 years</p>
