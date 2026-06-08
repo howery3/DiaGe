@@ -36,11 +36,11 @@ export default function S04ThreeGaps() {
               Diamond Bond lapse risk
             </p>
             <p className="text-[1.75vw] text-[#374151] leading-[1.5]">
-              Customers forget the 6-month inspection requirement. There is no automated reminder and no visibility into who is approaching their window until they arrive to file a replacement claim that can no longer be honored.
+              Customers forget the 6-month inspection requirement. There is no automated reminder. When they do arrive to file a claim, they often cannot locate their paperwork. Associates spend time on manual searches. Claims get denied. Guests leave angry, and they blame the store.
             </p>
             <div className="mt-auto pt-[2vh]">
               <p className="text-[1.5vw] font-bold text-[#111827]">6 months</p>
-              <p className="text-[1.35vw] text-[#6B7280]">inspection window · no automated outreach exists today</p>
+              <p className="text-[1.35vw] text-[#6B7280]">inspection window · no automated outreach · no digital documentation</p>
             </div>
           </div>
 

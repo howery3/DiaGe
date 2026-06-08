@@ -23,7 +23,7 @@ export default function S06Product() {
             </div>
             <div className="h-[4vh] w-[1px] bg-[#D1D5DB] flex-shrink-0 mt-[0.2vh]" />
             <p className="text-[1.9vw] text-[#374151] leading-[1.45]">
-              Customers photograph and catalog every piece they own, with warranty dates, gemstone details, and purchase records stored in one place, across phone changes. Their jewelry history lives in the app, not on a paper receipt in a drawer.
+              Customers photograph and catalog every piece they own, with warranty dates, gemstone details, and purchase records stored in one place, across phone changes. Associates can see a guest's full documentation before they arrive. No manual searches, no disputed records, no denied claims from a lost receipt.
             </p>
           </div>
 

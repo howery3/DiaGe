@@ -33,9 +33,7 @@ export default function S03CustomersSilent() {
           <div className="flex gap-[2vw] items-start">
             <div className="flex-shrink-0 w-[0.4vw] h-[0.4vw] rounded-full bg-[#5B21B6] mt-[0.9vh]" style={{ minWidth: "0.4vw" }} />
             <p className="text-[2vw] text-[#111827] leading-[1.45]">
-              The average jewelry customer visits{" "}
-              <span className="font-bold">once every 2–3 years.</span>{" "}
-              Between visits, Signet has a contact record but not a signal. There is no way to know when a guest is actively shopping until they walk back in.
+              When customers do come in for warranty service, repairs, or Diamond Bond inspections, they often cannot locate their paperwork. Associates spend time on manual record searches. When a claim must be denied because documentation is missing, the guest blames Signet — not their own lost receipt.
             </p>
           </div>
         </div>
