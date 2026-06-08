@@ -71,18 +71,18 @@ export default function S11PilotRevenue() {
     <div className="relative w-screen h-screen overflow-hidden bg-[#FAFAFA] font-body">
       <div className="absolute top-0 left-0 h-[0.6vh] w-full bg-[#5B21B6]" />
 
-      <div className="relative z-10 flex flex-col h-full px-[8vw] pt-[6vh] pb-[5vh]">
+      <div className="relative z-10 flex flex-col h-full px-[8vw] pt-[3vh] pb-[2vh]">
         <p className="text-[1.2vw] font-bold tracking-[0.18em] uppercase text-[#5B21B6]">
           Revenue model · realistic ramp
         </p>
-        <h1 className="mt-[0.8vh] text-[2.6vw] font-bold text-[#111827] leading-[1.15]">
+        <h1 className="mt-[0.6vh] text-[2.4vw] font-bold text-[#111827] leading-[1.15]">
           Purchases per store grow as the DiaGe user base builds, modeled conservatively
         </h1>
-        <p className="mt-[0.8vh] text-[1.35vw] text-[#6B7280]">
+        <p className="mt-[0.5vh] text-[1.2vw] text-[#6B7280]">
           Constraint: how many customers in each store's pool have downloaded DiaGe and shared a wishlist · 15% monthly share rate · 10% call-to-purchase
         </p>
 
-        <div className="mt-[2.5vh] grid grid-cols-3 gap-[2vw] flex-1">
+        <div className="mt-[1.5vh] grid grid-cols-3 gap-[2vw] flex-1">
           {scenarios.map((s) => {
             const textMuted = s.dark ? "#9CA3AF" : "#6B7280";
             const textMain = s.dark ? "#F9FAFB" : "#111827";
@@ -96,21 +96,21 @@ export default function S11PilotRevenue() {
                 style={{ background: s.bg, borderColor: s.border }}
               >
                 {/* Header */}
-                <div className="px-[1.5vw] pt-[1.8vh] pb-[1.2vh]" style={{ borderBottom: `1px solid ${divider}` }}>
-                  <p className="text-[1.25vw] font-bold tracking-[0.1em] uppercase" style={{ color: s.stageColor }}>
+                <div className="px-[1.5vw] pt-[1.2vh] pb-[0.8vh]" style={{ borderBottom: `1px solid ${divider}` }}>
+                  <p className="text-[1.2vw] font-bold tracking-[0.1em] uppercase" style={{ color: s.stageColor }}>
                     {s.label}
                   </p>
-                  <p className="text-[1.15vw] mt-[0.2vh]" style={{ color: textMuted }}>{s.sublabel}</p>
+                  <p className="text-[1.05vw] mt-[0.2vh]" style={{ color: textMuted }}>{s.sublabel}</p>
                 </div>
 
                 {/* Rows */}
-                <div className="px-[1.5vw] py-[1.2vh] flex flex-col gap-[0.9vh] flex-1">
+                <div className="px-[1.5vw] py-[0.8vh] flex flex-col gap-[0.5vh] flex-1">
                   {s.rows.map((row, i) => {
                     const isKeyRow = row.label.includes("purchases / store");
                     return (
                       <div
                         key={i}
-                        className="flex justify-between items-baseline pb-[0.9vh]"
+                        className="flex justify-between items-baseline pb-[0.5vh]"
                         style={{
                           borderBottom: i < s.rows.length - 1 ? `1px solid ${divider}` : "none",
                           background: isKeyRow
@@ -149,21 +149,21 @@ export default function S11PilotRevenue() {
 
                 {/* Revenue */}
                 <div
-                  className="px-[1.5vw] py-[1.5vh]"
+                  className="px-[1.5vw] py-[1vh]"
                   style={{ borderTop: `1px solid ${divider}` }}
                 >
-                  <p className="text-[1.15vw]" style={{ color: textMuted }}>{s.revenueLabel}</p>
-                  <p className="text-[3vw] font-bold leading-none mt-[0.4vh]"
+                  <p className="text-[1.05vw]" style={{ color: textMuted }}>{s.revenueLabel}</p>
+                  <p className="text-[2.5vw] font-bold leading-none mt-[0.3vh]"
                     style={{ color: s.dark ? "white" : s.stageColor }}>
                     {s.revenue}
                   </p>
-                  <p className="text-[1.1vw] font-semibold mt-[0.3vh]" style={{ color: s.stageColor }}>
+                  <p className="text-[1vw] font-semibold mt-[0.2vh]" style={{ color: s.stageColor }}>
                     {s.subRevenue}
                   </p>
-                  <p className="text-[1.05vw] mt-[0.5vh] font-mono" style={{ color: noteColor }}>
+                  <p className="text-[0.95vw] mt-[0.3vh] font-mono" style={{ color: noteColor }}>
                     {s.math}
                   </p>
-                  <p className="text-[1.1vw] mt-[0.8vh] leading-[1.35]" style={{ color: textMuted }}>
+                  <p className="text-[1vw] mt-[0.5vh] leading-[1.3]" style={{ color: textMuted }}>
                     {s.note}
                   </p>
                 </div>
@@ -173,14 +173,14 @@ export default function S11PilotRevenue() {
         </div>
 
         <div
-          className="mt-[1.5vh] rounded-sm px-[1.5vw] py-[1vh] text-[1.2vw] text-[#374151] leading-[1.5]"
+          className="mt-[0.8vh] rounded-sm px-[1.5vw] py-[0.5vh] text-[1vw] text-[#374151] leading-[1.35]"
           style={{ background: "#FEF3C7", border: "1px solid #FCD34D" }}
         >
           <span className="font-bold">Key assumption: </span>
           Associates promote DiaGe to in-store visitors + outreach calls, adding ~85 new DiaGe users/store/month · 15% share wishlists in any given month · 10% of wishlist-led calls close (McKinsey/NRF warm-outreach benchmark: 8–15%) · $1,362 blended ATV from 42.0% credit mix (Signet FY2026 Annual Report).
         </div>
 
-        <div className="flex justify-between items-end mt-[1.5vh] pt-[1.5vh] border-t border-[#E5E7EB]">
+        <div className="flex justify-between items-end mt-[1vh] pt-[1vh] border-t border-[#E5E7EB]">
           <p className="text-[1.2vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
           <p className="text-[1.2vw] text-[#9CA3AF]">12 / 15</p>
         </div>
