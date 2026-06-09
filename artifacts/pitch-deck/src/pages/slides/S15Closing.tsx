@@ -17,16 +17,11 @@ export default function S15Closing() {
 
         {/* Wordmark */}
         <div className="flex items-center gap-[1.2vw] mb-[4vh]">
-          <div style={{
-            width: "3.5vw", height: "3.5vw", borderRadius: "0.8vw",
-            background: "linear-gradient(135deg, #7C3AED, #5B21B6)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            border: "1px solid rgba(255,255,255,0.15)"
-          }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
-            </svg>
-          </div>
+          <img
+            src={`${import.meta.env.BASE_URL}icon.png`}
+            alt="DiaGe"
+            style={{ width: "4vw", height: "4vw", borderRadius: "0.9vw", flexShrink: 0 }}
+          />
           <span className="text-[2.2vw] font-bold text-white tracking-[-0.01em]">DiaGe</span>
         </div>
 

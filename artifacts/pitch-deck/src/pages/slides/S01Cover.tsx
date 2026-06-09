@@ -7,8 +7,13 @@ export default function S01Cover() {
       <div className="absolute top-0 left-0 h-[0.6vh] w-full bg-[#5B21B6]" />
 
       <div className="relative z-10 flex flex-col justify-center h-full px-[8vw]">
-        <div className="mb-[3vh]">
-          <span className="text-[1.3vw] font-bold tracking-[0.18em] uppercase text-[#5B21B6]">
+        <div className="mb-[3vh] flex items-center gap-[1.2vw]">
+          <img
+            src={`${import.meta.env.BASE_URL}icon.png`}
+            alt="DiaGe"
+            style={{ width: "4.5vw", height: "4.5vw", borderRadius: "1vw", flexShrink: 0 }}
+          />
+          <span className="text-[1.8vw] font-bold tracking-[0.04em] text-[#5B21B6]">
             DiaGe
           </span>
         </div>
