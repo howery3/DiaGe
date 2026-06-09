@@ -267,10 +267,21 @@ export default function ProfileScreen() {
               <Text style={snap.headerSub}>Jewelry Profile</Text>
             </View>
           </View>
-          {profile.name ? (
-            <Text style={snap.profileName}>{profile.name}</Text>
-          ) : null}
-          <Text style={snap.metaLine}>{shareDate}</Text>
+          <View style={snap.avatarRow}>
+            <View style={snap.avatarCircle}>
+              {profile.photoUri ? (
+                <Image source={{ uri: profile.photoUri }} style={snap.avatarPhoto} />
+              ) : (
+                <Text style={snap.avatarInitials}>{profileInitials}</Text>
+              )}
+            </View>
+            <View style={{ gap: 2 }}>
+              {profile.name ? (
+                <Text style={snap.profileName}>{profile.name}</Text>
+              ) : null}
+              <Text style={snap.metaLine}>{shareDate}</Text>
+            </View>
+          </View>
         </View>
 
         {/* Sizes */}
@@ -804,8 +815,18 @@ const snap = StyleSheet.create({
     color: "rgba(255,255,255,0.6)",
     textTransform: "uppercase", letterSpacing: 0.5,
   },
+  avatarRow: { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 4 },
+  avatarCircle: {
+    width: 52, height: 52, borderRadius: 26,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: "center", justifyContent: "center",
+    overflow: "hidden", flexShrink: 0,
+    borderWidth: 2, borderColor: "rgba(255,255,255,0.35)",
+  },
+  avatarPhoto: { width: 52, height: 52, borderRadius: 26 },
+  avatarInitials: { fontSize: 20, fontFamily: "Inter_700Bold", color: "#fff" },
   profileName: {
-    fontSize: 24, fontFamily: "Inter_700Bold", color: "#fff", letterSpacing: -0.4,
+    fontSize: 22, fontFamily: "Inter_700Bold", color: "#fff", letterSpacing: -0.4,
   },
   metaLine: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.55)" },
 
