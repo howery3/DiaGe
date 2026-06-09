@@ -34,9 +34,23 @@ export default function S06Product() {
               </p>
             </div>
             <div className="h-[4vh] w-[1px] bg-[#D1D5DB] flex-shrink-0 mt-[0.2vh]" />
-            <p className="text-[1.9vw] text-[#374151] leading-[1.45]">
-              Customers save items from any retailer website and share their wishlist directly with a preferred Signet store. Associates receive full purchase context (item, price, ring size, priority) before the customer ever calls or walks in.
-            </p>
+            <div className="flex flex-col gap-[1.2vh]">
+              <p className="text-[1.9vw] text-[#374151] leading-[1.45]">
+                Customers save items from any retailer website and share their wishlist directly with a preferred Signet store. Associates receive full purchase context (item, price, ring size, priority) before the customer ever calls or walks in.
+              </p>
+              <div className="flex items-center gap-[1vw]">
+                <div className="flex items-center gap-[0.5vw] bg-[#F3F0FF] border border-[#DDD6FE] rounded-full px-[1vw] py-[0.4vh]">
+                  <svg viewBox="0 0 16 16" fill="none" style={{ width: "1vw", height: "1vw", flexShrink: 0 }}>
+                    <circle cx="8" cy="8" r="6.5" stroke="#5B21B6" strokeWidth="1.5" />
+                    <path d="M8 5v3l2 2" stroke="#5B21B6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <p className="text-[1.1vw] font-semibold text-[#5B21B6] whitespace-nowrap">Smart timing</p>
+                </div>
+                <p className="text-[1.4vw] text-[#6B7280] leading-[1.4]">
+                  Check-in nudges fire Friday and Saturday evenings and once mid-week, aligned with peak jewelry buying windows.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-[3vw] items-start">
