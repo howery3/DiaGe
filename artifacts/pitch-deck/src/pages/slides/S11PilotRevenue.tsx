@@ -182,7 +182,7 @@ export default function S11PilotRevenue() {
 
         <div className="flex justify-between items-end mt-[1vh] pt-[1vh] border-t border-[#E5E7EB]">
           <p className="text-[1.2vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.2vw] text-[#9CA3AF]">12 / 15</p>
+          <p className="text-[1.2vw] text-[#9CA3AF]">13 / 16</p>
         </div>
       </div>
     </div>

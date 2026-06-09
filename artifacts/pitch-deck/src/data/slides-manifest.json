@@ -64,8 +64,16 @@
     "speakerNotes": "This is for the executive in the room. Say: 'At the corporate level, DiaGe shows us something no store system can — because it sits across all four banners. We can see which revenue came from DiaGe. We can see which customers are shopping multiple banners at once. We can see Diamond Bond risk before it becomes a claim. And we can measure how quickly customers are coming in after sharing a wishlist — which right now is three to six days, versus the fourteen to twenty-one day baseline.'"
   },
   {
-    "id": "b2c3d4e5-0009-4000-8000-000000000009",
+    "id": "b2c3d4e5-0009-4000-8000-000000000099",
     "position": 9,
+    "filepath": "src/pages/slides/S09StoreActivation.tsx",
+    "title": "Store Activation",
+    "description": "Print-ready QR sign drives downloads from Signet's own sales floor — zero IT required",
+    "speakerNotes": "Keep this one short. 'Here's what the in-store experience looks like. Associates put this sign on the counter — or near the display case. Customer scans it, downloads DiaGe, saves their piece. From that moment forward we have a direct channel to them. No app configuration, no hardware, no IT ticket. We print it and we place it. Both variants are ready to match whichever banner's aesthetic you prefer.' Then move on — don't linger."
+  },
+  {
+    "id": "b2c3d4e5-0009-4000-8000-000000000009",
+    "position": 10,
     "filepath": "src/pages/slides/S09ActIII.tsx",
     "title": "Act III — The Financial Case",
     "description": "Section divider: Act III — The Financial Case",
@@ -73,7 +81,7 @@
   },
   {
     "id": "b2c3d4e5-0010-4000-8000-000000000010",
-    "position": 10,
+    "position": 11,
     "filepath": "src/pages/slides/S10HowYouMakeMoney.tsx",
     "title": "The Revenue Mechanism",
     "description": "The exact path from wishlist to Signet sale — 100 leads generate $116K at pilot rates",
@@ -81,7 +89,7 @@
   },
   {
     "id": "b2c3d4e5-0011-4000-8000-000000000011",
-    "position": 11,
+    "position": 12,
     "filepath": "src/pages/slides/S10KPIs.tsx",
     "title": "KPIs vs. Industry",
     "description": "DiaGe users spend 2.3× more and convert at 5× the industry rate",
@@ -89,7 +97,7 @@
   },
   {
     "id": "b2c3d4e5-0012-4000-8000-000000000012",
-    "position": 12,
+    "position": 13,
     "filepath": "src/pages/slides/S11PilotRevenue.tsx",
     "title": "Pilot Revenue Results",
     "description": "$2.84M in attributed revenue across 4 Signet banners in the pilot period",
@@ -97,7 +105,7 @@
   },
   {
     "id": "b2c3d4e5-0013-4000-8000-000000000013",
-    "position": 13,
+    "position": 14,
     "filepath": "src/pages/slides/S12Pricing.tsx",
     "title": "Pricing & ROI",
     "description": "At $369/month per location, break-even is 4 incremental sales per year — ~74× ROI at full rollout",
@@ -105,7 +113,7 @@
   },
   {
     "id": "b2c3d4e5-0014-4000-8000-000000000014",
-    "position": 14,
+    "position": 15,
     "filepath": "src/pages/slides/S14FullCircle.tsx",
     "title": "Full Circle",
     "description": "Every problem raised ties back to a measurable outcome — three gaps, one platform",
@@ -113,7 +121,7 @@
   },
   {
     "id": "b2c3d4e5-0015-4000-8000-000000000015",
-    "position": 15,
+    "position": 16,
     "filepath": "src/pages/slides/S13NextSteps.tsx",
     "title": "Next Steps",
     "description": "90-day pilot agreement across 25 Kay and Zales locations",

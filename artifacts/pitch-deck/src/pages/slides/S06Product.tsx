@@ -54,7 +54,7 @@ export default function S06Product() {
 
         <div className="flex justify-between items-end mt-auto pt-[2vh] border-t border-[#E5E7EB]">
           <p className="text-[1.3vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.3vw] text-[#9CA3AF]">6 / 15</p>
+          <p className="text-[1.3vw] text-[#9CA3AF]">6 / 16</p>
         </div>
       </div>
     </div>

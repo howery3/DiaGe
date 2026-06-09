@@ -96,7 +96,7 @@ export default function S14FullCircle() {
 
         <div className="flex justify-between items-end mt-[2vh] pt-[2vh] border-t border-[#D1D5DB]">
           <p className="text-[1.3vw] text-[#9CA3AF]">DiaGe · Confidential · June 2026</p>
-          <p className="text-[1.3vw] text-[#9CA3AF]">14 / 15</p>
+          <p className="text-[1.3vw] text-[#9CA3AF]">15 / 16</p>
         </div>
       </div>
     </div>
