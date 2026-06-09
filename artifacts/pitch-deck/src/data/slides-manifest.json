@@ -134,5 +134,13 @@
     "title": "Next Steps",
     "description": "90-day pilot agreement across 25 Kay and Zales locations",
     "speakerNotes": "This is your ask. Be direct. 'Here's what I'm asking for: a signed pilot agreement for twenty-five locations across Kay and Zales. We'd be fully onboarded within two weeks. We'd report weekly against metrics we agree on together — Diamond Bond compliance rate, attributed transaction count, and time-to-appointment. At sixty days I'll bring a rollout recommendation.' Then stop. Don't fill the silence. The ask is on the slide — let them respond to it."
+  },
+  {
+    "id": "b2c3d4e5-0016-4000-8000-000000000016",
+    "position": 18,
+    "filepath": "src/pages/slides/S15Closing.tsx",
+    "title": "Closing",
+    "description": "Let's build this together — DiaGe contact and closing statement",
+    "speakerNotes": "Leave this slide up while they ask questions. You don't need to say anything about it — just let the room breathe. Your contact info is on screen. If they're ready to move forward, say: 'I can have a draft agreement to you by end of week.' Then stop."
   }
 ]
