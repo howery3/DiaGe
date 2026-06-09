@@ -109,7 +109,7 @@ export async function scheduleWarrantyExpiryNotification(
       identifier,
       content: {
         title: `⚠️ ${coverageLabel} Expiring Soon`,
-        body: `${piece.name}'s ${coverageLabel} expires in 30 days — schedule your jeweler visit`,
+        body: `${piece.name}'s ${coverageLabel} expires in 30 days. Schedule your jeweler visit soon.`,
         sound: true,
         data: { pieceId: piece.id, coverageType },
       },
@@ -133,18 +133,25 @@ const WEEKLY_WISHLIST_ID = "wishlist-weekly-reminder";
 
 export async function scheduleWeeklyWishlistReminder(itemCount: number): Promise<void> {
   try {
-    await Notifications.cancelScheduledNotificationAsync(WEEKLY_WISHLIST_ID).catch(() => {});
-    if (itemCount === 0) return;
+    if (itemCount === 0) {
+      await Notifications.cancelScheduledNotificationAsync(WEEKLY_WISHLIST_ID).catch(() => {});
+      return;
+    }
+
+    // If already scheduled, leave it alone so the 7-day timer is not reset on every app open
+    const existing = await Notifications.getAllScheduledNotificationsAsync();
+    const alreadyPending = existing.some((n) => n.identifier === WEEKLY_WISHLIST_ID);
+    if (alreadyPending) return;
 
     const body =
       itemCount === 1
-        ? "You have 1 saved item — check if it's on sale this week"
-        : `You have ${itemCount} saved items — check if any are on sale this week`;
+        ? "You have 1 saved item. Check if it's on sale this week"
+        : `You have ${itemCount} saved items. Check if any are on sale this week`;
 
     await Notifications.scheduleNotificationAsync({
       identifier: WEEKLY_WISHLIST_ID,
       content: {
-        title: "💎 Wishlist Check-In",
+        title: "Wishlist Check-In",
         body,
         sound: true,
       },

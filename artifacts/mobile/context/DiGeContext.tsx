@@ -259,8 +259,12 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => { if (!loaded) return; void AsyncStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistItems)); }, [wishlistItems, loaded]);
   useEffect(() => { if (!loaded) return; void AsyncStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders)); }, [reminders, loaded]);
 
+  const lastScheduledWishlistCount = useRef<number | null>(null);
   useEffect(() => {
     if (!loaded) return;
+    // Only reschedule when the count actually changes after load, not on every app open
+    if (lastScheduledWishlistCount.current === wishlistItems.length) return;
+    lastScheduledWishlistCount.current = wishlistItems.length;
     void scheduleWeeklyWishlistReminder(wishlistItems.length);
   }, [wishlistItems.length, loaded]);
 
