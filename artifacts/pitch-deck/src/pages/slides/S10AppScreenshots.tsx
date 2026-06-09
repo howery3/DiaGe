@@ -100,12 +100,14 @@ function PhoneFrame({ children }: { children: ReactNode }) {
   return (
     <div style={{
       width: "13vw",
-      aspectRatio: "9/19.5",
+      height: "28.17vw",  /* 13vw × (19.5/9) — explicit keeps all phones identical */
       background: "#1C1C1E",
       borderRadius: "2.2vw",
       padding: "0.4vw",
       boxShadow: "0 10px 32px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.09), inset 0 0 0 2px rgba(0,0,0,0.45)",
       flexShrink: 0,
+      flexGrow: 0,
+      overflow: "hidden",
       position: "relative",
     }}>
       {/* side buttons */}
