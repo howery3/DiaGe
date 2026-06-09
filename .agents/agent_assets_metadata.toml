@@ -59,3 +59,9 @@ id = "gT9LsqxxPo46xBXrdHx5y"
 uri = "file://expo-qr.png"
 type = "image"
 title = "Expo Go QR Code"
+
+[[outputs]]
+id = "iy-X_QsnUluEX40G6welL"
+uri = "file://.local/outputs/Jewlery-Safe.pdf"
+type = "pdf"
+title = "Jewlery Safe.pdf"
