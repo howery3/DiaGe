@@ -67,13 +67,13 @@ export default function S03CustomersSilent() {
         <div className="flex items-start justify-between">
           <div>
             <p className="text-[1.2vw] font-bold tracking-[0.18em] uppercase text-[#5B21B6] mb-[1vh]">
-              The problem · four gaps in the current system
+              Four gaps in the current system
             </p>
             <h1
               className="text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
               style={{ textWrap: "balance", maxWidth: "70%" }}
             >
-              Signet can contact guests after the sale — but the connection ends there.
+              Signet can contact guests after the sale but the connection ends there
             </h1>
           </div>
         </div>
