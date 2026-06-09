@@ -321,13 +321,20 @@ export default function SharePieceScreen() {
                 </View>
                 <View style={styles.ownerRow}>
                   <View style={[styles.ownerAvatar, { backgroundColor: PURPLE }]}>
-                    <Text style={styles.ownerInitials}>
-                      {profile.name
-                        ? profile.name.trim().split(" ").filter(Boolean).length > 1
-                          ? (profile.name.trim().split(" ")[0][0] + profile.name.trim().split(" ").pop()![0]).toUpperCase()
-                          : profile.name.trim()[0].toUpperCase()
-                        : "?"}
-                    </Text>
+                    {profile.photoUri ? (
+                      <Image
+                        source={{ uri: profile.photoUri }}
+                        style={styles.ownerAvatarPhoto}
+                      />
+                    ) : (
+                      <Text style={styles.ownerInitials}>
+                        {profile.name
+                          ? profile.name.trim().split(" ").filter(Boolean).length > 1
+                            ? (profile.name.trim().split(" ")[0][0] + profile.name.trim().split(" ").pop()![0]).toUpperCase()
+                            : profile.name.trim()[0].toUpperCase()
+                          : "?"}
+                      </Text>
+                    )}
                   </View>
                   <View style={styles.ownerInfo}>
                     {profile.name ? (
@@ -474,7 +481,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    overflow: "hidden",
   },
+  ownerAvatarPhoto: { width: 36, height: 36, borderRadius: 18 },
   ownerInitials: { fontSize: 14, fontFamily: "Inter_700Bold", color: "#fff" },
   ownerInfo: { flex: 1, gap: 2 },
   ownerName: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#111827" },

@@ -42,6 +42,13 @@ const BUDGET_RANGES = ["Under $500", "$500–$1K", "$1K–$2.5K", "$2.5K–$5K",
 type Section = "contact" | "sizes" | "style" | "dates" | "shopping";
 type DateField = "birthday" | "anniversary";
 
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 10);
+  if (digits.length <= 3) return digits.length ? `(${digits}` : "";
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
 function formatDate(iso: string): string {
   if (!iso) return "";
   const d = new Date(iso + "T12:00:00");
@@ -432,7 +439,7 @@ export default function ProfileScreen() {
               icon="phone"
               placeholder="Phone number"
               value={profile.phone}
-              onChangeText={(v) => saveProfile({ phone: v })}
+              onChangeText={(v) => saveProfile({ phone: formatPhone(v) })}
               keyboardType="phone-pad"
               returnKeyType="done"
               colors={colors}
