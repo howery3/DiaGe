@@ -67,7 +67,7 @@ export function StoreSignLight() {
               Download DiaGe to store your jewelry photos, warranties, and receipts. Build and share wishlists with your loved ones, and never miss an inspection again.
             </p>
             <p style={{ fontSize: "0.8rem", fontWeight: 600, color: "#5B21B6", letterSpacing: "0.05em", margin: 0 }}>
-              Free download · diage.app
+              Download free in the App Store
             </p>
           </div>
         </div>
