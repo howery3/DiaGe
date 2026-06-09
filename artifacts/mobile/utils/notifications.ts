@@ -129,45 +129,66 @@ export async function cancelNotification(id: string): Promise<void> {
   } catch {}
 }
 
-const WEEKLY_WISHLIST_ID = "wishlist-weekly-reminder";
+// Three recurring slots: Fri 5:30pm, Sat 5:30pm, and one mid-week morning (Mon/Tue/Wed)
+// Weekday values: 1=Sun 2=Mon 3=Tue 4=Wed 5=Thu 6=Fri 7=Sat
+const WISHLIST_SLOT_IDS = ["wishlist-friday", "wishlist-saturday", "wishlist-weekday"] as const;
+
+type WishlistSlot = {
+  identifier: string;
+  weekday: number;
+  hour: number;
+  minute: number;
+};
+
+function getWishlistSlots(itemCount: number): WishlistSlot[] {
+  // Pick a mid-week day deterministically based on item count so it doesn't change on every call
+  // 0 mod 3 = Mon (2), 1 mod 3 = Tue (3), 2 mod 3 = Wed (4)
+  const weekdayOptions = [2, 3, 4];
+  const midWeekDay = weekdayOptions[itemCount % 3];
+
+  return [
+    { identifier: "wishlist-friday",  weekday: 6, hour: 17, minute: 30 },
+    { identifier: "wishlist-saturday", weekday: 7, hour: 17, minute: 30 },
+    { identifier: "wishlist-weekday", weekday: midWeekDay, hour: 10, minute: 0 },
+  ];
+}
 
 export async function scheduleWeeklyWishlistReminder(itemCount: number): Promise<void> {
   try {
     if (itemCount === 0) {
-      await Notifications.cancelScheduledNotificationAsync(WEEKLY_WISHLIST_ID).catch(() => {});
+      await cancelWeeklyWishlistReminder();
       return;
     }
-
-    // If already scheduled, leave it alone so the 7-day timer is not reset on every app open
-    const existing = await Notifications.getAllScheduledNotificationsAsync();
-    const alreadyPending = existing.some((n) => n.identifier === WEEKLY_WISHLIST_ID);
-    if (alreadyPending) return;
 
     const body =
       itemCount === 1
         ? "You have 1 saved item. Check if it's on sale this week"
         : `You have ${itemCount} saved items. Check if any are on sale this week`;
 
-    await Notifications.scheduleNotificationAsync({
-      identifier: WEEKLY_WISHLIST_ID,
-      content: {
-        title: "Wishlist Check-In",
-        body,
-        sound: true,
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 7 * 24 * 60 * 60,
-        repeats: true,
-      },
-    });
+    const existing = await Notifications.getAllScheduledNotificationsAsync();
+    const pendingIds = new Set(existing.map((n) => n.identifier));
+
+    for (const slot of getWishlistSlots(itemCount)) {
+      if (pendingIds.has(slot.identifier)) continue; // already scheduled, leave it alone
+      await Notifications.scheduleNotificationAsync({
+        identifier: slot.identifier,
+        content: { title: "Wishlist Check-In", body, sound: true },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+          weekday: slot.weekday,
+          hour: slot.hour,
+          minute: slot.minute,
+          repeats: true,
+        },
+      }).catch(() => {});
+    }
   } catch {}
 }
 
 export async function cancelWeeklyWishlistReminder(): Promise<void> {
-  try {
-    await Notifications.cancelScheduledNotificationAsync(WEEKLY_WISHLIST_ID);
-  } catch {}
+  for (const id of WISHLIST_SLOT_IDS) {
+    await Notifications.cancelScheduledNotificationAsync(id).catch(() => {});
+  }
 }
 
 export async function cancelWarrantyNotifications(pieceId: string): Promise<void> {
