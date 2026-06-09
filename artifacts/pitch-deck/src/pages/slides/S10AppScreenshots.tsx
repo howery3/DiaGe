@@ -561,7 +561,7 @@ export default function S10AppScreenshots() {
         </h1>
 
         {/* Phones row */}
-        <div className="mt-[2.2vh] flex gap-[1.5vw] items-start justify-center flex-1">
+        <div className="mt-[2.2vh] flex gap-[1.5vw] items-center justify-center flex-1">
           {SCREENS.map(({ component, label, sub }) => (
             <div key={label} className="flex flex-col items-center gap-[1.2vh]">
               <PhoneFrame>{component}</PhoneFrame>
