@@ -75,16 +75,16 @@ export default function S10HowYouMakeMoney() {
             style={{ background: "#111827", padding: "2vh 2vw", marginLeft: "-2vw", marginRight: "-2vw", paddingLeft: "2vw", paddingRight: "2vw" }}>
             <div>
               <p className="text-[1.65vw] font-bold text-white">Revenue / store / month</p>
-              <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">42% Zales credit (~$2K ATV) · 58% bank card (~$900 ATV) · FY2026 AR</p>
+              <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">42% × $2K credit + 58% × $900 bank card = $1,362 blended ATV · FY2026 AR p.1391</p>
             </div>
             <div className="grid grid-cols-2 gap-[2vw] text-center">
               <div>
-                <p className="text-[2.8vw] font-bold text-white">$26,800</p>
-                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">Pilot-confirmed · see slide 14</p>
+                <p className="text-[2.8vw] font-bold text-white">$27,240</p>
+                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">20 × $1,362 · see slide 14</p>
               </div>
               <div>
-                <p className="text-[2.8vw] font-bold text-[#8B5CF6]">$134,000</p>
-                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">At full call-list coverage</p>
+                <p className="text-[2.8vw] font-bold text-[#8B5CF6]">$136,200</p>
+                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">100 × $1,362 · full call-list coverage</p>
               </div>
             </div>
           </div>
