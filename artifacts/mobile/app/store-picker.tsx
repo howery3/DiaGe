@@ -184,9 +184,9 @@ export default function StorePickerScreen() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
 
-  // Default: expand the retailerParam banner if set, otherwise expand all
+  // Default: expand only the pre-selected retailer if set, otherwise all collapsed
   const [expandedBanners, setExpandedBanners] = useState<Set<string>>(
-    () => new Set(retailerParam ? [retailerParam] : BANNER_ORDER)
+    () => new Set(retailerParam ? [retailerParam] : [])
   );
 
   useEffect(() => {
