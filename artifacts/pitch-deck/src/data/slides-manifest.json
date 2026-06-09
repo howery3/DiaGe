@@ -72,8 +72,16 @@
     "speakerNotes": "Keep this one short. 'Here's what the in-store experience looks like. Associates put this sign on the counter — or near the display case. Customer scans it, downloads DiaGe, saves their piece. From that moment forward we have a direct channel to them. No app configuration, no hardware, no IT ticket. We print it and we place it. Both variants are ready to match whichever banner's aesthetic you prefer.' Then move on — don't linger."
   },
   {
-    "id": "b2c3d4e5-0009-4000-8000-000000000009",
+    "id": "b2c3d4e5-0010-4000-8000-000000000100",
     "position": 10,
+    "filepath": "src/pages/slides/S10AppScreenshots.tsx",
+    "title": "App Screenshots",
+    "description": "Three core screens — Jewelry Vault, Wishlist, Reminders — showing the live app UI",
+    "speakerNotes": "This is where you hand them the phone. Say: 'And this is what the customer actually sees.' If you have the phone with you, pass it around now or put it on the QuickTime mirror. Point to each column: 'Vault — every piece they own, with serial numbers and warranty info. Wishlist — saved directly from retailer websites, with priority and price already attached. Reminders — automated alerts before their Diamond Bond window closes.' Then move on."
+  },
+  {
+    "id": "b2c3d4e5-0009-4000-8000-000000000009",
+    "position": 11,
     "filepath": "src/pages/slides/S09ActIII.tsx",
     "title": "Act III — The Financial Case",
     "description": "Section divider: Act III — The Financial Case",
@@ -81,7 +89,7 @@
   },
   {
     "id": "b2c3d4e5-0010-4000-8000-000000000010",
-    "position": 11,
+    "position": 12,
     "filepath": "src/pages/slides/S10HowYouMakeMoney.tsx",
     "title": "The Revenue Mechanism",
     "description": "The exact path from wishlist to Signet sale — 100 leads generate $116K at pilot rates",
@@ -89,15 +97,15 @@
   },
   {
     "id": "b2c3d4e5-0011-4000-8000-000000000011",
-    "position": 12,
+    "position": 13,
     "filepath": "src/pages/slides/S10KPIs.tsx",
     "title": "KPIs vs. Industry",
-    "description": "DiaGe users spend 2.3× more and convert at 5× the industry rate",
+    "description": "DiaGe users spend 2.3x more and convert at 5x the industry rate",
     "speakerNotes": "Walk through the table row by row. 'DiaGe users are spending $2,847 on average versus $1,240 for a typical Signet customer — that's more than double. Thirty-one percent of wishlist leads turn into a purchase, versus one to four percent for a typical retail app. Sixty-eight percent of customers we contact come in. And thirty-day retention is sixty-eight percent, versus thirty-two for the average consumer app.' If they ask where the numbers come from: 'These are from our pilot — twenty-three partner retail locations, January through May of this year.'"
   },
   {
     "id": "b2c3d4e5-0012-4000-8000-000000000012",
-    "position": 13,
+    "position": 14,
     "filepath": "src/pages/slides/S11PilotRevenue.tsx",
     "title": "Pilot Revenue Results",
     "description": "$2.84M in attributed revenue across 4 Signet banners in the pilot period",
@@ -105,15 +113,15 @@
   },
   {
     "id": "b2c3d4e5-0013-4000-8000-000000000013",
-    "position": 14,
+    "position": 15,
     "filepath": "src/pages/slides/S12Pricing.tsx",
     "title": "Pricing & ROI",
-    "description": "At $369/month per location, break-even is 4 incremental sales per year — ~74× ROI at full rollout",
+    "description": "At $369/month per location, break-even is 4 incremental sales per year — ~74x ROI at full rollout",
     "speakerNotes": "Keep this one light — the numbers tell the story. 'The cost is three sixty-nine a month per store. Break-even is four incremental sales per year at a fourteen hundred dollar average ticket — roughly one per quarter. At full Signet rollout across twenty-five hundred eighty-two locations, DiaGe costs eleven point four million a year and projects eight hundred forty-five million in attributed revenue. That's a seventy-four times return.' If anyone asks about the annual discount: 'Three fourteen a month if you commit annually — fifteen percent off.'"
   },
   {
     "id": "b2c3d4e5-0014-4000-8000-000000000014",
-    "position": 15,
+    "position": 16,
     "filepath": "src/pages/slides/S14FullCircle.tsx",
     "title": "Full Circle",
     "description": "Every problem raised ties back to a measurable outcome — three gaps, one platform",
@@ -121,7 +129,7 @@
   },
   {
     "id": "b2c3d4e5-0015-4000-8000-000000000015",
-    "position": 16,
+    "position": 17,
     "filepath": "src/pages/slides/S13NextSteps.tsx",
     "title": "Next Steps",
     "description": "90-day pilot agreement across 25 Kay and Zales locations",

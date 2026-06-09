@@ -87,7 +87,7 @@ export default function S13NextSteps() {
               <p className="text-[1.4vw] font-bold text-[#5B21B6]">DiaGe Inc.</p>
               <p className="text-[1.4vw] text-[#6B7280] mt-[0.3vh]">diage.app · Aiden Howery</p>
             </div>
-            <p className="text-[1.3vw] text-[#9CA3AF]">16 / 16</p>
+            <p className="text-[1.3vw] text-[#9CA3AF]">17 / 17</p>
           </div>
         </div>
       </div>
