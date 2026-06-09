@@ -21,9 +21,12 @@ export default function S10KPIs() {
             <p className="text-[1.3vw] font-bold tracking-[0.1em] uppercase text-[#5B21B6] text-right">Intent-driven benchmark</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-0 py-[1.8vh] border-b border-[#E5E7EB] items-center">
-            <p className="text-[1.85vw] text-[#374151]">Average transaction value</p>
-            <p className="text-[2vw] font-bold text-[#374151] text-right">~$900</p>
+          <div className="grid grid-cols-3 gap-0 py-[1.8vh] border-b border-[#E5E7EB] items-start">
+            <div>
+              <p className="text-[1.85vw] text-[#374151]">Blended average transaction value</p>
+              <p className="text-[1.1vw] text-[#9CA3AF] mt-[0.3vh]">42% Zales credit (~$2K) · 58% bank card (~$900) · FY2026 AR p.1391</p>
+            </div>
+            <p className="text-[2vw] font-bold text-[#374151] text-right">~$1,362</p>
             <p className="text-[2vw] font-bold text-[#5B21B6] text-right">1.2–2.0× lift documented</p>
           </div>
 
