@@ -21,7 +21,7 @@ export default function S03CustomersSilent() {
         </svg>
       ),
       label: "Outreach is flying blind",
-      body: "When associates call, they go off what the customer said on their last visit. There is no window into what the customer is shopping for right now — at home, or online.",
+      body: "When associates call, they go off what the customer said on their last visit. There is no window into what the customer is shopping for right now, at home, or online.",
     },
     {
       icon: (

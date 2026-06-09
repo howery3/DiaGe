@@ -16,7 +16,7 @@ export default function S09StoreActivation() {
           className="mt-[1vh] text-[2.6vw] font-bold text-[#111827] leading-[1.2]"
           style={{ textWrap: "balance" }}
         >
-          DiaGe goes in-store on day one — a print-ready sign drives downloads from Signet's own sales floor
+          DiaGe goes in-store on day one with a print-ready sign that drives downloads from Signet's own sales floor
         </h1>
 
         {/* Sign previews */}
@@ -103,7 +103,7 @@ export default function S09StoreActivation() {
             <div className="flex flex-col gap-[0.8vh]">
               <p className="text-[1.2vw] font-bold tracking-[0.12em] uppercase text-[#5B21B6]">Print-ready</p>
               <p className="text-[1.5vw] text-[#374151] leading-[1.45]">
-                8 × 10 format. Both variants export at print resolution — drop into a Signet store without any setup.
+                8 × 10 format. Both variants export at print resolution and drop into a Signet store without any setup.
               </p>
             </div>
             <div className="flex flex-col gap-[0.8vh] pt-[2vh] border-t border-[#E5E7EB]">
