@@ -98,15 +98,15 @@ function Badge({ label, bg, color }: { label: string; bg: string; color: string 
 /* ─── phone shell ───────────────────────────────────────────────────── */
 function PhoneFrame({ children }: { children: ReactNode }) {
   return (
+    // filter: drop-shadow renders correctly in PDF; box-shadow loses blur and becomes a solid box
+    <div style={{ filter: "drop-shadow(0 10px 28px rgba(0,0,0,0.38))", flexShrink: 0, flexGrow: 0 }}>
     <div style={{
       width: "13vw",
       height: "28.17vw",  /* 13vw × (19.5/9) — explicit keeps all phones identical */
       background: "#1C1C1E",
       borderRadius: "2.2vw",
       padding: "0.4vw",
-      boxShadow: "0 10px 32px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.09), inset 0 0 0 2px rgba(0,0,0,0.45)",
-      flexShrink: 0,
-      flexGrow: 0,
+      boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.09), inset 0 0 0 2px rgba(0,0,0,0.45)",
       overflow: "hidden",
       position: "relative",
     }}>
@@ -125,6 +125,7 @@ function PhoneFrame({ children }: { children: ReactNode }) {
       <div style={{ background: "#F8F8FB", borderRadius: RL, overflow: "hidden", height: "calc(100% - 1.1vw)", display: "flex", flexDirection: "column", position: "relative" }}>
         {children}
       </div>
+    </div>
     </div>
   );
 }
@@ -270,7 +271,7 @@ function WishlistScreen() {
         ))}
       </div>
       {/* FAB */}
-      <div style={{ position:"absolute", right:"0.9vw", bottom:"1.1vw", width:"2.1vw", height:"2.1vw", borderRadius:"50%", background:P, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:`0 3px 10px ${P}55`, zIndex:10 }}>
+      <div style={{ position:"absolute", right:"0.9vw", bottom:"1.1vw", width:"2.1vw", height:"2.1vw", borderRadius:"50%", background:P, display:"flex", alignItems:"center", justifyContent:"center", filter:`drop-shadow(0 3px 8px ${P}88)`, zIndex:10 }}>
         <span style={{ color:"#fff", fontSize:"1.1vw", lineHeight:1 }}>+</span>
       </div>
     </>
@@ -347,7 +348,7 @@ function RemindersScreen() {
           </div>
         ))}
       </div>
-      <div style={{ position:"absolute", right:"0.9vw", bottom:"1.1vw", width:"2.1vw", height:"2.1vw", borderRadius:"50%", background:P, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:`0 3px 10px ${P}55`, zIndex:10 }}>
+      <div style={{ position:"absolute", right:"0.9vw", bottom:"1.1vw", width:"2.1vw", height:"2.1vw", borderRadius:"50%", background:P, display:"flex", alignItems:"center", justifyContent:"center", filter:`drop-shadow(0 3px 8px ${P}88)`, zIndex:10 }}>
         <span style={{ color:"#fff", fontSize:"1.1vw", lineHeight:1 }}>+</span>
       </div>
     </>
