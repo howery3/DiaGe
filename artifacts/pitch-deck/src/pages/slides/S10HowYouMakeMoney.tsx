@@ -19,12 +19,12 @@ export default function S10HowYouMakeMoney() {
           <div />
           <div className="grid grid-cols-2 gap-[2vw]">
             <div className="text-center">
-              <p className="text-[1.1vw] font-bold tracking-[0.12em] uppercase text-[#5B21B6]">Pilot today</p>
-              <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">23 locations · 5 months · slide 14</p>
+              <p className="text-[1.1vw] font-bold tracking-[0.12em] uppercase text-[#5B21B6]">Pilot phase</p>
+              <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">~180 DiaGe users / store · 90 days</p>
             </div>
             <div className="text-center">
-              <p className="text-[1.1vw] font-bold tracking-[0.12em] uppercase text-[#111827]">Full Signet adoption</p>
-              <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">Projection · same 10% rate</p>
+              <p className="text-[1.1vw] font-bold tracking-[0.12em] uppercase text-[#111827]">Mature state</p>
+              <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">~1,500 DiaGe users / store · yr 3+</p>
             </div>
           </div>
         </div>
@@ -42,19 +42,21 @@ export default function S10HowYouMakeMoney() {
 
           <div className={rowCls}>
             <div>
-              <p className={labelCls}>Contacts with DiaGe intent signal</p>
-              <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">Saved wishlist, ring size, expiring Diamond Bond</p>
+              <p className={labelCls}>Active DiaGe wishlist signals / month</p>
+              <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">15% of DiaGe users share a wishlist in any given month</p>
             </div>
             <div className="grid grid-cols-2 gap-[2vw] text-center">
-              <p className="text-[1.9vw] font-bold text-[#5B21B6]">~200</p>
-              <p className="text-[1.9vw] font-bold text-[#5B21B6]">1,000</p>
+              <p className="text-[1.9vw] font-bold text-[#5B21B6]">~27</p>
+              <p className="text-[1.9vw] font-bold text-[#5B21B6]">~225</p>
             </div>
           </div>
 
           <div className={rowCls}>
             <div>
-              <p className={labelCls}>Conversion rate (warm contact → purchase)</p>
-              <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">Intent-aware benchmark · NRF / McKinsey · slide 13</p>
+              <p className={labelCls}>Conversion rate (warm call → purchase)</p>
+              <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">
+                vs. Signet cold baseline: 5–10% call → visit then 40–55% close = 2–5% end-to-end · NRF / McKinsey
+              </p>
             </div>
             <div className="grid grid-cols-2 gap-[2vw] text-center">
               <p className="text-[1.9vw] font-bold text-[#374151]">10%</p>
@@ -65,26 +67,28 @@ export default function S10HowYouMakeMoney() {
           <div className={rowCls}>
             <p className={labelCls}>DiaGe-attributed purchases / store / month</p>
             <div className="grid grid-cols-2 gap-[2vw] text-center">
-              <p className="text-[2.2vw] font-bold text-[#5B21B6]">20</p>
-              <p className="text-[2.2vw] font-bold text-[#5B21B6]">100</p>
+              <p className="text-[2.2vw] font-bold text-[#5B21B6]">~3</p>
+              <p className="text-[2.2vw] font-bold text-[#5B21B6]">~20</p>
             </div>
           </div>
 
           {/* Revenue — highlighted */}
-          <div className="grid grid-cols-2 gap-[3vw] py-[2vh] mt-[1vh] rounded-sm items-center"
-            style={{ background: "#111827", padding: "2vh 2vw", marginLeft: "-2vw", marginRight: "-2vw", paddingLeft: "2vw", paddingRight: "2vw" }}>
+          <div
+            className="grid grid-cols-2 gap-[3vw] py-[2vh] mt-[1vh] rounded-sm items-center"
+            style={{ background: "#111827", padding: "2vh 2vw", marginLeft: "-2vw", marginRight: "-2vw", paddingLeft: "2vw", paddingRight: "2vw" }}
+          >
             <div>
               <p className="text-[1.65vw] font-bold text-white">Revenue / store / month</p>
               <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">42% × $2K credit + 58% × $900 bank card = $1,362 blended ATV · FY2026 AR p.1391</p>
             </div>
             <div className="grid grid-cols-2 gap-[2vw] text-center">
               <div>
-                <p className="text-[2.8vw] font-bold text-white">$27,240</p>
-                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">20 × $1,362 · see slide 14</p>
+                <p className="text-[2.8vw] font-bold text-white">~$4,100</p>
+                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">3 × $1,362 · pilot phase</p>
               </div>
               <div>
-                <p className="text-[2.8vw] font-bold text-[#8B5CF6]">$136,200</p>
-                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">100 × $1,362 · full call-list coverage</p>
+                <p className="text-[2.8vw] font-bold text-[#8B5CF6]">$27,240</p>
+                <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">20 × $1,362 · mature state</p>
               </div>
             </div>
           </div>

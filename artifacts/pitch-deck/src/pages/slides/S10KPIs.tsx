@@ -30,14 +30,20 @@ export default function S10KPIs() {
             <p className="text-[2vw] font-bold text-[#5B21B6] text-right">1.2–2.0× lift documented</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-0 py-[1.8vh] border-b border-[#E5E7EB] items-center">
-            <p className="text-[1.85vw] text-[#374151]">Cold outreach → store visit rate</p>
+          <div className="grid grid-cols-3 gap-0 py-[1.8vh] border-b border-[#E5E7EB] items-start">
+            <div>
+              <p className="text-[1.85vw] text-[#374151]">Cold outreach → store visit rate</p>
+              <p className="text-[1.1vw] text-[#9CA3AF] mt-[0.3vh]">Call → visit only · purchase requires close rate below</p>
+            </div>
             <p className="text-[2vw] font-bold text-[#374151] text-right">5–10%</p>
             <p className="text-[2vw] font-bold text-[#5B21B6] text-right">2–4× higher for intent-aware</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-0 py-[1.8vh] border-b border-[#E5E7EB] items-center">
-            <p className="text-[1.85vw] text-[#374151]">Consultative close rate (in-store jewelry)</p>
+          <div className="grid grid-cols-3 gap-0 py-[1.8vh] border-b border-[#E5E7EB] items-start">
+            <div>
+              <p className="text-[1.85vw] text-[#374151]">Consultative close rate (in-store jewelry)</p>
+              <p className="text-[1.1vw] text-[#9CA3AF] mt-[0.3vh]">Cold end-to-end: 5–10% visit × 40–55% close = 2–5% call → purchase</p>
+            </div>
             <p className="text-[2vw] font-bold text-[#374151] text-right">40–55%</p>
             <p className="text-[2vw] font-bold text-[#5B21B6] text-right">Holds or improves when prepared</p>
           </div>
