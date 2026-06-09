@@ -8,14 +8,17 @@ export default function S10HowYouMakeMoney() {
 
       <div className="relative z-10 flex flex-col h-full px-[8vw] pt-[6vh] pb-[5vh]">
         <p className="text-[1.1vw] font-bold tracking-[0.18em] uppercase text-[#5B21B6]">
-          The revenue mechanism · same math at every scale
+          The revenue mechanism · built on Signet's existing 1,000-call outreach capacity
         </p>
         <h1 className="mt-[0.8vh] text-[2.8vw] font-bold text-[#111827] leading-[1.15]">
-          As more customers download DiaGe, more of Signet's 1,000 calls become warm
+          As more customers download DiaGe, more of those calls become warm
         </h1>
+        <p className="mt-[0.8vh] text-[1.2vw] text-[#6B7280]">
+          DiaGe doesn't change how many calls associates make — it changes which calls they prioritize and what they know before dialing
+        </p>
 
         {/* Column headers */}
-        <div className="mt-[3vh] grid grid-cols-2 gap-[3vw] pb-[1.5vh] border-b-2 border-[#111827]">
+        <div className="mt-[2.5vh] grid grid-cols-2 gap-[3vw] pb-[1.5vh] border-b-2 border-[#111827]">
           <div />
           <div className="grid grid-cols-2 gap-[2vw]">
             <div className="text-center">
@@ -33,14 +36,6 @@ export default function S10HowYouMakeMoney() {
         <div className="flex flex-col flex-1 justify-center">
 
           <div className={rowCls}>
-            <p className={labelCls}>Signet's monthly outreach capacity</p>
-            <div className="grid grid-cols-2 gap-[2vw] text-center">
-              <p className="text-[1.9vw] font-bold text-[#374151]">1,000 calls</p>
-              <p className="text-[1.9vw] font-bold text-[#374151]">1,000 calls</p>
-            </div>
-          </div>
-
-          <div className={rowCls}>
             <div>
               <p className={labelCls}>Active DiaGe wishlist signals / month</p>
               <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">15% of DiaGe users share a wishlist in any given month</p>
@@ -55,7 +50,7 @@ export default function S10HowYouMakeMoney() {
             <div>
               <p className={labelCls}>Conversion rate (warm call → purchase)</p>
               <p className="text-[1.1vw] text-[#6B7280] mt-[0.3vh]">
-                vs. Signet cold baseline: 5–10% call → visit then 40–55% close = 2–5% end-to-end · NRF / McKinsey
+                Cold baseline: 5–10% visit × 40–55% close = 2–5% end-to-end · DiaGe target: 10% direct · NRF / McKinsey
               </p>
             </div>
             <div className="grid grid-cols-2 gap-[2vw] text-center">
@@ -74,7 +69,7 @@ export default function S10HowYouMakeMoney() {
 
           {/* Revenue — highlighted */}
           <div
-            className="grid grid-cols-2 gap-[3vw] py-[2vh] mt-[1vh] rounded-sm items-center"
+            className="grid grid-cols-2 gap-[3vw] mt-[1.5vh] rounded-sm items-center"
             style={{ background: "#111827", padding: "2vh 2vw", marginLeft: "-2vw", marginRight: "-2vw", paddingLeft: "2vw", paddingRight: "2vw" }}
           >
             <div>
@@ -91,6 +86,14 @@ export default function S10HowYouMakeMoney() {
                 <p className="text-[1.0vw] text-[#6B7280] mt-[0.3vh]">20 × $1,362 · mature state</p>
               </div>
             </div>
+          </div>
+
+          {/* Context bar */}
+          <div className="mt-[1.5vh] rounded-sm px-[1.5vw] py-[0.8vh]" style={{ background: "#F3F0FF", border: "1px solid #C4B5FD" }}>
+            <p className="text-[1.1vw] text-[#374151]">
+              <span className="font-bold text-[#5B21B6]">Infrastructure already in place: </span>
+              Signet associates make 1,000 outreach calls / store / month today. DiaGe surfaces which of those contacts to prioritize and what to say — no new workflow required.
+            </p>
           </div>
 
         </div>
