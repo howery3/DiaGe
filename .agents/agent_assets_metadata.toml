@@ -65,3 +65,9 @@ id = "iy-X_QsnUluEX40G6welL"
 uri = "file://.local/outputs/Jewlery-Safe.pdf"
 type = "pdf"
 title = "Jewlery Safe.pdf"
+
+[[outputs]]
+id = "ZxADgoipeVeq4WhcMDWoV"
+uri = "file://.local/outputs/DiaGe---Signet-CEO-Pitch-Deck.pdf"
+type = "pdf"
+title = "DiaGe × Signet CEO Pitch Deck.pdf"
