@@ -70,7 +70,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Footer */}
         <div className="px-5 py-4 border-t text-xs" style={{ borderColor: "hsl(var(--sidebar-border))", color: "rgba(255,255,255,0.3)" }}>
-          DiaGe Inc. · May 2026
+          DiaGe Inc. · June 2026
         </div>
       </aside>
 

@@ -67,7 +67,7 @@ export default function Trends() {
         <div className="flex items-center gap-2 mb-4">
           <Tag size={16} className="text-[#5B21B6]" />
           <h2 className="text-sm font-semibold text-gray-800">Top Saved SKUs</h2>
-          <span className="ml-auto text-xs text-gray-400">by save count · May 2026</span>
+          <span className="ml-auto text-xs text-gray-400">by save count · June 2026</span>
         </div>
         <div className="space-y-3">
           {TOP_SKUS.map((sku, i) => (

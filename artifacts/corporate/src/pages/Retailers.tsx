@@ -91,7 +91,7 @@ export default function Retailers() {
           <h1 className="text-2xl font-bold text-foreground">Retailer Performance</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Engagement and wishlist value across Signet banners and partner retailers — May 2026
+          Engagement and wishlist value across Signet banners and partner retailers — June 2026
         </p>
       </div>
 

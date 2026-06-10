@@ -225,7 +225,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex-1" />
           <div className="flex items-center gap-2 text-xs text-gray-400 bg-[#F3F0FF] px-3 py-1.5 rounded-full">
             <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            Live · May 25, 2026
+            Live · June 9, 2026
           </div>
 
           {/* Notification bell */}

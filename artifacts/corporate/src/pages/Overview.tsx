@@ -56,7 +56,7 @@ export default function Overview() {
           <h1 className="text-2xl font-bold text-foreground">Platform Overview</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Live platform intelligence — May 2026 · All figures represent real DiaGe user activity
+          Live platform intelligence — June 2026 · All figures represent real DiaGe user activity
         </p>
       </div>
 
@@ -79,7 +79,7 @@ export default function Overview() {
         {/* User Growth */}
         <div className="bg-card border border-card-border rounded-xl p-5">
           <div className="mb-1 font-semibold text-sm text-foreground">User Growth</div>
-          <div className="text-xs text-muted-foreground mb-4">Total users & monthly actives — Jan–May 2026</div>
+          <div className="text-xs text-muted-foreground mb-4">Total users & monthly actives — Jan–June 2026</div>
           <ResponsiveContainer width="100%" height={220} debounce={0}>
             <AreaChart data={MONTHLY_GROWTH}>
               <defs>
