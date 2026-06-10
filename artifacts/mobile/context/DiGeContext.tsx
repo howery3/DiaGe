@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "@clerk/expo";
+import { capture } from "@/utils/posthog";
 import React, {
   createContext,
   useCallback,
@@ -272,6 +273,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
     const newPiece: JewelryPiece = { ...piece, id: generateId(), createdAt: new Date().toISOString() };
     setPieces((prev) => { const next = [newPiece, ...prev]; schedulePush(); return next; });
     void syncWarrantyNotifications(newPiece);
+    capture("piece_added", { type: piece.type, brand: piece.brand || null, retailer: piece.retailer || null });
   }, [schedulePush]);
 
   const updatePiece = useCallback((id: string, updates: Partial<JewelryPiece>) => {
@@ -287,6 +289,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   const deletePiece = useCallback((id: string) => {
     setPieces((prev) => { const next = prev.filter((p) => p.id !== id); schedulePush(); return next; });
     void cancelWarrantyNotifications(id);
+    capture("piece_deleted");
   }, [schedulePush]);
 
   const getPiece = useCallback((id: string) => pieces.find((p) => p.id === id), [pieces]);
@@ -298,6 +301,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
       schedulePush();
       return next;
     });
+    capture("repair_added", { retailer: repair.retailer || null, repair_type: repair.repairType || null });
   }, [schedulePush]);
 
   const deleteRepair = useCallback((pieceId: string, repairId: string) => {
@@ -327,6 +331,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
 
   const addWishlistItem = useCallback((item: Omit<WishlistItem, "id" | "createdAt">) => {
     setWishlistItems((prev) => { const next = [{ ...item, id: generateId(), createdAt: new Date().toISOString() }, ...prev]; schedulePush(); return next; });
+    capture("wishlist_item_added", { brand: item.brand || null, retailer: item.retailer || null, priority: item.priority });
   }, [schedulePush]);
 
   const updateWishlistItem = useCallback((id: string, updates: Partial<WishlistItem>) => {
@@ -335,12 +340,14 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
 
   const deleteWishlistItem = useCallback((id: string) => {
     setWishlistItems((prev) => { const next = prev.filter((w) => w.id !== id); schedulePush(); return next; });
+    capture("wishlist_item_deleted");
   }, [schedulePush]);
 
   const addReminder = useCallback((reminder: Omit<InspectionReminder, "id" | "createdAt">) => {
     const id = generateId();
     const newReminder: InspectionReminder = { ...reminder, id, createdAt: new Date().toISOString() };
     setReminders((prev) => { const next = [newReminder, ...prev]; schedulePush(); return next; });
+    capture("reminder_added", { recurrence: reminder.recurrence, retailer: reminder.retailer || null });
     scheduleReminderNotification(newReminder).then((notifId) => {
       if (notifId) {
         setReminders((prev) => prev.map((r) => (r.id === id ? { ...r, notificationId: notifId } : r)));
@@ -363,6 +370,7 @@ export function DiGeProvider({ children }: { children: React.ReactNode }) {
   const completeReminder = useCallback((id: string) => {
     const current = remindersRef.current.find((r) => r.id === id);
     if (!current) return;
+    capture("reminder_completed", { recurrence: current.recurrence });
 
     if (current.notificationId) void cancelNotification(current.notificationId);
     void cancelNotification(`${id}-advance`);

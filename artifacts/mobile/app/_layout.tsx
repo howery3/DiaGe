@@ -6,7 +6,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/expo";
+import { ClerkLoaded, ClerkProvider, useAuth, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "expo-router/head";
@@ -38,6 +38,27 @@ const ONBOARDING_KEY = "@dige_onboarded";
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
 
+function PostHogIdentify() {
+  const { isSignedIn } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    const ph = getPostHog();
+    if (!ph) return;
+    if (isSignedIn && user) {
+      const traits: Record<string, string> = {};
+      const email = user.primaryEmailAddress?.emailAddress;
+      if (email) traits["email"] = email;
+      if (user.fullName) traits["name"] = user.fullName;
+      ph.identify(user.id, traits);
+    } else if (isSignedIn === false) {
+      ph.reset();
+    }
+  }, [isSignedIn, user]);
+
+  return null;
+}
+
 function AuthGuard() {
   const { isSignedIn, isLoaded } = useAuth();
 
@@ -59,6 +80,7 @@ function AuthGuard() {
 function RootLayoutNav() {
   return (
     <>
+      <PostHogIdentify />
       <Head>
         <title>DiaGe — Jewelry Organizer</title>
         <meta name="description" content="DiaGe helps you track your jewelry collection, manage a wishlist, and set inspection reminders — all in one place." />
