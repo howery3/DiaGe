@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 14.0.0",
+    "version": ">= 19.0.8",
     "appVersionSource": "local"
   },
   "build": {
@@ -12,6 +12,7 @@
       "distribution": "internal"
     },
     "production": {
+      "workingDirectory": "artifacts/mobile",
       "env": {
         "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
         "EXPO_PUBLIC_DOMAIN": "diage.replit.app",
