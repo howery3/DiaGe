@@ -1,0 +1,55 @@
+~/workspace$ eas build:view --json 2>&1 | head -100
+★ eas-cli@20.1.0 is now available.
+To upgrade, run:
+npm install -g eas-cli
+Proceeding with outdated version.
+
+⠋ Fetching the build…⠙ Fetching the build…✔ Showing the last build for the project @howery3/workspace
+{
+  "id": "9bfab4a9-e772-46c1-98ff-731dc500224f",
+  "status": "ERRORED",
+  "platform": "IOS",
+  "error": {
+    "errorCode": "UNKNOWN_ERROR",
+    "message": "Unknown error. See logs of the Install dependencies build phase for more information."
+  },
+  "artifacts": {},
+  "fingerprint": {
+    "id": "019eb1da-1015-7c28-a34e-c927e69834a5",
+    "hash": "6533a595713e69d1f46ca0348224693be422258a"
+  },
+  "initiatingActor": {
+    "id": "0d22ad81-8d31-4738-9c0c-5c33fddbdc67",
+    "displayName": "howery3"
+  },
+  "logFiles": [
+    "https://storage.googleapis.com/eas-workflows-production/logs/c83fed9c-d01b-4c7f-bfc5-d7158caef2f5/9bfab4a9-e772-46c1-98ff-731dc500224f/2026-06-11T00%3A19%3A14Z-7caca7c2-9a2f-4a5b-88e5-c84b238e5b72.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260611%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260611T002915Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=553944fb6025353f991893fcef3cb5fc567e9ddc86d70fcb2b434ef9e0e5f8b7372d966e6c761e4e0401b97767b754f51788352544d409612251e3d0d1d1b702a83a13877068f018c9414f84ef66683c9d42e05ef06a688b81302ac401afb32d4bbf0bf9810cb101ce8abad1f71c518a2a632d999510b71067365548b48a690dbab2c17e0608d82cc7738be820f6e642f50a2edae5a8c8ce519f8559abe3631d6fd706c1c62e7f4ff5aa8a7160b221e588308ab27e50eb99b146d6bb524c23353b0958c2fda8b64d9cfde51c8ea5eeef3b1eee796b00aa2141734cd4e7f6e85ea7d4e04c54baf21ab6e4694837eb44cfe35324da2e479fabe4ed667b7b5f12b8"
+  ],
+  "project": {
+    "id": "c83fed9c-d01b-4c7f-bfc5-d7158caef2f5",
+    "name": "workspace",
+    "slug": "workspace",
+    "ownerAccount": {
+      "id": "3fb684aa-1f7e-4ec6-8316-704a0912c444",
+      "name": "howery3"
+    }
+  },
+  "distribution": "STORE",
+  "buildProfile": "production",
+  "sdkVersion": "54.0.0",
+  "appVersion": "0.0.0",
+  "appBuildVersion": "6",
+  "gitCommitHash": "e28e67fc8417cf4030e42c9a4308e78c392de550",
+  "gitCommitMessage": "Update app versioning and project configuration for builds\n\nCorrect the project ID in app.json and remove autoIncrement from eas.json to ensure local versioning is used correctly.\n\nReplit-Commit-Author: Agent\nReplit-Commit-Session-Id: e796f5e5-0c63-4f24-8034-1f9e97d4dbbe\nReplit-Commit-Checkpoint-Type: full_checkpoint\nReplit-Commit-Event-Id: e394ad16-e1ea-4255-a096-8ebc4043bb26\nReplit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/106bca69-6442-4cbc-8beb-cf814c8cdb44/e796f5e5-0c63-4f24-8034-1f9e97d4dbbe/ZJc3cIu\nReplit-Helium-Checkpoint-Created: true",
+  "priority": "NORMAL",
+  "createdAt": "2026-06-11T00:19:12.744Z",
+  "updatedAt": "2026-06-11T00:20:04.686Z",
+  "completedAt": "2026-06-11T00:20:00.418Z",
+  "expirationDate": "2026-07-11T00:19:12.762Z",
+  "isForIosSimulator": false,
+  "metrics": {
+    "buildWaitTime": 1327,
+    "buildQueueTime": 35350,
+    "buildDuration": 10997
+  }
+}
