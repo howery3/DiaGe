@@ -12,8 +12,6 @@
       "distribution": "internal"
     },
     "production": {
-      "workingDirectory": "artifacts/mobile",
-      "installCommand": "pnpm install --ignore-scripts --frozen-lockfile",
       "env": {
         "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
         "EXPO_PUBLIC_DOMAIN": "diage.replit.app",
