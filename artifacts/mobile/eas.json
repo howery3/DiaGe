@@ -12,7 +12,6 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
       "workingDirectory": "artifacts/mobile",
       "env": {
         "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
