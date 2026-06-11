@@ -1,0 +1,21 @@
+/workspace$ eas build:view
+✔ Showing the last build for the project @howery3/workspace
+
+ID                       e1bbbb96-6eb1-4e0a-87d7-16b3b9f634bf
+Platform                 iOS
+Status                   errored
+Profile                  production
+Distribution             store
+SDK Version              54.0.0
+Version                  0.0.0
+Build number             13
+Commit                   8beba185eb2f8fb1fff33f59663e8806f0d722b4
+Logs                     https://expo.dev/accounts/howery3/projects/workspace/builds/e1bbbb96-6eb1-4e0a-87d7-16b3b9f634bf
+Application Archive URL  null
+Build Artifacts URL      null
+Started at               6/11/2026, 1:20:47 AM
+Finished at              6/11/2026, 1:22:31 AM
+Started by               howery3
+~/workspace$ eas build:view --json 2>&1 | grep storage
+    "https://storage.googleapis.com/eas-workflows-production/logs/c83fed9c-d01b-4c7f-bfc5-d7158caef2f5/e1bbbb96-6eb1-4e0a-87d7-16b3b9f634bf/2026-06-11T01%3A20%3A52Z-6f847a6b-6add-4fc3-9aca-64b3a64a2476.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260611%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260611T012604Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=aa246f7a3923ea8c40608f1fcae76954f7585bcf1d53f759db499ef3f12513890af67e5705520375212c3d35be55f54fe8309bd76161fa838ac67a5a867c50e260b0b551f37432e7f36a6bb24f92981e29d1efeea85ceba4a12dc037c39dad5ee761b727a6547d693a12a2b31574fb7f1d09972a67da86413735417de6a68aa3715748aae80a593707adc5035b141396d1b227b42b4796414b8d25af3191b216995f6187daccbe456438d0c45ed2eb68f986fe6a7601f749c5f9269f3d7e0840b6e86ae87f7fe23a226dfd42cdf29bc6ac836633d88ea2186ad638196be883be257e9c3d327cf4a371f54c2dec2ca046e5a078a484383e799864c9b609675cab"
+  "gitCommitMessage": "Configure Metro to correctly resolve modules in a monorepo structure\n\nUpdate metro.config.js to include monorepo root in watchFolders and nodeModulesPaths, resolving module resolution issues with pnpm's virtual store.\n\nReplit-Commit-Author: Agent\nReplit-Commit-Session-Id: e796f5e5-0c63-4f24-8034-1f9e97d4dbbe\nReplit-Commit-Checkpoint-Type: full_checkpoint\nReplit-Commit-Event-Id: 2dfc6c9d-008c-4224-969a-7343252cc4b7\nReplit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/106bca69-6442-4cbc-8beb-cf814c8cdb44/e796f5e5-0c63-4f24-8034-1f9e97d4dbbe/QktqRuu\nReplit-Helium-Checkpoint-Created: true",
