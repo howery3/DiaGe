@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "DiaGe",
-    "slug": "workspace",
+    "slug": "diage",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./artifacts/mobile/assets/images/icon.png",
@@ -84,9 +84,6 @@
       "typedRoutes": true
     },
     "extra": {
-      "eas": {
-        "projectId": "c83fed9c-d01b-4c7f-bfc5-d7158caef2f5"
-      },
       "privacyPolicyUrl": "https://DiaGe.replit.app/privacy"
     },
     "owner": "howery3"
