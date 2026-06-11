@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.diage.app",
-      "buildNumber": "12",
+      "buildNumber": "21",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "DiaGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",

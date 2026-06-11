@@ -1,21 +1,32 @@
 {
   "cli": {
     "version": ">= 19.0.8",
-    "appVersionSource": "remote"
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "workingDirectory": "artifacts/mobile"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "workingDirectory": "artifacts/mobile"
     },
     "production": {
-      "autoIncrement": true
+      "workingDirectory": "artifacts/mobile",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
+        "EXPO_PUBLIC_DOMAIN": "diage.replit.app",
+        "EXPO_PUBLIC_POSTHOG_KEY": "phc_vCGXtFM9cJsKAJtXr43YEd9N5RJMhPiaMw5sW2HrGhNd"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "6772402428"
+      }
+    }
   }
 }
