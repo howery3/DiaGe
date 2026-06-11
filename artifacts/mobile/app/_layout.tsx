@@ -6,7 +6,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ClerkLoaded, ClerkProvider, useAuth, useUser } from "@clerk/expo";
+import { ClerkProvider, useAuth, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "expo-router/head";
@@ -37,16 +37,6 @@ const ONBOARDING_KEY = "@dige_onboarded";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
-
-function ClerkLoadingSpinner() {
-  const { isLoaded } = useAuth();
-  if (isLoaded) return null;
-  return (
-    <View style={{ flex: 1, position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#0A0714", alignItems: "center", justifyContent: "center", zIndex: 999 }}>
-      <ActivityIndicator size="large" color="#8B5CF6" />
-    </View>
-  );
-}
 
 function PostHogIdentify() {
   const { isSignedIn } = useAuth();
@@ -202,6 +192,53 @@ function RootLayoutNav() {
   );
 }
 
+/**
+ * Renders the full app once Clerk is initialized, or a loading spinner while
+ * Clerk is still booting. Avoids depending on <ClerkLoaded> / <ClerkLoading>
+ * helper components which have had compatibility issues across @clerk/expo versions.
+ */
+function AuthGatedApp() {
+  const { isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#0A0714", alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="#8B5CF6" />
+      </View>
+    );
+  }
+
+  const posthogClient = getPostHog();
+
+  const appTree = (
+    <SafeAreaProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <DiGeProvider>
+            <GestureHandlerRootView>
+              <KeyboardProvider>
+                <RootLayoutNav />
+              </KeyboardProvider>
+            </GestureHandlerRootView>
+          </DiGeProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </SafeAreaProvider>
+  );
+
+  if (posthogClient) {
+    return (
+      <ErrorBoundary>
+        <PostHogProvider client={posthogClient}>
+          {appTree}
+        </PostHogProvider>
+      </ErrorBoundary>
+    );
+  }
+
+  return appTree;
+}
+
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
@@ -241,44 +278,13 @@ export default function RootLayout() {
 
   if (!fontsLoaded && !fontError) return null;
 
-  const posthogClient = getPostHog();
-
-  const inner = (
+  return (
     <ClerkProvider
       publishableKey={publishableKey}
       tokenCache={tokenCache}
       proxyUrl={proxyUrl}
     >
-      <ClerkLoadingSpinner />
-      <ClerkLoaded>
-        <SafeAreaProvider>
-          <ErrorBoundary>
-            <QueryClientProvider client={queryClient}>
-              <DiGeProvider>
-                <GestureHandlerRootView>
-                  <KeyboardProvider>
-                    <RootLayoutNav />
-                  </KeyboardProvider>
-                </GestureHandlerRootView>
-              </DiGeProvider>
-            </QueryClientProvider>
-          </ErrorBoundary>
-        </SafeAreaProvider>
-      </ClerkLoaded>
+      <AuthGatedApp />
     </ClerkProvider>
   );
-
-  if (posthogClient) {
-    try {
-      return (
-        <PostHogProvider client={posthogClient}>
-          {inner}
-        </PostHogProvider>
-      );
-    } catch {
-      // if PostHog provider fails, render the app without it
-    }
-  }
-
-  return inner;
 }
