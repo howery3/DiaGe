@@ -84,7 +84,13 @@
       "typedRoutes": true
     },
     "extra": {
-      "privacyPolicyUrl": "https://DiaGe.replit.app/privacy"
+      "privacyPolicyUrl": "https://DiaGe.replit.app/privacy",
+      "router": {
+        "origin": "https://DiaGe.replit.app"
+      },
+      "eas": {
+        "projectId": "95346f58-0da9-474e-bd0a-ef834b081197"
+      }
     },
     "owner": "howery3"
   }
