@@ -1,3 +1,4 @@
 - [EAS pnpm monorepo bundle fix](eas-pnpm-bundle.md) — Metro uses expo/AppEntry.js unless expo + expo-router are both hoisted and workspace root package.json has "main": "expo-router/entry"
 - [Clerk black screen on launch](clerk-loading.md) — ClerkLoaded renders nothing while initializing; use ClerkLoading + ActivityIndicator fallback to prevent blank screen
 - [EAS Metro config placement](eas-metro-config-placement.md) — Metro config must live in artifacts/mobile; workspace root delegates via require(); @/ alias needs resolveRequest not resolver.alias
+- [EAS monorepo app.json and eas.json setup](eas-monorepo-config.md) — workspace root needs full app.json (icon paths prefixed artifacts/mobile/) + eas.json with appVersionSource local; expo-* must be hoisted via .npmrc
