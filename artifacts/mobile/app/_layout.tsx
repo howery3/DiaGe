@@ -6,7 +6,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ClerkLoaded, ClerkLoading, ClerkProvider, useAuth, useUser } from "@clerk/expo";
+import { ClerkLoaded, ClerkProvider, useAuth, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "expo-router/head";
@@ -37,6 +37,16 @@ const ONBOARDING_KEY = "@dige_onboarded";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
+
+function ClerkLoadingSpinner() {
+  const { isLoaded } = useAuth();
+  if (isLoaded) return null;
+  return (
+    <View style={{ flex: 1, position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "#0A0714", alignItems: "center", justifyContent: "center", zIndex: 999 }}>
+      <ActivityIndicator size="large" color="#8B5CF6" />
+    </View>
+  );
+}
 
 function PostHogIdentify() {
   const { isSignedIn } = useAuth();
@@ -239,11 +249,7 @@ export default function RootLayout() {
       tokenCache={tokenCache}
       proxyUrl={proxyUrl}
     >
-      <ClerkLoading>
-        <View style={{ flex: 1, backgroundColor: "#0A0714", alignItems: "center", justifyContent: "center" }}>
-          <ActivityIndicator size="large" color="#8B5CF6" />
-        </View>
-      </ClerkLoading>
+      <ClerkLoadingSpinner />
       <ClerkLoaded>
         <SafeAreaProvider>
           <ErrorBoundary>
