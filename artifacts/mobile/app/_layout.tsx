@@ -28,7 +28,7 @@ import {
   requestNotificationPermissions,
 } from "@/utils/notifications";
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => { /* splash screen unavailable */ });
 try { configureNotificationHandler(); } catch { /* notifications unavailable in this runtime */ }
 
 const queryClient = new QueryClient();
