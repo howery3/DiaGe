@@ -1,0 +1,53 @@
+Builds for @howery3/workspace:
+
+ID                       40d8daee-f313-4c49-97ea-e5071b8e6392
+Platform                 iOS
+Status                   errored
+Profile                  production
+Distribution             store
+SDK Version              54.0.0
+Version                  0.0.0
+Build number             16
+Commit                   c6032bd392ff25c78711d9adaa1d8476b0b20ddc
+Logs                     https://expo.dev/accounts/howery3/projects/workspace/builds/40d8daee-f313-4c49-97ea-e5071b8e6392
+Application Archive URL  null
+Build Artifacts URL      null
+Started at               6/11/2026, 1:52:41 AM
+Finished at              6/11/2026, 1:54:41 AM
+Started by               howery3
+
+———
+
+ID                       11173734-16a5-40aa-a884-ab7cf4051f08
+Platform                 iOS
+Status                   errored
+Profile                  production
+Distribution             store
+SDK Version              54.0.0
+Version                  0.0.0
+Build number             15
+Commit                   5b9e41280242f1a609b0f3622524beef4787ecc2
+Logs                     https://expo.dev/accounts/howery3/projects/workspace/builds/11173734-16a5-40aa-a884-ab7cf4051f08
+Application Archive URL  null
+Build Artifacts URL      null
+Started at               6/11/2026, 1:39:23 AM
+Finished at              6/11/2026, 1:41:10 AM
+Started by               howery3
+
+———
+
+ID                       c6e516cc-a237-40db-ab4b-4c98c0e7d4e8
+Platform                 iOS
+Status                   errored
+Profile                  production
+Distribution             store
+SDK Version              54.0.0
+Version                  0.0.0
+Build number             14
+Commit                   79985b234fb8ab5092672f3fddb09c970d928ddc
+Logs                     https://expo.dev/accounts/howery3/projects/workspace/builds/c6e516cc-a237-40db-ab4b-4c98c0e7d4e8
+Application Archive URL  null
+Build Artifacts URL      null
+Started at               6/11/2026, 1:32:32 AM
+Finished at              6/11/2026, 1:34:32 AM
+Started by               howery3
