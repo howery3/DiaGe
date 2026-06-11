@@ -1,3 +1,8 @@
+// ⚠️ MUST be the very first import — installs the fatal-error capture
+// before any other module-level side-effects run.
+import { installCrashCapture, popCrashInfo } from "@/utils/crashCapture";
+installCrashCapture();
+
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -13,8 +18,8 @@ import Head from "expo-router/head";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { PostHogProvider } from "posthog-react-native";
-import React, { useEffect } from "react";
-import { ActivityIndicator, Appearance, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Appearance, ScrollView, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -246,6 +251,20 @@ export default function RootLayout() {
     Inter_600SemiBold,
     Inter_700Bold,
   });
+  const [crashInfo, setCrashInfo] = useState<{
+    message: string;
+    stack: string;
+    buildVersion: string;
+    ts: string;
+  } | null>(null);
+  const [crashChecked, setCrashChecked] = useState(false);
+
+  useEffect(() => {
+    popCrashInfo().then((info) => {
+      if (info) setCrashInfo(info);
+      setCrashChecked(true);
+    });
+  }, []);
 
   useEffect(() => {
     async function init() {
@@ -277,6 +296,30 @@ export default function RootLayout() {
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) return null;
+  if (!crashChecked) return null;
+
+  // If a previous fatal crash was captured, display the error message so it
+  // can be read and shared for diagnosis. This screen replaces the normal app.
+  if (crashInfo) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#0A0714", padding: 24, paddingTop: 60 }}>
+        <Text style={{ color: "#EF4444", fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
+          ⚠️ Previous crash captured (build {crashInfo.buildVersion})
+        </Text>
+        <Text style={{ color: "#FCD34D", fontSize: 13, marginBottom: 8 }}>
+          {crashInfo.ts}
+        </Text>
+        <Text style={{ color: "#F87171", fontSize: 14, fontWeight: "600", marginBottom: 8 }}>
+          {crashInfo.message}
+        </Text>
+        <ScrollView style={{ flex: 1 }}>
+          <Text style={{ color: "#D1D5DB", fontSize: 11, fontFamily: "monospace" }}>
+            {crashInfo.stack}
+          </Text>
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
     <ClerkProvider
