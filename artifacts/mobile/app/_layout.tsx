@@ -6,7 +6,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ClerkLoaded, ClerkProvider, useAuth, useUser } from "@clerk/expo";
+import { ClerkLoaded, ClerkLoading, ClerkProvider, useAuth, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "expo-router/head";
@@ -14,7 +14,7 @@ import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { PostHogProvider } from "posthog-react-native";
 import React, { useEffect } from "react";
-import { Appearance } from "react-native";
+import { ActivityIndicator, Appearance, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -239,6 +239,11 @@ export default function RootLayout() {
       tokenCache={tokenCache}
       proxyUrl={proxyUrl}
     >
+      <ClerkLoading>
+        <View style={{ flex: 1, backgroundColor: "#0A0714", alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator size="large" color="#8B5CF6" />
+        </View>
+      </ClerkLoading>
       <ClerkLoaded>
         <SafeAreaProvider>
           <ErrorBoundary>

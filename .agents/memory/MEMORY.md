@@ -1,0 +1,2 @@
+- [EAS pnpm monorepo bundle fix](eas-pnpm-bundle.md) — Metro uses expo/AppEntry.js unless expo + expo-router are both hoisted and workspace root package.json has "main": "expo-router/entry"
+- [Clerk black screen on launch](clerk-loading.md) — ClerkLoaded renders nothing while initializing; use ClerkLoading + ActivityIndicator fallback to prevent blank screen
