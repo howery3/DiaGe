@@ -268,7 +268,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     async function init() {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().catch(() => { /* splash already hidden or not configured */ });
       try { requestNotificationPermissions(); } catch { /* notifications unavailable */ }
       try {
         const value = await AsyncStorage.getItem(ONBOARDING_KEY);
@@ -291,7 +291,7 @@ export default function RootLayout() {
     restoreTheme();
 
     if (fontsLoaded || fontError) {
-      init();
+      init().catch(() => {});
     }
   }, [fontsLoaded, fontError]);
 
