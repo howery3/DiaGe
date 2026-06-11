@@ -6,12 +6,10 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "workingDirectory": "artifacts/mobile"
+      "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal",
-      "workingDirectory": "artifacts/mobile"
+      "distribution": "internal"
     },
     "production": {
       "workingDirectory": "artifacts/mobile",
