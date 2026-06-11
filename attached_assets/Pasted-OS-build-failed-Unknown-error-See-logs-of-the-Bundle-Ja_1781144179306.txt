@@ -1,0 +1,48 @@
+OS build failed:
+Unknown error. See logs of the Bundle JavaScript build phase for more information.
+~/workspace$ Starting Metro Bundler
+iOS node_modules/.pnpm/expo-router@6.0.23_@types+react-dom@19.1.11_@types+react@19.1.17__@types+react@19.1.17__950497bba3dbc1f6b1863109f86ef06a/node_modules/expo-router/entry.js ▓▓░░░░░░░░░░░░░░ 13.0% ( 9/25)
+iOS node_modules/.pnpm/expo-router@6.0.23_@types+react-dom@19.1.11_@types+react@19.1.17__@types+react@19.1.17__950497bba3dbc1f6b1863109f86ef06a/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 70.5% ( 895/1066)
+iOS Bundling failed 6419ms node_modules/.pnpm/expo-router@6.0.23_@types+react-dom@19.1.11_@types+react@19.1.17__@types+react@19.1.17__950497bba3dbc1f6b1863109f86ef06a/node_modules/expo-router/entry.js (1530 modules)
+Unable to resolve module @/utils/posthog from /Users/expo/workingdir/build/artifacts/mobile/app/(auth)/sign-in.tsx: @/utils/posthog could not be found within the project or in these directories:
+  node_modules
+  ../../node_modules
+  node_modules
+  ../../node_modules
+^[[0m ^[[90m 16 |^[[39m   ^[[33mView^[[39m^[[33m,^[[39m
+ ^[[90m 17 |^[[39m } ^[[36mfrom^[[39m ^[[32m"react-native"^[[39m^[[33m;^[[39m
+^[[31m^[[1m>^[[22m^[[39m^[[90m 18 |^[[39m ^[[36mimport^[[39m { capture } ^[[36mfrom^[[39m ^[[32m"@/utils/posthog"^[[39m^[[33m;^[[39m 
+ ^[[90m    |^[[39m                          ^[[31m^[[1m^^[[22m^[[39m
+ ^[[90m 19 |^[[39m ^[[36mimport^[[39m ^[[33mAnimated^[[39m^[[33m,^[[39m {
+ ^[[90m 20 |^[[39m   ^[[33mFadeIn^[[39m^[[33m,^[[39m
+ith non-zero code: 1ed --eager --platform ios --dev false exited w
+bash: Starting: command not found
+bash: syntax error near unexpected token `('
+bash: syntax error near unexpected token `('
+bash: syntax error near unexpected token `('
+bash: syntax error near unexpected token `('
+Install Replit's Node tools [y/n]  n
+Aborted
+bash: node_modules: command not found
+bash: ../../node_modules: No such file or directory
+Install Replit's Node tools [y/n]  ^C
+bash: ../../node_modules: No such file or directory
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+bash: : command not found
+Import: command not installed, but was located via Nix.
+package: libosmscout  2017.06.30  Simple, high-level interfaces for offline location and POI lokup, rendering and routing functionalities based on OpenStreetMap (OSM) data
+Would you like to run Import from Nix and add it to your project? [Yn]: 
