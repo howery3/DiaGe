@@ -1,15 +1,94 @@
 {
   "expo": {
+    "name": "DiaGe",
+    "slug": "workspace",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./artifacts/mobile/assets/images/icon.png",
+    "scheme": "diage",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": false,
+    "splash": {
+      "image": "./artifacts/mobile/assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0714"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.diage.app",
+      "buildNumber": "12",
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "DiaGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
+        "NSCameraUsageDescription": "DiaGe uses your camera to photograph jewelry pieces and paperwork for your vault.",
+        "NSUserNotificationUsageDescription": "DiaGe sends reminders for jewelry inspections and warranty renewals.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.diage.app",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./artifacts/mobile/assets/images/icon.png",
+      "name": "DiaGe — Jewelry Organizer",
+      "shortName": "DiaGe",
+      "description": "DiaGe helps you track your jewelry collection, manage a wishlist, and set inspection reminders — all in one place.",
+      "lang": "en",
+      "themeColor": "#5B21B6",
+      "backgroundColor": "#0A0714"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://DiaGe.replit.app"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser",
+      "expo-apple-authentication",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "DiaGe uses your photo library to attach images of jewelry pieces, receipts, and warranty documents.",
+          "cameraPermission": "DiaGe uses your camera to photograph jewelry pieces and paperwork for your vault."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "DiaGe uses your camera to scan retailer QR codes and sync jewelry catalogs to your wishlist."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./artifacts/mobile/assets/images/icon.png",
+          "color": "#5B21B6",
+          "sounds": [],
+          "iosDisplayInForeground": true
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
     "extra": {
       "eas": {
         "projectId": "c83fed9c-d01b-4c7f-bfc5-d7158caef2f5"
-      }
+      },
+      "privacyPolicyUrl": "https://DiaGe.replit.app/privacy"
     },
-    "ios": {
-      "bundleIdentifier": "com.diage.app",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
-    }
+    "owner": "howery3"
   }
 }

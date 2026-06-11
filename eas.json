@@ -1,7 +1,7 @@
 {
   "cli": {
-    "version": ">= 20.1.0",
-    "appVersionSource": "remote"
+    "version": ">= 19.0.8",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -12,10 +12,18 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
+        "EXPO_PUBLIC_DOMAIN": "diage.replit.app",
+        "EXPO_PUBLIC_POSTHOG_KEY": "phc_vCGXtFM9cJsKAJtXr43YEd9N5RJMhPiaMw5sW2HrGhNd"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "6772402428"
+      }
+    }
   }
 }
