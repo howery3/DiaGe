@@ -22,6 +22,12 @@
   "submit": {
     "production": {
       "ios": {
+        {
+  "build": {
+    "production": {
+      "ios": {
+        "image": "latest",
+        "node": "18.x"
         "ascAppId": "6772402428"
       }
     }
