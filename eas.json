@@ -16,6 +16,7 @@
         "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
         "EXPO_PUBLIC_DOMAIN": "diage.replit.app",
         "EXPO_PUBLIC_POSTHOG_KEY": "phc_vCGXtFM9cJsKAJtXr43YEd9N5RJMhPiaMw5sW2HrGhNd"
+        "NPM_CONFIG_FROZEN_LOCKFILE": "false"
       }
     }
   },
