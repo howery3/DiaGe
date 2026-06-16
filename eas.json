@@ -11,20 +11,18 @@
     "preview": {
       "distribution": "internal"
     },
-   "production": {
-  "ios": {
-    "image": "latest"
-  },
-  "installCommand": "npm install",
-  "env": {
-    "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
-    "EXPO_PUBLIC_DOMAIN": "diage.replit.app",
-    "EXPO_PUBLIC_POSTHOG_KEY": "phc_vCGXtFM9cJsKAJtXr43YEd9N5RJMhPiaMw5sW2HrGhNd"
-  }
-}
+    "production": {
+      "ios": {
+        "image": "latest"
+      },
+      "installCommand": "npm install",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuZGlhZ2UucmVwbGl0LmFwcCQ",
+        "EXPO_PUBLIC_DOMAIN": "diage.replit.app",
+        "EXPO_PUBLIC_POSTHOG_KEY": "phc_vCGXtFM9cJsKAJtXr43YEd9N5RJMhPiaMw5sW2HrGhNd"
       }
     }
-  }
+  },
   "submit": {
     "production": {
       "ios": {}
